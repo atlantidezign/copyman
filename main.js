@@ -1,9 +1,10 @@
-const {app, BrowserWindow, ipcMain, dialog, nativeImage, Tray, Menu} = require('electron')
+const {app, BrowserWindow, ipcMain, dialog, nativeImage, nativeTheme , Tray, Menu, shell} = require('electron')
 const path = require('path');
 const fs = require('fs');
 
 const inDebug = true;
 
+nativeTheme.themeSource = 'system';
 function createWindow() {
     const appIcon = nativeImage.createFromPath(path.join(__dirname, 'images/256x256.png'))
     const win = new BrowserWindow({
@@ -158,7 +159,45 @@ app.whenReady().then(() => {
             role: 'help',
             submenu: [
                 {
-                    label: 'Learn More',
+                    label: 'Usage',
+                    click: () => {
+                        let usageText = `
+You need to choose a *Source* folder and at least one *Destination* folder.  
+Use the *Clear* buttons to remove the folder selections.
+
+Within the *tree view*, you can *select* the items to copy (whether files or folders) using checkboxes.
+
+You can navigate within the tree by *expanding* or *collapsing* branches.  
+You can also use the two buttons for *Expand or Collapse All*.
+
+To assist with selection, you can use the *Filters*.
+- By clicking the *Set* button, it selects the items that contain the specified string while deselecting the others.
+- By clicking the *Add* button, it adds the items that match, without altering the others.
+- By clicking the *Remove* button, it removes any selected items that match from the selection.
+- Using the *Clear* button, it removes the filter.  
+  Additionally, you can use the two buttons for *Select or Deselect All*.
+
+There are some options that affects copying and selecting behaviours.
+- *Overwrite* to choose if overwrite or not files that already exist.
+
+With the *Copy Selected Items* button, the files are copied from the Source to the Destinations.
+
+                    
+                    `
+                        const options = {
+                            title: 'Usage',
+                            message: 'Usage',
+                            detail: usageText
+                        };
+
+                        dialog.showMessageBox(null, options, (response, checkboxChecked) => {
+                        });
+
+
+                    }
+                },
+                {
+                    label: 'Website',
                     click: async () => {
                         const { shell } = require('electron')
                         await shell.openExternal('https://www.atlantide-design.it/copyman')

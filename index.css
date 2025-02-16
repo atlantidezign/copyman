@@ -25,14 +25,9 @@ body {
 
 body > div {
     flex-shrink: 0; /* Per non farli ridurre */
-    height: 40px;
     margin: 0;
     padding: 10px;
-}
-
-body > div#div-destinations {
     min-height: 40px;
-    height: unset;
     padding-bottom: 0;
 }
 
@@ -85,7 +80,7 @@ li {
 }
 
 .folder-selection a.first-col {
-    width: 116px;
+    width: 110px;
     text-align: left;
 }
 
