@@ -2,7 +2,8 @@ const {app, BrowserWindow, ipcMain, dialog, nativeImage, nativeTheme, Tray, Menu
 const path = require('path');
 const fs = require('fs');
 
-const inDebug = true;
+let inDebug = false;
+if (process.argv.indexOf('--inDebug') > -1) { inDebug = true;}
 
 nativeTheme.themeSource = 'system';
 

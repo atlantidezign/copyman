@@ -23,6 +23,12 @@ Launch the Electron application in development mode by executing:
 npm start
 ```
 
+or, to activate Developer Tools:
+```bash
+npm run dev
+```
+that adds `--inDebug` argument to electron launch script.
+
 ### Build the Application
 
 Build the application into an executable for each platform:
