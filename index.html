@@ -17,7 +17,7 @@
         <a id="selectSource" class="btn btn-primary btn-sm first-col" type="button" title="Select Source Folder"><i
                 class="bi bi-folder"></i> Source
             </a>
-        <span id="sourcePath" class="form-control">Select Source Folder</span>
+        <span id="sourcePath" class="form-control span-list">Select Source Folder</span>
         <a id="clearSource" class="btn btn-primary btn-sm" type="button" title="Clear Source Folder"><i
                 class="bi bi-x-circle"></i></a>
     </div>
@@ -27,7 +27,7 @@
         <a id="addDestination" class="btn btn-primary btn-sm first-col" type="button"
            title="Add Destination Folder"><i class="bi bi-folder-plus"></i>
             Destination</a>
-        <span id="destinationList" class="form-control">Add Destination Folder</span>
+        <span id="destinationList" class="form-control span-list">Add Destination Folder</span>
         <a id="clearAllDestinations" class="btn btn-primary btn-sm" type="button"
            title="Clear Destination Folders"><i
                 class="bi bi-x-circle"></i></a>
@@ -35,15 +35,15 @@
 </div>
 <div>
     <div class="input-group">
-        <a class="btn btn-secondary btn-sm a-filter" title="Filter"><i class="bi bi-funnel"></i></a>
-        <input type="text" class="form-control" id="filterInput" placeholder="Filename (also partial)"
-               aria-label="Immetti criterio di filtro" aria-describedby="setFilter">
+        <a class="btn btn-secondary btn-sm a-filter" title="Filters"><i class="bi bi-funnel"></i></a>
+        <input type="text" class="form-control" id="filterInput" placeholder="Filename (also partial)">
         <a id="setFilter" class="btn btn-primary btn-sm" type="button" title="Set Selection"><i
                 class="bi bi-check-square"></i></a>
-        <a id="addFilter" class="btn btn-primary btn-sm" type="button" title="Add to Selection"><i
+        <a id="addPlusFilter" class="btn btn-primary btn-sm" type="button" title="Add to Selection"><i
                 class="bi bi-plus-square"></i></a>
-        <a id="removeFilter" class="btn btn-primary btn-sm" type="button" title="Remove from Selection"><i
+        <a id="addMinusFilter" class="btn btn-primary btn-sm" type="button" title="Remove from Selection"><i
                 class="bi bi-dash-square"></i></a>
+        <span id="filterList" class="form-control span-list">Filters list</span>
         <a id="clearFilter" class="btn btn-primary btn-sm" type="button" title="Clear Filter and Selection"><i
                 class="bi bi-x-circle"></i></a>
     </div>

@@ -67,6 +67,7 @@ ipcRenderer.on('context-menu-command', (e, command) => {
 //Business logic
 let clicksActive = true; //system: to disactivate clicks while copying
 let fileTreeData = []; // system: Struttura dati per l'albero
+let messageLife = 3000; //system: Vita messaggi prima della pulizia
 
 //User folders
 let sourceFolder = ''; // user choose: directory sorgente
@@ -97,6 +98,7 @@ function saveSettings() {
     writeMessage('Settings saved.');
 }
 function loadSettings() {
+    writeMessage('Loading settings...');
     // Recupera le impostazioni salvate dal localStorage
     const settingsStr = localStorage.getItem('settings');
     if (!settingsStr) {
@@ -105,6 +107,7 @@ function loadSettings() {
     }
     try {
         const settings = JSON.parse(settingsStr);
+        removeAllFilters();
 
         // Aggiorna le variabili globali dell'applicazione
         sourceFolder = settings.sourceFolder || '';
@@ -128,20 +131,10 @@ function loadSettings() {
         document.getElementById('sourcePath').textContent = sourceFolder;
         fileTreeData = buildFileTree(sourceFolder);
         renderFileTree(fileTreeData);
-        writeMessage('');
 
         updateDestinationList();
 
-        //TODO FILTERS
-        const filtersNamePlusInput = document.getElementById('filtersNamePlusInput');
-        if (filtersNamePlusInput) {
-            filtersNamePlusInput.value = filtersNamePlus;
-        }
-
-        const filtersNameMinusInput = document.getElementById('filtersNameMinusInput');
-        if (filtersNameMinusInput) {
-            filtersNameMinusInput.value = filtersNameMinus;
-        }
+        applyAllFilters();
 
         writeMessage('Settings loaded.');
     } catch (error) {
@@ -168,6 +161,7 @@ document.addEventListener('click', function (event) {
 document.getElementById('selectSource').addEventListener('click', async () => {
     const folder = await ipcRenderer.invoke('select-folder', 'Select Source Folder');
     if (folder) {
+        removeAllFilters();
         if (destinationFolders.includes(folder)) {
             alert("This folder is in the destination list.");
             return;
@@ -188,16 +182,17 @@ document.getElementById('selectSource').addEventListener('click', async () => {
         // Costruisce l'albero dei file
         fileTreeData = buildFileTree(sourceFolder);
         renderFileTree(fileTreeData);
-        writeMessage('');
+        writeMessage('Source folder choosen.');
     }
 });
 document.getElementById('clearSource').addEventListener('click', async () => {
     sourceFolder = '';
+    removeAllFilters();
     document.getElementById('sourcePath').textContent = 'Select Source Folder';
     fileTreeData = [];
     const container = document.getElementById('file-tree');
     container.innerHTML = '';
-    writeMessage('');
+    writeMessage('Source folder cleared.');
 });
 
 // Selezione cartelle destinazione
@@ -206,6 +201,7 @@ document.getElementById('addDestination').addEventListener('click', addDestinati
 // Event listener per il pulsante "Rimuovi Tutti"
 document.getElementById('clearAllDestinations').addEventListener('click', clearDestinations);
 
+//Destinazione
 // Funzione per aggiornare la UI mostrando la lista attuale delle directory
 function updateDestinationList() {
     const listContainer = document.getElementById('destinationList');
@@ -214,15 +210,6 @@ function updateDestinationList() {
         listContainer.innerHTML = 'Add Destination Folder';
     } else {
         destinationFolders.forEach((folder, index) => {
-
-            /*
-        <span class="badge text-bg-secondary position-relative">Secondary sdf sd fds asdasd
-         <span class="position-absolute start-100 translate-middle badge rounded-pill bg-danger">
-            <a>x</a>
-            <span class="visually-hidden">Remove</span>
-          </span>
-        </span>
-            */
             const listItem = document.createElement('span');
             listItem.classList.add('badge', 'text-bg-secondary', 'position-relative', 'me-2');
             listItem.textContent = folder;
@@ -241,7 +228,6 @@ function updateDestinationList() {
         });
     }
 }
-
 // Funzione per aggiungere una directory
 async function addDestination() {
     const folder = await ipcRenderer.invoke('select-folder', 'Select destination folder');
@@ -279,18 +265,19 @@ async function addDestination() {
         destinationFolders.push(folder);
         updateDestinationList();
     }
+    writeMessage('Destination folder added.');
 }
-
 // Funzione per rimuovere una directory dall'array data la sua posizione
 function removeDestination(index) {
     destinationFolders.splice(index, 1);
     updateDestinationList();
+    writeMessage('Destination folder removed.');
 }
-
 // Funzione per rimuovere tutti gli elementi
 function clearDestinations() {
     destinationFolders = [];
     updateDestinationList();
+    writeMessage('All Destination folder removed.');
 }
 
 //Albero
@@ -462,84 +449,176 @@ function expandAncestors(element) {
     }
 }
 
-// Gestione del filtro tramite il bottone "Setta"
+// Gestione dei filtri
 // Il filtro seleziona (check) tutti i nodi che corrispondono al criterio; se il filtro è vuoto, deseleziona tutto.
 document.getElementById('setFilter').addEventListener('click', () => {
+    if (!sourceFolder) {
+        alert("Please select a source folder first.");
+        return;
+    }
     const filterValue = document.getElementById('filterInput').value.trim().toLowerCase();
-    // Itera su tutti i checkbox dell'albero
-    const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
-    checkboxes.forEach(checkbox => {
-        const nodeName = checkbox.dataset.nodeName.toLowerCase();
-        if (filterValue !== '' && nodeName.includes(filterValue.toLowerCase())) {
-            checkbox.checked = true;
-            // Espande i rami per rendere visibile il nodo selezionato
-            expandAncestors(checkbox);
-        } else {
-            checkbox.checked = false;
-        }
-    });
-    writeMessage('');
+    if (!filterValue) {
+        alert("Please enter a string for filter.");
+        return;
+    }
+    filtersNamePlus = [filterValue];
+    filtersNameMinus = [];
+    document.getElementById('filterInput').value = "";
+    applyAllFilters();
 });
-document.getElementById('removeFilter').addEventListener('click', () => {
+document.getElementById('addMinusFilter').addEventListener('click', () => {
+    if (!sourceFolder) {
+        alert("Please select a source folder first.");
+        return;
+    }
     const filterValue = document.getElementById('filterInput').value.trim().toLowerCase();
-    // Itera su tutti i checkbox dell'albero
-    const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
-    checkboxes.forEach(checkbox => {
-        const nodeName = checkbox.dataset.nodeName.toLowerCase();
-        if (filterValue !== '' && nodeName.includes(filterValue.toLowerCase())) {
-            checkbox.checked = false;
-        }
-    });
-    writeMessage('');
+    if (!filterValue) {
+        alert("Please enter a string for filter.");
+        return;
+    }
+    if (filtersNameMinus.indexOf(filterValue) < 0 && filtersNamePlus.indexOf(filterValue) < 0) {
+        filtersNameMinus.push(filterValue);
+        document.getElementById('filterInput').value = "";
+        applyAllFilters();
+    } else {
+        alert("This filter is already present.");
+        writeMessage('Filter "' + filterValue +'" is already present.');
+    }
 });
-document.getElementById('addFilter').addEventListener('click', () => {
+document.getElementById('addPlusFilter').addEventListener('click', () => {
+    if (!sourceFolder) {
+        alert("Please select a source folder first.");
+        return;
+    }
     const filterValue = document.getElementById('filterInput').value.trim().toLowerCase();
-    // Itera su tutti i checkbox dell'albero
-    const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
-    checkboxes.forEach(checkbox => {
-        const nodeName = checkbox.dataset.nodeName.toLowerCase();
-        if (filterValue !== '' && nodeName.includes(filterValue.toLowerCase())) {
-            checkbox.checked = true;
-            // Espande i rami per rendere visibile il nodo selezionato
-            expandAncestors(checkbox);
-        }
-    });
-    writeMessage('');
+    if (!filterValue) {
+        alert("Please enter a string for filter.");
+        return;
+    }
+    if (filtersNameMinus.indexOf(filterValue) < 0 && filtersNamePlus.indexOf(filterValue) < 0) {
+        filtersNamePlus.push(filterValue);
+        document.getElementById('filterInput').value = "";
+        applyAllFilters();
+    } else {
+        alert("This filter is already present.");
+        writeMessage('Filter "' + filterValue +'" is already present.');
+    }
+
 });
 document.getElementById('clearFilter').addEventListener('click', () => {
-    const filterValue = "";
+    removeAllFilters();
+});
+function removeAllFilters() {
     document.getElementById('filterInput').value = "";
     // Itera su tutti i checkbox dell'albero
-    const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
-    checkboxes.forEach(checkbox => {
-        const nodeName = checkbox.dataset.nodeName.toLowerCase();
-        if (filterValue !== '' && nodeName.includes(filterValue.toLowerCase())) {
-            checkbox.checked = true;
-            // Espande i rami per rendere visibile il nodo selezionato
-            expandAncestors(checkbox);
-        } else {
-            checkbox.checked = false;
-        }
-    });
-    writeMessage('');
-});
-
-// Seleziona/Deseleziona tutti
-document.getElementById('selectAll').addEventListener('click', () => {
-    const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
-    checkboxes.forEach(checkbox => {
-        checkbox.checked = true;
-    });
-});
-document.getElementById('deselectAll').addEventListener('click', () => {
+    filtersNamePlus = [];
+    filtersNameMinus = [];
+    renderFiltersList();
+    removeAllSelection();
+    writeMessage('All filters removed.');
+}
+function removeAllSelection() {
     const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
     checkboxes.forEach(checkbox => {
         checkbox.checked = false;
     });
+}
+function applyAllFilters() {
+    renderFiltersList();
+    removeAllSelection();
+    for (const filterValue of filtersNamePlus) {
+        // Itera su tutti i checkbox dell'albero
+        const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            const nodeName = checkbox.dataset.nodeName.toLowerCase();
+            if (filterValue !== '' && nodeName.includes(filterValue.toLowerCase())) {
+                checkbox.checked = true;
+                // Espande i rami per rendere visibile il nodo selezionato
+                expandAncestors(checkbox);
+            }
+        });
+    }
+    for (const filterValue of filtersNameMinus) {
+        const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            const nodeName = checkbox.dataset.nodeName.toLowerCase();
+            if (filterValue !== '' && nodeName.includes(filterValue.toLowerCase())) {
+                checkbox.checked = false;
+            }
+        });
+    }
+    writeMessage('Filters updated.');
+}
+function renderFiltersList() {
+    const listContainer = document.getElementById('filterList');
+    listContainer.innerHTML = ''; // Svuota la lista esistente
+    drawFiltersFor(filtersNamePlus, "+");
+    drawFiltersFor(filtersNameMinus, "-");
+    if (listContainer.innerHTML == '') listContainer.innerHTML = 'Filters list'
+    function drawFiltersFor(arrayList, filterKind) {
+        arrayList.forEach((filter, index) => {
+            const listItem = document.createElement('span');
+            listItem.classList.add('badge', 'text-bg-secondary', 'position-relative', 'me-2');
+            if (filterKind === "+") listItem.classList.add('filter-plus');
+            if (filterKind === "-") listItem.classList.add('filter-minus');
+            listItem.textContent = filterKind + filter;
+            const listItemInner = document.createElement('span');
+            listItemInner.classList.add('position-absolute', 'start-100', 'translate-middle', 'badge', 'rounded-pill', 'bg-danger');
+            // Bottone per rimuovere l'elemento singolarmente
+            const removeButton = document.createElement('a');
+            removeButton.textContent = 'X';
+            removeButton.addEventListener('click', () => {
+                removeSingleFilter(index, filterKind);
+            });
+            removeButton.style.cursor = 'pointer';
+            listItemInner.appendChild(removeButton);
+            listItem.appendChild(listItemInner);
+            listContainer.appendChild(listItem);
+        });
+    }
+}
+function removeSingleFilter(index, kind) {
+    let oldFilter = "";
+    if (kind === "+") {
+        oldFilter = filtersNamePlus[index];
+        filtersNamePlus.splice(index, 1);
+    }
+    if (kind === "-") {
+        oldFilter = filtersNameMinus[index];
+        filtersNameMinus.splice(index, 1);
+    }
+    writeMessage('Removed filter "' + kind + oldFilter + '".');
+    applyAllFilters();
+}
+
+// Seleziona/Deseleziona tutti
+document.getElementById('selectAll').addEventListener('click', () => {
+    if (!sourceFolder) {
+        alert("Please select a source folder first.");
+        return;
+    }
+    removeAllFilters();
+    const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = true;
+    });
+    writeMessage('All items selected.');
+});
+document.getElementById('deselectAll').addEventListener('click', () => {
+    if (!sourceFolder) {
+        alert("Please select a source folder first.");
+        return;
+    }
+    writeMessage('All items deselected.');
+    removeAllFilters();
 });
 
 // Apri/chiudi tutti
 document.getElementById('expandAll').addEventListener('click', () => {
+    if (!sourceFolder) {
+        alert("Please select a source folder first.");
+        return;
+    }
     // Funzione per espandere tutti i nodi dell'albero e aggiornare correttamente l'icona a "▼"
     function expandAllFileTree() {
         // Seleziona il contenitore principale dell'albero
@@ -568,6 +647,10 @@ document.getElementById('expandAll').addEventListener('click', () => {
     expandAllFileTree()
 });
 document.getElementById('collapseAll').addEventListener('click', () => {
+    if (!sourceFolder) {
+        alert("Please select a source folder first.");
+        return;
+    }
     // Funzione per collassare tutti i nodi dell'albero (eccetto il contenitore principale)
 // e aggiornare correttamente l'icona a "▷"
     function collapseAllFileTree() {
@@ -600,24 +683,26 @@ document.getElementById('collapseAll').addEventListener('click', () => {
 //Settings
 document.getElementById("overwriteChecked").addEventListener("change", function () {
     fileOverwrite = this.checked;
-    //console.log("fileOverwrite is now", fileOverwrite);
+    writeMessage('Overwrite setting is now ' + fileOverwrite);
 });
 document.getElementById("propagateChecked").addEventListener("change", function () {
     propagateSelections = this.checked;
-    //console.log("propagateSelections is now", propagateSelections);
+    writeMessage('Propagate setting is now ' + propagateSelections);
 });
 
 //Copia
 // Funzione che gestisce la copia degli elementi selezionati
 document.getElementById('copySelected').addEventListener('click', async () => {
     // Controlla che sia stata selezionata almeno la cartella di destinazione
-    writeMessage('');
+    writeMessage('Checking for Copy...');
     if (destinationFolders.length === 0) {
         alert('Please select at least a Destination Folder!');
+        writeMessage('Unable to start copying.');
         return;
     }
     if (!sourceFolder) {
         alert('Please select the Source Folder!');
+        writeMessage('Unable to start copying.');
         return;
     }
     const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
@@ -629,13 +714,16 @@ document.getElementById('copySelected').addEventListener('click', async () => {
     });
     if (selectedPaths.length === 0) {
         alert('No selected Items.\nPlease select at least one item.');
+        writeMessage('Unable to start copying.');
         return;
     }
     if (destinationFolders.includes(sourceFolder)) {
         alert('Source and some Destination Folder are the same.\nPlease select different folders.');
+        writeMessage('Unable to start copying.');
         return;
     }
     let destinations = destinationFolders.join(", ");
+    writeMessage('Checking for Copy passed.');
     if (!confirm('Are you sure you want to copy ' + selectedPaths.length + ' items\nfrom ' + sourceFolder + '\nto ' + destinations + '?')) {
         return;
     }
@@ -688,17 +776,20 @@ async function copyRecursive(src, dest) {
 
 //Utils
 // Funzione per messaggio
+let messageTimeout = null;
 function writeMessage(message) {
+    if (messageTimeout) clearTimeout(messageTimeout);
     document.getElementById('status').textContent = message;
+    messageTimeout = setTimeout(() => {
+        document.getElementById('status').textContent = '';
+    }, messageLife);
 }
-
 // Funzione helper per verificare se 'child' è una sottocartella di 'parent'
 function isSubFolder(child, parent) {
     const relative = path.relative(parent, child);
     // Se relative è una stringa vuota oppure inizia con ".." o è una path assoluta, child non è una sottocartella di parent
     return relative && !relative.startsWith('..') && !path.isAbsolute(relative);
 }
-
 // Funzione per attivare/disattivare lo spinner
 function toggleSpinner(active) {
     const spinnerOverlay = document.getElementById('spinner-overlay');
