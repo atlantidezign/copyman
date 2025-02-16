@@ -13,6 +13,7 @@ body {
     margin: 0;
     padding: 0;
     height: 100vh; /* Occupa l'altezza completa della finestra */
+    max-height: 100vh; /* Occupa l'altezza completa della finestra */
     background: url(./images/bg.png) no-repeat center center fixed;
     background-size: cover;
     min-width: 680px;
@@ -29,6 +30,7 @@ body > div {
     padding: 10px;
     min-height: 40px;
     padding-bottom: 0;
+    flex-grow: 0;
 }
 
 body > div#div-footer {
@@ -45,6 +47,7 @@ body > div#div-footer {
     margin: 10px;
     padding: 10px;
     overflow: auto;
+    max-height: calc(100vh - 225px);
 }
 
 .footer {
@@ -126,20 +129,31 @@ li {
     margin-left: 1px;
 }
 
+.span-settings .form-check{
+    margin-left: 15px;
+}
 .span-settings {
     padding-top: 4px;
     font-size: 0.90em;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.form-check {
+    display: inline-block;
 }
 
 #destinationList ul, #destinationList ul li {
     padding-left: 0;
     list-style: none;
 }
+
 .form-check-input {
     cursor: pointer;
 }
+
 .a-filter {
-  cursor: default;
+    cursor: default;
 }
 
 
@@ -149,6 +163,7 @@ body > div#spinner-overlay {
     height: unset;
     padding: unset;
 }
+
 #spinner-overlay {
     position: absolute;
     top: 0;
@@ -162,6 +177,7 @@ body > div#spinner-overlay {
     align-items: center;
     z-index: 10000;
 }
+
 /* Spinner animato */
 #spinner {
     background-image: url(./images/80x80_2cols.svg);
@@ -169,7 +185,12 @@ body > div#spinner-overlay {
     height: 80px;
     animation: spin 1.5s linear infinite;
 }
+
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }

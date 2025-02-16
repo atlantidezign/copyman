@@ -57,9 +57,13 @@
                     class="bi bi-arrows-collapse"></i></a>
           </div>
         <span class="span-settings">
-            <div class="form-check form-switch" title="Overwrite files and folders if they already exist">
+            <div class="form-check form-switch" title="Propagate selection of an item to parent and childen elements">
+              <input class="form-check-input" type="checkbox" role="switch" id="propagateChecked" checked>
+              <label class="form-check-label" for="propagateChecked">Propagate selection</label>
+            </div>
+            <div class="form-check form-switch " title="Overwrite files and folders, diring copying, if they already exist">
               <input class="form-check-input" type="checkbox" role="switch" id="overwriteChecked" checked>
-              <label class="form-check-label" for="overwriteChecked">Overwrite</label>
+              <label class="form-check-label" for="overwriteChecked">Overwrite files</label>
             </div>
         </span>
         <div class="btn-group">

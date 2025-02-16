@@ -33,6 +33,9 @@ npm build:win
 ```bash
 npm build:mac
 ```
+```bash
+npm build:linux
+```
 
 ## Usage
 
@@ -52,9 +55,14 @@ To assist with selection, you can use the *Filters*.
   Additionally, you can use the two buttons for *Select or Deselect All*.
 
 There are some options that affects copying and selecting behaviours.
+- *Propagate* to choose if propagate selection of an item to parent and childen elements
 - *Overwrite* to choose if overwrite or not files that already exist.
 
 With the *Copy Selected Items* button, the files are copied from the Source to the Destinations.
+
+Pay attention: Copy mode is strict on selection: only and exclusively the selected items will be copied. For example, if a folder is selected but only some of the files inside it are selected, copy only those.
+
+
 
 
 

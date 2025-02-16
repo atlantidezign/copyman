@@ -1,10 +1,11 @@
-const {app, BrowserWindow, ipcMain, dialog, nativeImage, nativeTheme , Tray, Menu, shell} = require('electron')
+const {app, BrowserWindow, ipcMain, dialog, nativeImage, nativeTheme, Tray, Menu, shell} = require('electron')
 const path = require('path');
 const fs = require('fs');
 
 const inDebug = true;
 
 nativeTheme.themeSource = 'system';
+
 function createWindow() {
     const appIcon = nativeImage.createFromPath(path.join(__dirname, 'images/256x256.png'))
     const win = new BrowserWindow({
@@ -53,47 +54,91 @@ app.whenReady().then(() => {
         const contextTemplate = [
             {
                 label: 'Select Source',
-                click: () => { event.sender.send('context-menu-command', 'menu-source-select') }
+                click: () => {
+                    event.sender.send('context-menu-command', 'menu-source-select')
+                }
             },
             {
                 label: 'Clear Source',
-                click: () => { event.sender.send('context-menu-command', 'menu-source-clear') }
+                click: () => {
+                    event.sender.send('context-menu-command', 'menu-source-clear')
+                }
             },
             {
                 label: 'Add Destination',
-                click: () => { event.sender.send('context-menu-command', 'menu-destinations-add') }
+                click: () => {
+                    event.sender.send('context-menu-command', 'menu-destinations-add')
+                }
             },
             {
                 label: 'Clear Destinations',
-                click: () => { event.sender.send('context-menu-command', 'menu-destinations-clear') }
+                click: () => {
+                    event.sender.send('context-menu-command', 'menu-destinations-clear')
+                }
             },
-            { type: 'separator' },
+            {type: 'separator'},
             {
                 label: 'Clear Filter',
-                click: () => { event.sender.send('context-menu-command', 'menu-filter-clear') }
+                click: () => {
+                    event.sender.send('context-menu-command', 'menu-filter-clear')
+                }
             },
             {
                 label: 'Expand All',
-                click: () => { event.sender.send('context-menu-command', 'menu-expand-all') }
+                click: () => {
+                    event.sender.send('context-menu-command', 'menu-expand-all')
+                }
             },
             {
                 label: 'Collapse All',
-                click: () => { event.sender.send('context-menu-command', 'menu-collapse-all') }
+                click: () => {
+                    event.sender.send('context-menu-command', 'menu-collapse-all')
+                }
             },
             {
                 label: 'Select All',
-                click: () => { event.sender.send('context-menu-command', 'menu-select-all') }
+                click: () => {
+                    event.sender.send('context-menu-command', 'menu-select-all')
+                }
             },
             {
                 label: 'Deselect All',
-                click: () => { event.sender.send('context-menu-command', 'menu-deselect-all') }
+                click: () => {
+                    event.sender.send('context-menu-command', 'menu-deselect-all')
+                }
             },
-            { type: 'separator' },
-            { label: 'Copy Selected Items',
-                click: () => { event.sender.send('context-menu-command', 'menu-copy-start') }}
+            {type: 'separator'},
+            {
+                label: 'Copy Selected Items',
+                click: () => {
+                    event.sender.send('context-menu-command', 'menu-copy-start')
+                }
+            }
+            ,
+            {type: 'separator'},
+            {
+                label: 'Save Settings',
+                click: () => {
+                    event.sender.send('context-menu-command', 'menu-settings-save')
+                }
+            },
+            {
+                label: 'Load Saved Settings',
+                click: () => {
+                    event.sender.send('context-menu-command', 'menu-settings-load')
+                }
+            },
+            {
+                label: 'Clean Saved Settings',
+                click: () => {
+                    event.sender.send('context-menu-command', 'menu-settings-clean')
+                }
+            },
+            {type: 'separator'},
+            {role: 'reload'}
         ]
         const menu = Menu.buildFromTemplate(contextTemplate)
-        menu.popup({ window: BrowserWindow.fromWebContents(event.sender) })
+        menu.popup({window: BrowserWindow.fromWebContents(event.sender)})
     })
 
     //Main menu
@@ -104,15 +149,15 @@ app.whenReady().then(() => {
             ? [{
                 label: app.name,
                 submenu: [
-                    { role: 'about' },
-                    { type: 'separator' },
-                    { role: 'services' },
-                    { type: 'separator' },
-                    { role: 'hide' },
-                    { role: 'hideOthers' },
-                    { role: 'unhide' },
-                    { type: 'separator' },
-                    { role: 'quit' }
+                    {role: 'about'},
+                    {type: 'separator'},
+                    {role: 'services'},
+                    {type: 'separator'},
+                    {role: 'hide'},
+                    {role: 'hideOthers'},
+                    {role: 'unhide'},
+                    {type: 'separator'},
+                    {role: 'quit'}
                 ]
             }]
             : []),
@@ -120,7 +165,8 @@ app.whenReady().then(() => {
         {
             label: 'File',
             submenu: [
-                isMac ? { role: 'close' } : { role: 'quit' }
+
+                isMac ? {role: 'close'} : {role: 'quit'}
             ]
         },
         // { role: 'editMenu' }
@@ -128,30 +174,30 @@ app.whenReady().then(() => {
         {
             label: 'View',
             submenu: [
-                { role: 'reload' },
-                { role: 'forceReload' },
-                { type: 'separator' },
-                { role: 'resetZoom' },
-                { role: 'zoomIn' },
-                { role: 'zoomOut' },
-                { type: 'separator' },
-                { role: 'togglefullscreen' }
+                {role: 'reload'},
+                {role: 'forceReload'},
+                {type: 'separator'},
+                {role: 'resetZoom'},
+                {role: 'zoomIn'},
+                {role: 'zoomOut'},
+                {type: 'separator'},
+                {role: 'togglefullscreen'}
             ]
         },
         // { role: 'windowMenu' }
         {
             label: 'Window',
             submenu: [
-                { role: 'minimize' },
+                {role: 'minimize'},
                 ...(isMac
                     ? [
-                        { type: 'separator' },
-                        { role: 'front' },
-                        { type: 'separator' },
-                        { role: 'window' }
+                        {type: 'separator'},
+                        {role: 'front'},
+                        {type: 'separator'},
+                        {role: 'window'}
                     ]
                     : [
-                        { role: 'close' }
+                        {role: 'close'}
                     ])
             ]
         },
@@ -161,8 +207,7 @@ app.whenReady().then(() => {
                 {
                     label: 'Usage',
                     click: () => {
-                        let usageText = `
-You need to choose a *Source* folder and at least one *Destination* folder.  
+                        let usageText = `You need to choose a *Source* folder and at least one *Destination* folder.  
 Use the *Clear* buttons to remove the folder selections.
 
 Within the *tree view*, you can *select* the items to copy (whether files or folders) using checkboxes.
@@ -178,12 +223,13 @@ To assist with selection, you can use the *Filters*.
   Additionally, you can use the two buttons for *Select or Deselect All*.
 
 There are some options that affects copying and selecting behaviours.
+- *Propagate* to choose if propagate selection of an item to parent and childen elements
 - *Overwrite* to choose if overwrite or not files that already exist.
 
 With the *Copy Selected Items* button, the files are copied from the Source to the Destinations.
 
-                    
-                    `
+Pay attention: Copy mode is strict on selection: only and exclusively the selected items will be copied. For example, if a folder is selected but only some of the files inside it are selected, copy only those.                    
+`;
                         const options = {
                             title: 'Usage',
                             message: 'Usage',
@@ -199,7 +245,7 @@ With the *Copy Selected Items* button, the files are copied from the Source to t
                 {
                     label: 'Website',
                     click: async () => {
-                        const { shell } = require('electron')
+                        const {shell} = require('electron')
                         await shell.openExternal('https://www.atlantide-design.it/copyman')
                     }
                 }
@@ -209,7 +255,7 @@ With the *Copy Selected Items* button, the files are copied from the Source to t
             ? [{
                 label: "Dev",
                 submenu: [
-                    { role: 'toggleDevTools' }
+                    {role: 'toggleDevTools'}
                 ]
             }]
             : [])
