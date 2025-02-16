@@ -1,0 +1,38 @@
+{
+  "name": "copyman",
+  "title": "Copyman",
+  "version": "0.1.10",
+  "description": "Electron application for copying files and folders to multiple destinations while preserving the path",
+  "author": "ADM",
+  "license": "ISC",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build:win": "electron-builder --win",
+    "build:mac": "electron-builder --mac"
+  },
+  "devDependencies": {
+    "electron": "^34.2.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "it.atlantide-design.copyman",
+    "productName": "Copyman",
+    "files": [
+      "./**/*"
+    ],
+    "directories": {
+      "buildResources": "build"
+    },
+    "win": {
+      "target": [
+        "portable"
+      ]
+    },
+    "mac": {
+      "target": [
+        "dmg"
+      ]
+    }
+  }
+}

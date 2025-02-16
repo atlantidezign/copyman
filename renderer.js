@@ -1,0 +1,582 @@
+const {ipcRenderer} = require('electron');
+const fs = require('fs');
+const path = require('path');
+
+// Live reload
+(async () => {
+    const watcher_html = fs.watch('./index.html');
+    watcher_html.on('change', () => {
+        ipcRenderer.send('re-render');
+    });
+    const watcher_css = fs.watch('./index.css');
+    watcher_css.on('change', () => {
+        ipcRenderer.send('re-render');
+    });
+})();
+
+//Context menu
+window.addEventListener('contextmenu', (e) => {
+    e.preventDefault()
+    ipcRenderer.send('show-context-menu')
+})
+ipcRenderer.on('context-menu-command', (e, command) => {
+    switch (command) {
+            case 'menu-source-select':
+                document.getElementById('selectSource').click();
+                break;
+            case 'menu-source-clear':
+                document.getElementById('clearSource').click();
+                break;
+            case 'menu-destinations-add':
+                document.getElementById('addDestination').click();
+                break;
+            case 'menu-destinations-clear':
+                document.getElementById('clearAllDestinations').click();
+                break;
+            case 'menu-filter-clear':
+                document.getElementById('clearFilter').click();
+                break;
+            case 'menu-expand-all':
+                document.getElementById('expandAll').click();
+                break;
+            case 'menu-collapse-all':
+                document.getElementById('collapseAll').click();
+                break;
+            case 'menu-select-all':
+                document.getElementById('selectAll').click();
+                break;
+            case 'menu-deselect-all':
+                document.getElementById('deselectAll').click();
+                break;
+            case 'menu-copy-start':
+                document.getElementById('copySelected').click();
+                break;
+        }
+});
+
+
+//Business logic
+    let clicksActive = true;
+    let sourceFolder = ''; // directory sorgente
+    let destinationFolders = []; // Inizializzazione dell'array per le directory di destinazione
+    let fileTreeData = []; // Struttura dati per l'albero
+    let fileOverwrite = true;
+
+//generale click
+    document.addEventListener('click', function (event) {
+        if (!clicksActive) {
+            event.stopImmediatePropagation();
+            event.preventDefault();
+        }
+    }, true);
+
+
+// Selezione cartella sorgente
+    document.getElementById('selectSource').addEventListener('click', async () => {
+        const folder = await ipcRenderer.invoke('select-folder', 'Select Source Folder');
+        if (folder) {
+            if (destinationFolders.includes(folder)) {
+                alert("This folder is in the destination list.");
+                return;
+            }
+            // Controlla che la cartella non sia una sottocartella di una qualsiasi delle cartelle già selezionate
+            for (const destFolder of destinationFolders) {
+                if (isSubFolder(folder, destFolder)) {
+                    alert("The source folder cannot be a subfolder of an already selected destination folder.");
+                    return;
+                }
+                if (isSubFolder(destFolder, folder)) {
+                    alert("The source folder cannot be a parent folder of an already selected destination folder.");
+                    return;
+                }
+            }
+            sourceFolder = folder;
+            document.getElementById('sourcePath').textContent = folder;
+            // Costruisce l'albero dei file
+            fileTreeData = buildFileTree(sourceFolder);
+            renderFileTree(fileTreeData);
+            writeMessage('');
+        }
+    });
+    document.getElementById('clearSource').addEventListener('click', async () => {
+        sourceFolder = '';
+        document.getElementById('sourcePath').textContent = 'Select Source Folder';
+        fileTreeData = [];
+        const container = document.getElementById('file-tree');
+        container.innerHTML = '';
+        writeMessage('');
+    });
+
+// Selezione cartelle destinazione
+// Event listener per il pulsante "Aggiungi Destinazione"
+    document.getElementById('addDestination').addEventListener('click', addDestination);
+// Event listener per il pulsante "Rimuovi Tutti"
+    document.getElementById('clearAllDestinations').addEventListener('click', clearDestinations);
+
+// Funzione per aggiornare la UI mostrando la lista attuale delle directory
+    function updateDestinationList() {
+        const listContainer = document.getElementById('destinationList');
+        listContainer.innerHTML = ''; // Svuota la lista esistente
+        if (destinationFolders.length === 0) {
+            listContainer.innerHTML = 'Add Destination Folder';
+        } else {
+            destinationFolders.forEach((folder, index) => {
+
+                /*
+            <span class="badge text-bg-secondary position-relative">Secondary sdf sd fds asdasd
+             <span class="position-absolute start-100 translate-middle badge rounded-pill bg-danger">
+                <a>x</a>
+                <span class="visually-hidden">Remove</span>
+              </span>
+            </span>
+                */
+                const listItem = document.createElement('span');
+                listItem.classList.add('badge', 'text-bg-secondary', 'position-relative', 'me-2');
+                listItem.textContent = folder;
+                const listItemInner = document.createElement('span');
+                listItemInner.classList.add('position-absolute', 'start-100', 'translate-middle', 'badge', 'rounded-pill', 'bg-danger');
+                // Bottone per rimuovere l'elemento singolarmente
+                const removeButton = document.createElement('a');
+                removeButton.textContent = 'X';
+                removeButton.addEventListener('click', () => {
+                    removeDestination(index);
+                });
+                removeButton.style.cursor = 'pointer';
+                listItemInner.appendChild(removeButton);
+                listItem.appendChild(listItemInner);
+                listContainer.appendChild(listItem);
+            });
+        }
+    }
+
+// Funzione per aggiungere una directory
+    async function addDestination() {
+        const folder = await ipcRenderer.invoke('select-folder', 'Select destination folder');
+        if (folder) {
+            // Controlla che la cartella non sia uguale a sourceFolder
+            if (folder === sourceFolder) {
+                alert("The destination folder cannot be the same as the source folder.");
+                return;
+            }
+            // Check that the folder is not already present in the array
+            if (destinationFolders.includes(folder)) {
+                alert("This folder has already been added.");
+                return;
+            }
+
+            // Controlla che la cartella non sia una sottocartella di sourceFolder
+            if (sourceFolder && isSubFolder(folder, sourceFolder) && isSubFolder(sourceFolder, folder)) {
+                alert("The destination folder cannot be a subfolder or a parent of source folder.");
+                return;
+            }
+
+            // Controlla che la cartella non sia una sottocartella di una qualsiasi delle cartelle già selezionate
+            for (const destFolder of destinationFolders) {
+                if (isSubFolder(folder, destFolder)) {
+                    alert("The destination folder cannot be a subfolder of an already selected destination folder.");
+                    return;
+                }
+                if (isSubFolder(destFolder, folder)) {
+                    alert("The destination folder cannot be a parent folder of an already selected destination folder.");
+                    return;
+                }
+            }
+
+
+            // Aggiungi la cartella all'array e aggiorna la lista in UI
+            destinationFolders.push(folder);
+            updateDestinationList();
+        }
+    }
+
+// Funzione per rimuovere una directory dall'array data la sua posizione
+    function removeDestination(index) {
+        destinationFolders.splice(index, 1);
+        updateDestinationList();
+    }
+
+// Funzione per rimuovere tutti gli elementi
+    function clearDestinations() {
+        destinationFolders = [];
+        updateDestinationList();
+    }
+
+//Albero
+// Funzione ricorsiva per costruire la struttura dell'albero dei file
+    function buildFileTree(dir, relativePath = '') {
+        const tree = [];
+        const items = fs.readdirSync(dir);
+        items.forEach(item => {
+            const fullPath = path.join(dir, item);
+            const itemRelativePath = path.join(relativePath, item);
+            const stats = fs.statSync(fullPath);
+            if (stats.isDirectory()) {
+                tree.push({
+                    name: item,
+                    path: itemRelativePath,
+                    type: 'directory',
+                    children: buildFileTree(fullPath, itemRelativePath)
+                });
+            } else {
+                tree.push({
+                    name: item,
+                    path: itemRelativePath,
+                    type: 'file'
+                });
+            }
+        });
+        return tree;
+    }
+
+// Funzione per renderizzare l'albero in HTML mantenendo lo stato di espansione/collasso predefinito
+    function renderFileTree(treeData) {
+        const container = document.getElementById('file-tree');
+        container.innerHTML = '';
+        const ul = document.createElement('ul');
+        treeData.forEach(node => {
+            const li = createTreeNode(node);
+            if (li) {
+                ul.appendChild(li);
+            }
+        });
+        container.appendChild(ul);
+    }
+
+// Funzione per creare un nodo (LI) dell'albero con checkbox e, se directory, toggle per espandi/collassa.
+// Viene aggiunto un data attribute "nodeName" al checkbox per facilitare il filtraggio.
+    function createTreeNode(node) {
+        const li = document.createElement('li');
+
+        // Contenitore per il toggle e la label
+        const labelContainer = document.createElement('span');
+
+        let childUl = null; // verrà creato se il nodo è directory
+
+        if (node.type === 'directory') {
+            // Creiamo l'icona di toggle (inizialmente collassato)
+            const toggleIcon = document.createElement('span');
+            toggleIcon.textContent = '▷';
+            toggleIcon.style.cursor = 'pointer';
+            toggleIcon.style.marginRight = '5px';
+            labelContainer.appendChild(toggleIcon);
+
+            // Checkbox associato al nodo directory, con data attribute contenente il nome
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.dataset.filePath = node.path;
+            checkbox.dataset.nodeName = node.name;
+            checkbox.classList.add('form-check-input');
+            labelContainer.appendChild(checkbox);
+
+            // Etichetta
+            const label = document.createElement('span');
+            label.textContent = ' ' + node.name;// + ' [Dir]';
+            labelContainer.appendChild(label);
+
+            li.appendChild(labelContainer);
+
+            // Creazione della lista dei figli (inizialmente collassata)
+            childUl = document.createElement('ul');
+            childUl.style.display = 'none';
+            if (node.children) {
+                node.children.forEach(child => {
+                    const childLi = createTreeNode(child);
+                    if (childLi) childUl.appendChild(childLi);
+                });
+            }
+            li.appendChild(childUl);
+
+            // Listener per il toggle: al click si espande o si collassa il ramo
+            toggleIcon.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (childUl.style.display === 'none') {
+                    childUl.style.display = 'block';
+                    toggleIcon.textContent = '▼';
+                } else {
+                    childUl.style.display = 'none';
+                    toggleIcon.textContent = '▷';
+                }
+            });
+        } else {
+            // Nodo file: aggiungiamo un piccolo spacer per l'allineamento
+            const spacer = document.createElement('span');
+            spacer.textContent = '    ';
+            labelContainer.appendChild(spacer);
+
+            // Checkbox associato al file
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.dataset.filePath = node.path;
+            checkbox.dataset.nodeName = node.name;
+            checkbox.classList.add('form-check-input');
+            labelContainer.appendChild(checkbox);
+
+            // Etichetta
+            const label = document.createElement('span');
+            label.textContent = ' ' + node.name;
+            labelContainer.appendChild(label);
+
+            li.appendChild(labelContainer);
+        }
+        return li;
+    }
+
+// Funzione per espandere il ramo (impostare display block) per tutti gli antenati del nodo passato
+    function expandAncestors(element) {
+        let parent = element.parentElement;
+        while (parent && parent.id !== 'file-tree') {
+            if (parent.tagName.toLowerCase() === 'ul') {
+                parent.style.display = 'block';
+                // Se l'UL è figlio di un LI con toggle, cambia il toggle in "▼"
+                const li = parent.parentElement;
+                if (li) {
+                    const toggleIcon = li.querySelector('span');
+                    if (toggleIcon && (toggleIcon.textContent === '▷' || toggleIcon.textContent === '▼')) {
+                        toggleIcon.textContent = '▼';
+                    }
+                }
+            }
+            parent = parent.parentElement;
+        }
+    }
+
+// Gestione del filtro tramite il bottone "Setta"
+// Il filtro seleziona (check) tutti i nodi che corrispondono al criterio; se il filtro è vuoto, deseleziona tutto.
+    document.getElementById('setFilter').addEventListener('click', () => {
+        const filterValue = document.getElementById('filterInput').value.trim().toLowerCase();
+        // Itera su tutti i checkbox dell'albero
+        const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            const nodeName = checkbox.dataset.nodeName.toLowerCase();
+            if (filterValue !== '' && nodeName.includes(filterValue.toLowerCase())) {
+                checkbox.checked = true;
+                // Espande i rami per rendere visibile il nodo selezionato
+                expandAncestors(checkbox);
+            } else {
+                checkbox.checked = false;
+            }
+        });
+        writeMessage('');
+    });
+    document.getElementById('removeFilter').addEventListener('click', () => {
+        const filterValue = document.getElementById('filterInput').value.trim().toLowerCase();
+        // Itera su tutti i checkbox dell'albero
+        const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            const nodeName = checkbox.dataset.nodeName.toLowerCase();
+            if (filterValue !== '' && nodeName.includes(filterValue.toLowerCase())) {
+                checkbox.checked = false;
+            }
+        });
+        writeMessage('');
+    });
+    document.getElementById('addFilter').addEventListener('click', () => {
+        const filterValue = document.getElementById('filterInput').value.trim().toLowerCase();
+        // Itera su tutti i checkbox dell'albero
+        const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            const nodeName = checkbox.dataset.nodeName.toLowerCase();
+            if (filterValue !== '' && nodeName.includes(filterValue.toLowerCase())) {
+                checkbox.checked = true;
+                // Espande i rami per rendere visibile il nodo selezionato
+                expandAncestors(checkbox);
+            }
+        });
+        writeMessage('');
+    });
+    document.getElementById('clearFilter').addEventListener('click', () => {
+        const filterValue = "";
+        document.getElementById('filterInput').value = "";
+        // Itera su tutti i checkbox dell'albero
+        const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            const nodeName = checkbox.dataset.nodeName.toLowerCase();
+            if (filterValue !== '' && nodeName.includes(filterValue.toLowerCase())) {
+                checkbox.checked = true;
+                // Espande i rami per rendere visibile il nodo selezionato
+                expandAncestors(checkbox);
+            } else {
+                checkbox.checked = false;
+            }
+        });
+        writeMessage('');
+    });
+
+// Seleziona/Deseleziona tutti
+    document.getElementById('selectAll').addEventListener('click', () => {
+        const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = true;
+        });
+    });
+    document.getElementById('deselectAll').addEventListener('click', () => {
+        const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = false;
+        });
+    });
+
+// Apri/chiudi tutti
+    document.getElementById('expandAll').addEventListener('click', () => {
+        // Funzione per espandere tutti i nodi dell'albero e aggiornare correttamente l'icona a "▼"
+        function expandAllFileTree() {
+            // Seleziona il contenitore principale dell'albero
+            const treeContainer = document.getElementById('file-tree');
+            if (!treeContainer) return;
+
+            // Seleziona tutti gli elementi UL annidati all'interno dell'albero
+            const nestedLists = treeContainer.querySelectorAll('ul');
+
+            nestedLists.forEach(ul => {
+                // Espande il nodo
+                ul.style.display = 'block';
+
+                // Se l'UL è figlio di un LI che contiene l'icona di toggle, aggiorna l'icona
+                const parentLi = ul.parentElement;
+                if (parentLi && parentLi.firstElementChild && parentLi.firstElementChild.firstElementChild) {
+                    const toggleIcon = parentLi.firstElementChild.firstElementChild;
+                    // Se il contenuto dell'icona è "▷" o "▼", lo impostiamo a "▼" per indicare stato espanso
+                    if (toggleIcon.textContent.trim() === '▷' || toggleIcon.textContent.trim() === '▼') {
+                        toggleIcon.textContent = '▼';
+                    }
+                }
+            });
+        }
+
+        expandAllFileTree()
+    });
+    document.getElementById('collapseAll').addEventListener('click', () => {
+        // Funzione per collassare tutti i nodi dell'albero (eccetto il contenitore principale)
+// e aggiornare correttamente l'icona a "▷"
+        function collapseAllFileTree() {
+            const treeContainer = document.getElementById('file-tree');
+            if (!treeContainer) return;
+
+            // Seleziona tutti gli elementi UL all'interno dell'albero
+            const allULs = treeContainer.querySelectorAll('ul');
+
+            // Si assume che il primo UL sia il contenitore principale e lo lasciamo visibile
+            allULs.forEach(ul => {
+                if (ul.parentElement !== treeContainer) {
+                    ul.style.display = 'none';
+
+                    // Se il nodo UL ha un LI padre con toggle, aggiorniamo l'icona a "▷"
+                    const parentLi = ul.parentElement;
+                    if (parentLi && parentLi.firstElementChild && parentLi.firstElementChild.firstElementChild) {
+                        const toggleIcon = parentLi.firstElementChild.firstElementChild;
+                        if (toggleIcon.textContent.trim() === '▷' || toggleIcon.textContent.trim() === '▼') {
+                            toggleIcon.textContent = '▷';
+                        }
+                    }
+                }
+            });
+        }
+
+        collapseAllFileTree();
+    });
+
+//Settings
+    document.getElementById("overwriteChecked").addEventListener("change", function () {
+        fileOverwrite = this.checked;
+        console.log("fileOverwrite is now", fileOverwrite);
+    });
+
+//Copia
+// Funzione che gestisce la copia degli elementi selezionati
+    document.getElementById('copySelected').addEventListener('click', async () => {
+        // Controlla che sia stata selezionata almeno la cartella di destinazione
+        writeMessage('');
+        if (destinationFolders.length === 0) {
+            alert('Please select at least a Destination Folder!');
+            return;
+        }
+        if (!sourceFolder) {
+            alert('Please select the Source Folder!');
+            return;
+        }
+        const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
+        const selectedPaths = [];
+        checkboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                selectedPaths.push(checkbox.dataset.filePath);
+            }
+        });
+        if (selectedPaths.length === 0) {
+            alert('No selected Items.\nPlease select at least one item.');
+            return;
+        }
+        if (destinationFolders.includes(sourceFolder)) {
+            alert('Source and some Destination Folder are the same.\nPlease select different folders.');
+            return;
+        }
+        let destinations = destinationFolders.join(", ");
+        if (!confirm('Are you sure you want to copy ' + selectedPaths.length + ' items\nfrom ' + sourceFolder + '\nto ' + destinations + '?')) {
+            return;
+        }
+        writeMessage('Copy Started...');
+        clicksActive = false;
+        toggleSpinner(!clicksActive);
+        // Copia per ogni elemento selezionato
+        let indx = 1;
+        for (const relPath of selectedPaths) {
+            const sourceFullPath = path.join(sourceFolder, relPath);
+            for (const destFolder of destinationFolders) {
+                const destinationFullPath = path.join(destFolder, relPath);
+                writeMessage('Copying [' + indx + '/' + selectedPaths.length + '] ' + sourceFullPath + ' to ' + destinationFullPath);
+                try {
+                    await copyRecursive(sourceFullPath, destinationFullPath);
+                } catch (err) {
+                    console.error('Error copying ', sourceFullPath, destinationFullPath, err);
+                    writeMessage('Error copying ' + sourceFullPath + ' in ' + destinationFullPath);
+                }
+            }
+            indx++;
+        }
+        clicksActive = true;
+        toggleSpinner(!clicksActive);
+        writeMessage('Copy Completed!');
+    });
+
+// Funzione ricorsiva per copiare file e directory
+    async function copyRecursive(src, dest) {
+        const stats = fs.statSync(src);
+        if (stats.isDirectory()) {
+            if (!fs.existsSync(dest)) {
+                fs.mkdirSync(dest, {recursive: true});
+            }
+            const items = fs.readdirSync(src);
+            for (const item of items) {
+                await copyRecursive(path.join(src, item), path.join(dest, item));
+            }
+        } else {
+            const destDir = path.dirname(dest);
+            if (!fs.existsSync(destDir)) {
+                fs.mkdirSync(destDir, {recursive: true});
+            }
+            if (!fileOverwrite) {
+                if (!fs.existsSync(dest)) fs.copyFileSync(src, dest);
+            } else {
+                fs.copyFileSync(src, dest);
+            }
+        }
+    }
+
+//Utils
+// Funzione per messaggio
+    function writeMessage(message) {
+        document.getElementById('status').textContent = message;
+    }
+
+// Funzione helper per verificare se 'child' è una sottocartella di 'parent'
+    function isSubFolder(child, parent) {
+        const relative = path.relative(parent, child);
+        // Se relative è una stringa vuota oppure inizia con ".." o è una path assoluta, child non è una sottocartella di parent
+        return relative && !relative.startsWith('..') && !path.isAbsolute(relative);
+    }
+
+// Funzione per attivare/disattivare lo spinner
+    function toggleSpinner(active) {
+        const spinnerOverlay = document.getElementById('spinner-overlay');
+        spinnerOverlay.style.display = active ? 'flex' : 'none';
+    }
+
