@@ -4,7 +4,11 @@
   "version": "0.1.10",
   "description": "Electron application for copying files and folders to multiple destinations while preserving the path",
   "author": "ADM",
-  "license": "ISC",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "  https://github.com/atlantidezign/copyman"
+  },
   "main": "main.js",
   "scripts": {
     "start": "electron .",

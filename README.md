@@ -58,33 +58,3 @@ With the *Copy Selected Items* button, the files are copied from the Source to t
 
 
 
-### TODO
-#### NOW
-user: save/load/clean user settings (overwrite + nuovi) + save/clean source and destinations selected + save/clean filters
-
-filtri: 
-  - sistema a tags plus/minus con 2 array e funzione render (a tags, con rimozione singola) e funzione applicazione
-  - cambio sorgente, select all e deselect all toglie filtri
-  - data e dimensioni (estensioni non serve fa coi filtri nome) + aggiungere a save/load
-
-comportamento copia:
-  - strict: copia solo selezionati e non tutti figli (copia) default
-      se una cartella è selezionata ma ha solo alcuni file selezionati, copia solo quelli
- 
-settings: (aggiungere a opzioni save)
-  - child: quando seleziono/deseleziono cartella lo fa anche per tutti i figli (selezione)
-  - sort: ordinamento alfabetico, data, dimensioni, tipofile (tree) 
-
-electron: 
-  - menu generale mettere bene about
-  - build per linux
-  - parametro al lancio per inDebug non nel codice
-
-#### LATER
-ui: meglio, con modale, progresso copia e report
-ui: meglio visualizzazione tree, su piu colonne (tipo mac)
-electron: splash con logo?
-electron: meglio voci dei menu (contestuale, tray, principale)
-settings: localizzazione altre lingue (scelta)
-electron: check update e notifiche
-
