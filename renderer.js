@@ -36,8 +36,14 @@ ipcRenderer.on('context-menu-command', (e, command) => {
         case 'menu-filter-name-clear':
             document.getElementById('clearNameFilter').click();
             break;
+        case 'menu-filter-date-clear':
+            document.getElementById('clearDateFilter').click();
+            break;
+        case 'menu-filter-size-clear':
+            document.getElementById('clearSizeFilter').click();
+            break;
         case 'menu-filter-all-clear':
-            removeAllFilters();
+            document.getElementById('deselectAll').click();
             break;
         case 'menu-expand-all':
             document.getElementById('expandAll').click();
@@ -86,6 +92,7 @@ let filtersSizeMinus = []; //Array<{ from: number, to: number}>
 //User settings
 let fileOverwrite = true;
 let propagateSelections = true;
+let relationshipOR = true;
 
 function saveSettings() {
     let settings = {
@@ -95,6 +102,7 @@ function saveSettings() {
         //user settings (overwrite, propagate + nuovi)
         fileOverwrite: fileOverwrite,
         propagateSelections: propagateSelections,
+        relationshipOR: relationshipOR,
         //filters (name + nuovi)
         filtersNamePlus: filtersNamePlus,
         filtersNameMinus: filtersNameMinus,
@@ -125,6 +133,7 @@ function loadSettings() {
         destinationFolders = settings.destinationFolders || [];
         fileOverwrite = (typeof settings.fileOverwrite === 'boolean') ? settings.fileOverwrite : false;
         propagateSelections = (typeof settings.propagateSelections === 'boolean') ? settings.propagateSelections : false;
+        relationshipOR = (typeof settings.relationshipOR === 'boolean') ? settings.relationshipOR : false;
         filtersNamePlus = settings.filtersNamePlus || [];
         filtersNameMinus = settings.filtersNameMinus || [];
         filtersDatePlus = settings.filtersDatePlus || [];
@@ -141,6 +150,11 @@ function loadSettings() {
         const propagateSelectionsCheckbox = document.getElementById('propagateChecked');
         if (propagateSelectionsCheckbox) {
             propagateSelectionsCheckbox.checked = propagateSelections;
+        }
+
+        const relationshipORCheckbox = document.getElementById('relationshipORChecked');
+        if (relationshipORCheckbox) {
+            relationshipORCheckbox.checked = relationshipOR;
         }
 
         document.getElementById('sourcePath').textContent = sourceFolder;
@@ -778,11 +792,15 @@ document.getElementById('collapseAll').addEventListener('click', () => {
 //Settings
 document.getElementById("overwriteChecked").addEventListener("change", function () {
     fileOverwrite = this.checked;
-    writeMessage('Overwrite setting is now ' + fileOverwrite);
+    writeMessage('Overwrite Existing setting is now ' + fileOverwrite);
 });
 document.getElementById("propagateChecked").addEventListener("change", function () {
     propagateSelections = this.checked;
-    writeMessage('Propagate setting is now ' + propagateSelections);
+    writeMessage('Propagate Selection setting is now ' + propagateSelections);
+});
+document.getElementById("relationshipORChecked").addEventListener("change", function () {
+    relationshipOR = this.checked;
+    writeMessage('Relationship OR setting is now ' + relationshipOR);
 });
 
 //Copia

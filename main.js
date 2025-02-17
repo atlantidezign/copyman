@@ -10,8 +10,8 @@ nativeTheme.themeSource = 'system';
 function createWindow() {
     const appIcon = nativeImage.createFromPath(path.join(__dirname, 'images/256x256.png'))
     const win = new BrowserWindow({
-        width: 960,
-        height: 800,
+        width: 1200,
+        height: 900,
         webPreferences: {
             nodeIntegration: true,
             enableRemoteModule: true,
@@ -84,6 +84,18 @@ app.whenReady().then(() => {
                 label: 'Clear Name Filters',
                 click: () => {
                     event.sender.send('context-menu-command', 'menu-filter-name-clear')
+                }
+            },
+            {
+                label: 'Clear Date Filters',
+                click: () => {
+                    event.sender.send('context-menu-command', 'menu-filter-date-clear')
+                }
+            },
+            {
+                label: 'Clear Size Filters',
+                click: () => {
+                    event.sender.send('context-menu-command', 'menu-filter-size-clear')
                 }
             },
             {
