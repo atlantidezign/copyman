@@ -75,16 +75,19 @@ li {
 #file-tree > ul, #file-tree > ul > li {
     padding-left: 0;
 }
+
 #file-tree .label-extras-date {
     margin-left: 10px;
     font-size: 0.8em;
     color: var(--bs-primary);
 }
+
 #file-tree .label-extras-size {
     margin-left: 5px;
     font-size: 0.8em;
     color: #2e10f2;
 }
+
 .controls {
     padding: 0px;
     display: flex;
@@ -169,7 +172,6 @@ li {
 #filterInput {
     width: 200px;
     flex: 0 1 auto;
-    z-index: 9999;
     appearance: auto;
 }
 
@@ -179,6 +181,36 @@ li {
 
 .filter-minus {
     background-color: #2e10f2 !important;
+}
+
+/* Modal */
+body > div.modal {
+    flex-shrink: unset;
+    padding: unset;
+}
+
+#modalTrigger {
+    display: none;
+}
+
+.modal-header {
+    padding: 5px 10px;
+}
+
+.modal-footer {
+    padding: 5px;
+}
+
+#helpContentMD {
+    font-size: 0.85em;
+}
+
+#helpContentMD .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+    margin-bottom: 1.5rem;
+}
+
+#helpContentMD p {
+    margin-bottom: 2rem;
 }
 
 /* Overlay che copre tutta la pagina */
