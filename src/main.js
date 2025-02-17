@@ -8,7 +8,7 @@ if (process.argv.indexOf('--inDebug') > -1) { inDebug = true;}
 nativeTheme.themeSource = 'system';
 
 function createWindow() {
-    const appIcon = nativeImage.createFromPath(path.join(__dirname, 'images/256x256.png'))
+    const appIcon = nativeImage.createFromPath(path.join(__dirname, 'images','256x256.png'))
     const win = new BrowserWindow({
         width: 1200,
         height: 900,
@@ -20,10 +20,10 @@ function createWindow() {
         icon: appIcon
     });
 
-    win.loadFile('index.html');
+    win.loadFile('src/index.html');
 
     ipcMain.on('re-render', () => {
-        win.loadFile('index.html')
+        win.loadFile('src/index.html')
     })
     return win;
 }
@@ -32,7 +32,7 @@ app.whenReady().then(() => {
     let win = createWindow();
 
     //tray
-    const trayIcon = nativeImage.createFromPath(path.join(__dirname, 'images/256x256.png'));
+    const trayIcon = nativeImage.createFromPath(path.join(__dirname, 'images','256x256.png'));
     let tray = new Tray(trayIcon);
     const trayTemplate = [
         {

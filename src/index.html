@@ -18,7 +18,7 @@
     <div class="folder-selection input-group">
         <a id="selectSource" class="btn btn-primary btn-sm first-col" type="button" title="Select Source Folder"><i
                 class="bi bi-folder"></i> Source
-            </a>
+        </a>
         <span id="sourcePath" class="form-control span-list">Select Source Folder</span>
         <a id="clearSource" class="btn btn-primary btn-sm" type="button" title="Clear Source Folder"><i
                 class="bi bi-x-circle"></i></a>
@@ -57,9 +57,10 @@
                     class="bi bi-arrows-expand"></i></a>
             <a id="collapseAll" class="btn btn-primary btn-sm" type="button" title="Collapse All"><i
                     class="bi bi-arrows-collapse"></i></a>
-          </div>
+        </div>
         <span class="span-settings">
-            <div class="form-check form-switch " title="Overwrite files and folders, during copying, if they already exist">
+            <div class="form-check form-switch "
+                 title="Overwrite files and folders, during copying, if they already exist">
               <input class="form-check-input" type="checkbox" role="switch" id="overwriteChecked" checked>
               <label class="form-check-label" for="overwriteChecked">Overwrite Existing</label>
             </div>
@@ -79,7 +80,7 @@
             <a id="deselectAll" class="btn btn-primary btn-sm" type="button" title="Deselect All">
                 <i class="bi bi-x-circle"></i>
             </a>
-          </div>
+        </div>
     </div>
 </div>
 <div id="file-tree"></div>
@@ -87,7 +88,9 @@
     <div class="footer">
         <span id="status"></span>
         <div>
-            <button type="button" id="modalTrigger" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#helpModal"> <i class="bi bi-question-lg"></i> Help </button>
+            <button type="button" id="modalTrigger" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                    data-bs-target="#helpModal"><i class="bi bi-question-lg"></i> Help
+            </button>
 
             <button id="copySelected" class="btn btn-primary btn-sm"><i class="bi bi-copy"></i> Copy Selected Items
             </button>
@@ -104,20 +107,19 @@
     <div class="modal-dialog modal-dialog-scrollable modal-fullscreen">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-6" id="helpModalLabel">Copyman | Help</h1>
+                <h1 class="modal-title" id="helpModalLabel">Copyman | Help</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-12" id="helpContentMD">
-                        </div>
+                    <div id="helpContentMD">
                     </div>
-
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary btn-sm" data-bs-dismiss="modal"><i class="bi bi-x-lg"></i> Close</button>
+                <button type="button" class="btn btn-primary btn-sm" data-bs-dismiss="modal"><i class="bi bi-x-lg"></i>
+                    Close
+                </button>
             </div>
         </div>
     </div>

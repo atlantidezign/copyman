@@ -201,6 +201,10 @@ body > div.modal {
     padding: 5px;
 }
 
+#helpModal .modal-title {
+    font-size: 1.4em;
+}
+
 #helpContentMD {
     font-size: 0.85em;
 }
@@ -211,6 +215,15 @@ body > div.modal {
 
 #helpContentMD p {
     margin-bottom: 2rem;
+}
+
+#helpContentMD ul {
+    list-style: unset;
+}
+
+#helpContentMD li {
+    margin: unset;
+    padding-left: unset;
 }
 
 /* Overlay che copre tutta la pagina */
