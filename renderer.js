@@ -33,8 +33,11 @@ ipcRenderer.on('context-menu-command', (e, command) => {
         case 'menu-destinations-clear':
             document.getElementById('clearAllDestinations').click();
             break;
-        case 'menu-filter-clear':
-            document.getElementById('clearFilter').click();
+        case 'menu-filter-name-clear':
+            document.getElementById('clearNameFilter').click();
+            break;
+        case 'menu-filter-all-clear':
+            removeAllFilters();
             break;
         case 'menu-expand-all':
             document.getElementById('expandAll').click();
@@ -508,7 +511,7 @@ function expandAncestors(element) {
 
 // Gestione dei filtri
 // Il filtro seleziona (check) tutti i nodi che corrispondono al criterio; se il filtro è vuoto, deseleziona tutto.
-document.getElementById('setFilter').addEventListener('click', () => {
+document.getElementById('setNameFilter').addEventListener('click', () => {
     if (!sourceFolder) {
         showAlert("Please select a source folder first.");
 
@@ -524,7 +527,7 @@ document.getElementById('setFilter').addEventListener('click', () => {
     document.getElementById('filterInput').value = "";
     applyAllFilters();
 });
-document.getElementById('addMinusFilter').addEventListener('click', () => {
+document.getElementById('addNameMinusFilter').addEventListener('click', () => {
     if (!sourceFolder) {
         showAlert("Please select a source folder first.");
 
@@ -545,7 +548,7 @@ document.getElementById('addMinusFilter').addEventListener('click', () => {
 
     }
 });
-document.getElementById('addPlusFilter').addEventListener('click', () => {
+document.getElementById('addNamePlusFilter').addEventListener('click', () => {
     if (!sourceFolder) {
         showAlert("Please select a source folder first.");
 
@@ -568,31 +571,52 @@ document.getElementById('addPlusFilter').addEventListener('click', () => {
     }
 
 });
-document.getElementById('clearFilter').addEventListener('click', () => {
-    removeAllFilters();
+document.getElementById('clearNameFilter').addEventListener('click', () => {
+    removeNameFilters();
 });
+function removeNameFilters() {
+    document.getElementById('filterInput').value = "";
+    // Itera su tutti i checkbox dell'albero
+    filtersNamePlus = [];
+    filtersNameMinus = [];
+    renderNameFiltersList();
+    applyAllFilters();
+    writeMessage('Name filters removed.');
+}
+function removeSingleNameFilter(index, kind) {
+    let oldFilter = "";
+    if (kind === "+") {
+        oldFilter = filtersNamePlus[index];
+        filtersNamePlus.splice(index, 1);
+    }
+    if (kind === "-") {
+        oldFilter = filtersNameMinus[index];
+        filtersNameMinus.splice(index, 1);
+    }
+    writeMessage('Removed filter "' + kind + oldFilter + '".');
+    applyAllFilters();
+}
 
 function removeAllFilters() {
     document.getElementById('filterInput').value = "";
     // Itera su tutti i checkbox dell'albero
     filtersNamePlus = [];
     filtersNameMinus = [];
-    renderFiltersList();
+    renderNameFiltersList();
+
+    //TODO remove other filters
+
     removeAllSelection();
     writeMessage('All filters removed.');
 }
 
-function removeAllSelection() {
-    const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
-    checkboxes.forEach(checkbox => {
-        checkbox.checked = false;
-    });
-}
+
 
 function applyAllFilters() {
-    renderFiltersList();
+    renderNameFiltersList();
+    //TODO devo renderizzare anche le liste degli altri tipi
+
     removeAllSelection();
-    //TODO posso fare i filtri su checkbox.modifiedRaw: Date, e checkbox.sizeRaw: number
 
     for (const filterValue of filtersNamePlus) {
         // Itera su tutti i checkbox dell'albero
@@ -615,11 +639,13 @@ function applyAllFilters() {
             }
         });
     }
+    //TODO posso fare i filtri su checkbox.modifiedRaw: Date, e checkbox.sizeRaw: number
+
     writeMessage('Filters updated.');
 }
 
-function renderFiltersList() {
-    const listContainer = document.getElementById('filterList');
+function renderNameFiltersList() {
+    const listContainer = document.getElementById('nameFilterList');
     listContainer.innerHTML = ''; // Svuota la lista esistente
     drawFiltersFor(filtersNamePlus, "+");
     drawFiltersFor(filtersNameMinus, "-");
@@ -638,7 +664,7 @@ function renderFiltersList() {
             const removeButton = document.createElement('a');
             removeButton.textContent = 'X';
             removeButton.addEventListener('click', () => {
-                removeSingleFilter(index, filterKind);
+                removeSingleNameFilter(index, filterKind);
             });
             removeButton.style.cursor = 'pointer';
             listItemInner.appendChild(removeButton);
@@ -648,18 +674,11 @@ function renderFiltersList() {
     }
 }
 
-function removeSingleFilter(index, kind) {
-    let oldFilter = "";
-    if (kind === "+") {
-        oldFilter = filtersNamePlus[index];
-        filtersNamePlus.splice(index, 1);
-    }
-    if (kind === "-") {
-        oldFilter = filtersNameMinus[index];
-        filtersNameMinus.splice(index, 1);
-    }
-    writeMessage('Removed filter "' + kind + oldFilter + '".');
-    applyAllFilters();
+function removeAllSelection() {
+    const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = false;
+    });
 }
 
 // Seleziona/Deseleziona tutti

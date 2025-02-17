@@ -81,9 +81,15 @@ app.whenReady().then(() => {
             },
             {type: 'separator'},
             {
-                label: 'Clear Filter',
+                label: 'Clear Name Filters',
                 click: () => {
-                    event.sender.send('context-menu-command', 'menu-filter-clear')
+                    event.sender.send('context-menu-command', 'menu-filter-name-clear')
+                }
+            },
+            {
+                label: 'Clear All Filters',
+                click: () => {
+                    event.sender.send('context-menu-command', 'menu-filter-all-clear')
                 }
             },
             {

@@ -130,11 +130,11 @@ li {
     opacity: 1; /* Firefox */
 }
 
-#clearFilter {
+#clearNameFilter {
     margin-left: 1px;
 }
 
-#addPlusFilter, #addMinusFilter, #deselectAll, #collapseAll {
+#addNamePlusFilter, #addNameMinusFilter, #deselectAll, #collapseAll {
     margin-left: 1px;
 }
 
