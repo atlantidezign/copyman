@@ -3,7 +3,7 @@
   "title": "Copyman",
   "version": "0.1.10",
   "description": "Electron application for copying files and folders to multiple destinations while preserving the path",
-  "author": "ADM",
+  "author": "www.atlantide-design.it",
   "license": "MIT",
   "repository": {
     "type": "git",

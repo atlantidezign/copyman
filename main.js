@@ -269,9 +269,10 @@ With the *Copy Selected Items* button, the files are copied from the Source to t
     Menu.setApplicationMenu(mainMenu);
 
     // Business: Gestione chiamate per selezionare una cartella (sia per la sorgente che per la destinazione)
-    ipcMain.handle('select-folder', async (event, title) => {
+    ipcMain.handle('select-folder', async (event, title, lastPath) => {
         const result = await dialog.showOpenDialog({
             title: title,
+            defaultPath: lastPath,
             properties: ['openDirectory']
         });
         if (result.canceled === false && result.filePaths.length > 0) {

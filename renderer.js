@@ -63,8 +63,7 @@ ipcRenderer.on('context-menu-command', (e, command) => {
     }
 });
 
-
-//Business logic
+//Business vars
 let clicksActive = true; //system: to disactivate clicks while copying
 let fileTreeData = []; // system: Struttura dati per l'albero
 let messageLife = 3000; //system: Vita messaggi prima della pulizia
@@ -74,8 +73,12 @@ let sourceFolder = ''; // user choose: directory sorgente
 let destinationFolders = []; // user choose: Inizializzazione dell'array per le directory di destinazione
 
 //User filters
-let filtersNamePlus = [];
-let filtersNameMinus = [];
+let filtersNamePlus = []; //Array<string>
+let filtersNameMinus = []; //Array<string>
+let filtersDatePlus = []; //Array<{ from: Date, to: Date}>
+let filtersDateMinus = []; //Array<{ from: Date, to: Date}>
+let filtersSizePlus = []; //Array<{ from: number, to: number}>
+let filtersSizeMinus = []; //Array<{ from: number, to: number}>
 
 //User settings
 let fileOverwrite = true;
@@ -91,7 +94,11 @@ function saveSettings() {
         propagateSelections: propagateSelections,
         //filters (name + nuovi)
         filtersNamePlus: filtersNamePlus,
-        filtersNameMinus: filtersNameMinus
+        filtersNameMinus: filtersNameMinus,
+        filtersDatePlus:filtersDatePlus,
+        filtersDateMinus:filtersDateMinus,
+        filtersSizePlus:filtersSizePlus,
+        filtersSizeMinus:filtersSizeMinus,
     }
     // Serializzazione dell'oggetto settings in formato JSON e salvataggio nel localStorage
     localStorage.setItem('settings', JSON.stringify(settings));
@@ -117,6 +124,10 @@ function loadSettings() {
         propagateSelections = (typeof settings.propagateSelections === 'boolean') ? settings.propagateSelections : false;
         filtersNamePlus = settings.filtersNamePlus || [];
         filtersNameMinus = settings.filtersNameMinus || [];
+        filtersDatePlus = settings.filtersDatePlus || [];
+        filtersDateMinus = settings.filtersDateMinus || [];
+        filtersSizePlus = settings.filtersSizePlus || [];
+        filtersSizeMinus = settings.filtersSizeMinus || [];
 
         // Aggiorna la UI
         const fileOverwriteCheckbox = document.getElementById('overwriteChecked');
@@ -162,7 +173,7 @@ document.addEventListener('click', function (event) {
 
 // Selezione cartella sorgente
 document.getElementById('selectSource').addEventListener('click', async () => {
-    const folder = await ipcRenderer.invoke('select-folder', 'Select Source Folder');
+    const folder = await ipcRenderer.invoke('select-folder', 'Select Source Folder', sourceFolder);
     if (folder) {
         removeAllFilters();
         if (destinationFolders.includes(folder)) {
@@ -234,7 +245,7 @@ function updateDestinationList() {
 
 // Funzione per aggiungere una directory
 async function addDestination() {
-    const folder = await ipcRenderer.invoke('select-folder', 'Select destination folder');
+    const folder = await ipcRenderer.invoke('select-folder', 'Select destination folder', destinationFolders.length > 0? destinationFolders[destinationFolders.length-1] : "");
     if (folder) {
         // Controlla che la cartella non sia uguale a sourceFolder
         if (folder === sourceFolder) {
@@ -302,7 +313,9 @@ function buildFileTree(dir, relativePath = '') {
                 type: 'directory',
                 children: buildFileTree(fullPath, itemRelativePath),
                 modified: stats.mtime.toLocaleDateString(),
-                size: ""
+                modifiedRaw: stats.mtime,
+                size: "",
+                sizeRaw: 0
             });
         } else {
             // Calcola la dimensione formattata: in KB se < 1MB, altrimenti in MB
@@ -318,7 +331,9 @@ function buildFileTree(dir, relativePath = '') {
                 path: itemRelativePath,
                 type: 'file',
                 modified: stats.mtime.toLocaleDateString(),
-                size: formattedSize
+                modifiedRaw: stats.mtime,
+                size: formattedSize,
+                sizeRaw: stats.size
             });
         }
     });
@@ -354,6 +369,8 @@ function createTreeNode(node) {
     checkbox.type = 'checkbox';
     checkbox.dataset.filePath = node.path;
     checkbox.dataset.nodeName = node.name;
+    checkbox.dataset.nodeSize = node.sizeRaw;
+    checkbox.dataset.nodeModified = node.modifiedRaw;
     checkbox.classList.add('form-check-input');
 
     // Aggiungiamo il listener per il cambio di stato
@@ -575,6 +592,8 @@ function removeAllSelection() {
 function applyAllFilters() {
     renderFiltersList();
     removeAllSelection();
+    //TODO posso fare i filtri su checkbox.modifiedRaw: Date, e checkbox.sizeRaw: number
+
     for (const filterValue of filtersNamePlus) {
         // Itera su tutti i checkbox dell'albero
         const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
