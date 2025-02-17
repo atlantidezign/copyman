@@ -129,9 +129,10 @@ li {
     margin-left: 1px;
 }
 
-.span-settings .form-check{
+.span-settings .form-check {
     margin-left: 15px;
 }
+
 .span-settings {
     padding-top: 4px;
     font-size: 0.90em;
@@ -154,18 +155,27 @@ li {
 
 .a-filter, .span-list {
     cursor: default;
+}
+
+.span-list {
     user-select: none;
 }
+
 #filterInput {
     width: 200px;
     flex: 0 1 auto;
+    z-index: 9999;
+    appearance: auto;
 }
-.filter-plus{
+
+.filter-plus {
     background-color: #8510f2 !important;
 }
-.filter-minus{
+
+.filter-minus {
     background-color: #2e10f2 !important;
 }
+
 /* Overlay che copre tutta la pagina */
 body > div#spinner-overlay {
     flex-shrink: unset;

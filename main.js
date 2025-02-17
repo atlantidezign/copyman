@@ -14,6 +14,7 @@ function createWindow() {
         height: 800,
         webPreferences: {
             nodeIntegration: true,
+            enableRemoteModule: true,
             contextIsolation: false // Per semplicità in questo esempio; in produzione va gestito in modo più sicuro.
         },
         icon: appIcon
@@ -24,10 +25,11 @@ function createWindow() {
     ipcMain.on('re-render', () => {
         win.loadFile('index.html')
     })
+    return win;
 }
 
 app.whenReady().then(() => {
-    createWindow();
+    let win = createWindow();
 
     //tray
     const trayIcon = nativeImage.createFromPath(path.join(__dirname, 'images/256x256.png'));
@@ -278,9 +280,30 @@ With the *Copy Selected Items* button, the files are copied from the Source to t
         return null;
     });
 
+    //Business: gestione chiamate alert e confirm
+    ipcMain.handle("show-alert", (e, message) => {
+        dialog.showMessageBox(win, { title: "Copyman | Alert", message: message });
+    });
+    ipcMain.handle('show-confirm', async (event, title) => {
+        const result = await dialog.showMessageBox(win, {
+            'type': 'question',
+            'title': 'Copyman | Confirmation',
+            'message': title,
+            'buttons': [
+                'Yes',
+                'No'
+            ]
+        })
+        if (result.response === 0) {
+            return true;
+        } else {
+            return false;
+        }
+    });
+
     //launch
     app.on('activate', function () {
-        if (BrowserWindow.getAllWindows().length === 0) createWindow();
+        if (BrowserWindow.getAllWindows().length === 0) { win = createWindow(); }
     });
 });
 

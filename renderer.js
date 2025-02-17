@@ -1,4 +1,4 @@
-const {ipcRenderer} = require('electron');
+const {ipcRenderer, remote} = require('electron');
 const fs = require('fs');
 const path = require('path');
 
@@ -97,6 +97,7 @@ function saveSettings() {
     localStorage.setItem('settings', JSON.stringify(settings));
     writeMessage('Settings saved.');
 }
+
 function loadSettings() {
     writeMessage('Loading settings...');
     // Recupera le impostazioni salvate dal localStorage
@@ -142,8 +143,10 @@ function loadSettings() {
         writeMessage('Error during settings loading.');
     }
 }
+
 function cleanSettings() {
-    if (confirm('Are you sure you want to clean saved settings?')) {
+    showConfirm('Are you sure you want to clean saved settings?', cleanCallback);
+    function cleanCallback() {
         localStorage.removeItem('settings');
         writeMessage('Settings cleaned.');
     }
@@ -163,17 +166,17 @@ document.getElementById('selectSource').addEventListener('click', async () => {
     if (folder) {
         removeAllFilters();
         if (destinationFolders.includes(folder)) {
-            alert("This folder is in the destination list.");
+            showAlert("This folder is in the destination list.");
             return;
         }
         // Controlla che la cartella non sia una sottocartella di una qualsiasi delle cartelle già selezionate
         for (const destFolder of destinationFolders) {
             if (isSubFolder(folder, destFolder)) {
-                alert("The source folder cannot be a subfolder of an already selected destination folder.");
+                showAlert("The source folder cannot be a subfolder of an already selected destination folder.");
                 return;
             }
             if (isSubFolder(destFolder, folder)) {
-                alert("The source folder cannot be a parent folder of an already selected destination folder.");
+                showAlert("The source folder cannot be a parent folder of an already selected destination folder.");
                 return;
             }
         }
@@ -228,35 +231,36 @@ function updateDestinationList() {
         });
     }
 }
+
 // Funzione per aggiungere una directory
 async function addDestination() {
     const folder = await ipcRenderer.invoke('select-folder', 'Select destination folder');
     if (folder) {
         // Controlla che la cartella non sia uguale a sourceFolder
         if (folder === sourceFolder) {
-            alert("The destination folder cannot be the same as the source folder.");
+            showAlert("The destination folder cannot be the same as the source folder.");
             return;
         }
         // Check that the folder is not already present in the array
         if (destinationFolders.includes(folder)) {
-            alert("This folder has already been added.");
+            showAlert("This folder has already been added.");
             return;
         }
 
         // Controlla che la cartella non sia una sottocartella di sourceFolder
         if (sourceFolder && isSubFolder(folder, sourceFolder) && isSubFolder(sourceFolder, folder)) {
-            alert("The destination folder cannot be a subfolder or a parent of source folder.");
+            showAlert("The destination folder cannot be a subfolder or a parent of source folder.");
             return;
         }
 
         // Controlla che la cartella non sia una sottocartella di una qualsiasi delle cartelle già selezionate
         for (const destFolder of destinationFolders) {
             if (isSubFolder(folder, destFolder)) {
-                alert("The destination folder cannot be a subfolder of an already selected destination folder.");
+                showAlert("The destination folder cannot be a subfolder of an already selected destination folder.");
                 return;
             }
             if (isSubFolder(destFolder, folder)) {
-                alert("The destination folder cannot be a parent folder of an already selected destination folder.");
+                showAlert("The destination folder cannot be a parent folder of an already selected destination folder.");
                 return;
             }
         }
@@ -267,12 +271,14 @@ async function addDestination() {
     }
     writeMessage('Destination folder added.');
 }
+
 // Funzione per rimuovere una directory dall'array data la sua posizione
 function removeDestination(index) {
     destinationFolders.splice(index, 1);
     updateDestinationList();
     writeMessage('Destination folder removed.');
 }
+
 // Funzione per rimuovere tutti gli elementi
 function clearDestinations() {
     destinationFolders = [];
@@ -306,6 +312,7 @@ function buildFileTree(dir, relativePath = '') {
     });
     return tree;
 }
+
 // Funzione per renderizzare l'albero in HTML mantenendo lo stato di espansione/collasso predefinito
 function renderFileTree(treeData) {
     const container = document.getElementById('file-tree');
@@ -319,6 +326,7 @@ function renderFileTree(treeData) {
     });
     container.appendChild(ul);
 }
+
 // Funzione che si occupa della propagazione verso il basso
 function propagateDown(li, isChecked) {
     // Seleziona tutti i checkbox dei nodi figli (ricorsivamente)
@@ -327,6 +335,7 @@ function propagateDown(li, isChecked) {
         cb.checked = isChecked;
     });
 }
+
 // Funzione che si occupa della propagazione verso l'alto
 function propagateUp(li) {
     // Trova il genitore più vicino che sia un <li> (ovvero la directory padre)
@@ -339,6 +348,7 @@ function propagateUp(li) {
         }
     }
 }
+
 // Funzione per creare un nodo (LI) dell'albero con checkbox e, se directory, toggle per espandi/collassa.
 // Viene aggiunto un data attribute "nodeName" al checkbox per facilitare il filtraggio.
 function createTreeNode(node) {
@@ -430,6 +440,7 @@ function createTreeNode(node) {
     }
     return li;
 }
+
 // Funzione per espandere il ramo (impostare display block) per tutti gli antenati del nodo passato
 function expandAncestors(element) {
     let parent = element.parentElement;
@@ -453,12 +464,13 @@ function expandAncestors(element) {
 // Il filtro seleziona (check) tutti i nodi che corrispondono al criterio; se il filtro è vuoto, deseleziona tutto.
 document.getElementById('setFilter').addEventListener('click', () => {
     if (!sourceFolder) {
-        alert("Please select a source folder first.");
+        showAlert("Please select a source folder first.");
+
         return;
     }
     const filterValue = document.getElementById('filterInput').value.trim().toLowerCase();
     if (!filterValue) {
-        alert("Please enter a string for filter.");
+        showAlert("Please enter a string for filter.");
         return;
     }
     filtersNamePlus = [filterValue];
@@ -468,12 +480,13 @@ document.getElementById('setFilter').addEventListener('click', () => {
 });
 document.getElementById('addMinusFilter').addEventListener('click', () => {
     if (!sourceFolder) {
-        alert("Please select a source folder first.");
+        showAlert("Please select a source folder first.");
+
         return;
     }
     const filterValue = document.getElementById('filterInput').value.trim().toLowerCase();
     if (!filterValue) {
-        alert("Please enter a string for filter.");
+        showAlert("Please enter a string for filter.");
         return;
     }
     if (filtersNameMinus.indexOf(filterValue) < 0 && filtersNamePlus.indexOf(filterValue) < 0) {
@@ -481,18 +494,21 @@ document.getElementById('addMinusFilter').addEventListener('click', () => {
         document.getElementById('filterInput').value = "";
         applyAllFilters();
     } else {
-        alert("This filter is already present.");
-        writeMessage('Filter "' + filterValue +'" is already present.');
+        showAlert("This filter is already present.");
+        writeMessage('Filter "' + filterValue + '" is already present.');
+
     }
 });
 document.getElementById('addPlusFilter').addEventListener('click', () => {
     if (!sourceFolder) {
-        alert("Please select a source folder first.");
+        showAlert("Please select a source folder first.");
+
         return;
     }
     const filterValue = document.getElementById('filterInput').value.trim().toLowerCase();
     if (!filterValue) {
-        alert("Please enter a string for filter.");
+        showAlert("Please enter a string for filter.");
+
         return;
     }
     if (filtersNameMinus.indexOf(filterValue) < 0 && filtersNamePlus.indexOf(filterValue) < 0) {
@@ -500,14 +516,16 @@ document.getElementById('addPlusFilter').addEventListener('click', () => {
         document.getElementById('filterInput').value = "";
         applyAllFilters();
     } else {
-        alert("This filter is already present.");
-        writeMessage('Filter "' + filterValue +'" is already present.');
+        showAlert("This filter is already present.");
+        writeMessage('Filter "' + filterValue + '" is already present.');
+
     }
 
 });
 document.getElementById('clearFilter').addEventListener('click', () => {
     removeAllFilters();
 });
+
 function removeAllFilters() {
     document.getElementById('filterInput').value = "";
     // Itera su tutti i checkbox dell'albero
@@ -517,12 +535,14 @@ function removeAllFilters() {
     removeAllSelection();
     writeMessage('All filters removed.');
 }
+
 function removeAllSelection() {
     const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
     checkboxes.forEach(checkbox => {
         checkbox.checked = false;
     });
 }
+
 function applyAllFilters() {
     renderFiltersList();
     removeAllSelection();
@@ -549,12 +569,14 @@ function applyAllFilters() {
     }
     writeMessage('Filters updated.');
 }
+
 function renderFiltersList() {
     const listContainer = document.getElementById('filterList');
     listContainer.innerHTML = ''; // Svuota la lista esistente
     drawFiltersFor(filtersNamePlus, "+");
     drawFiltersFor(filtersNameMinus, "-");
     if (listContainer.innerHTML == '') listContainer.innerHTML = 'Filters list'
+
     function drawFiltersFor(arrayList, filterKind) {
         arrayList.forEach((filter, index) => {
             const listItem = document.createElement('span');
@@ -577,6 +599,7 @@ function renderFiltersList() {
         });
     }
 }
+
 function removeSingleFilter(index, kind) {
     let oldFilter = "";
     if (kind === "+") {
@@ -594,7 +617,8 @@ function removeSingleFilter(index, kind) {
 // Seleziona/Deseleziona tutti
 document.getElementById('selectAll').addEventListener('click', () => {
     if (!sourceFolder) {
-        alert("Please select a source folder first.");
+        showAlert("Please select a source folder first.");
+
         return;
     }
     removeAllFilters();
@@ -606,7 +630,8 @@ document.getElementById('selectAll').addEventListener('click', () => {
 });
 document.getElementById('deselectAll').addEventListener('click', () => {
     if (!sourceFolder) {
-        alert("Please select a source folder first.");
+        showAlert("Please select a source folder first.");
+
         return;
     }
     writeMessage('All items deselected.');
@@ -616,9 +641,11 @@ document.getElementById('deselectAll').addEventListener('click', () => {
 // Apri/chiudi tutti
 document.getElementById('expandAll').addEventListener('click', () => {
     if (!sourceFolder) {
-        alert("Please select a source folder first.");
+        showAlert("Please select a source folder first.");
+
         return;
     }
+
     // Funzione per espandere tutti i nodi dell'albero e aggiornare correttamente l'icona a "▼"
     function expandAllFileTree() {
         // Seleziona il contenitore principale dell'albero
@@ -648,7 +675,8 @@ document.getElementById('expandAll').addEventListener('click', () => {
 });
 document.getElementById('collapseAll').addEventListener('click', () => {
     if (!sourceFolder) {
-        alert("Please select a source folder first.");
+        showAlert("Please select a source folder first.");
+
         return;
     }
     // Funzione per collassare tutti i nodi dell'albero (eccetto il contenitore principale)
@@ -696,12 +724,12 @@ document.getElementById('copySelected').addEventListener('click', async () => {
     // Controlla che sia stata selezionata almeno la cartella di destinazione
     writeMessage('Checking for Copy...');
     if (destinationFolders.length === 0) {
-        alert('Please select at least a Destination Folder!');
+        showAlert('Please select at least a Destination Folder!');
         writeMessage('Unable to start copying.');
         return;
     }
     if (!sourceFolder) {
-        alert('Please select the Source Folder!');
+        showAlert('Please select the Source Folder!');
         writeMessage('Unable to start copying.');
         return;
     }
@@ -713,43 +741,44 @@ document.getElementById('copySelected').addEventListener('click', async () => {
         }
     });
     if (selectedPaths.length === 0) {
-        alert('No selected Items.\nPlease select at least one item.');
+        showAlert('No selected Items.\nPlease select at least one item.');
         writeMessage('Unable to start copying.');
         return;
     }
     if (destinationFolders.includes(sourceFolder)) {
-        alert('Source and some Destination Folder are the same.\nPlease select different folders.');
+        showAlert('Source and some Destination Folder are the same.\nPlease select different folders.');
         writeMessage('Unable to start copying.');
         return;
     }
     let destinations = destinationFolders.join(", ");
-    writeMessage('Checking for Copy passed.');
-    if (!confirm('Are you sure you want to copy ' + selectedPaths.length + ' items\nfrom ' + sourceFolder + '\nto ' + destinations + '?')) {
-        return;
-    }
-    writeMessage('Copy Started...');
-    clicksActive = false;
-    toggleSpinner(!clicksActive);
-    // Copia per ogni elemento selezionato
-    let indx = 1;
-    for (const relPath of selectedPaths) {
-        const sourceFullPath = path.join(sourceFolder, relPath);
-        for (const destFolder of destinationFolders) {
-            const destinationFullPath = path.join(destFolder, relPath);
-            writeMessage('Copying [' + indx + '/' + selectedPaths.length + '] ' + sourceFullPath + ' to ' + destinationFullPath);
-            try {
-                await copyRecursive(sourceFullPath, destinationFullPath);
-            } catch (err) {
-                console.error('Error copying ', sourceFullPath, destinationFullPath, err);
-                writeMessage('Error copying ' + sourceFullPath + ' in ' + destinationFullPath);
+    writeMessage('Asking for confirmation...');
+    showConfirm('Are you sure you want to copy ' + selectedPaths.length + ' items\nfrom ' + sourceFolder + '\nto ' + destinations + '?', copyCallback);
+    async function copyCallback() {
+        writeMessage('Copy Started...');
+        clicksActive = false;
+        toggleSpinner(!clicksActive);
+        // Copia per ogni elemento selezionato
+        let indx = 1;
+        for (const relPath of selectedPaths) {
+            const sourceFullPath = path.join(sourceFolder, relPath);
+            for (const destFolder of destinationFolders) {
+                const destinationFullPath = path.join(destFolder, relPath);
+                writeMessage('Copying [' + indx + '/' + selectedPaths.length + '] ' + sourceFullPath + ' to ' + destinationFullPath);
+                try {
+                    await copyRecursive(sourceFullPath, destinationFullPath);
+                } catch (err) {
+                    console.error('Error copying ', sourceFullPath, destinationFullPath, err);
+                    writeMessage('Error copying ' + sourceFullPath + ' in ' + destinationFullPath);
+                }
             }
+            indx++;
         }
-        indx++;
+        clicksActive = true;
+        toggleSpinner(!clicksActive);
+        writeMessage('Copy Completed!');
     }
-    clicksActive = true;
-    toggleSpinner(!clicksActive);
-    writeMessage('Copy Completed!');
 });
+
 // Funzione ricorsiva per copiare file e directory
 async function copyRecursive(src, dest) {
     const stats = fs.statSync(src);
@@ -777,6 +806,7 @@ async function copyRecursive(src, dest) {
 //Utils
 // Funzione per messaggio
 let messageTimeout = null;
+
 function writeMessage(message) {
     if (messageTimeout) clearTimeout(messageTimeout);
     document.getElementById('status').textContent = message;
@@ -784,15 +814,25 @@ function writeMessage(message) {
         document.getElementById('status').textContent = '';
     }, messageLife);
 }
+
 // Funzione helper per verificare se 'child' è una sottocartella di 'parent'
 function isSubFolder(child, parent) {
     const relative = path.relative(parent, child);
     // Se relative è una stringa vuota oppure inizia con ".." o è una path assoluta, child non è una sottocartella di parent
     return relative && !relative.startsWith('..') && !path.isAbsolute(relative);
 }
+
 // Funzione per attivare/disattivare lo spinner
 function toggleSpinner(active) {
     const spinnerOverlay = document.getElementById('spinner-overlay');
     spinnerOverlay.style.display = active ? 'flex' : 'none';
 }
 
+//Funzione per gli alert
+function showAlert(message) {
+    ipcRenderer.invoke("show-alert", message);
+}
+async function showConfirm(message, callback) {
+    const confirmation = await ipcRenderer.invoke('show-confirm', message);
+    if(confirmation) callback();
+}
