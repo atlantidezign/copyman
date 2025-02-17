@@ -75,7 +75,16 @@ li {
 #file-tree > ul, #file-tree > ul > li {
     padding-left: 0;
 }
-
+#file-tree .label-extras-date {
+    margin-left: 10px;
+    font-size: 0.8em;
+    color: var(--bs-primary);
+}
+#file-tree .label-extras-size {
+    margin-left: 5px;
+    font-size: 0.8em;
+    color: #2e10f2;
+}
 .controls {
     padding: 0px;
     display: flex;

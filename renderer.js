@@ -272,21 +272,21 @@ async function addDestination() {
     writeMessage('Destination folder added.');
 }
 
-// Funzione per rimuovere una directory dall'array data la sua posizione
+// Funzione per rimuovere una directory dall'array destinazioni data la sua posizione
 function removeDestination(index) {
     destinationFolders.splice(index, 1);
     updateDestinationList();
     writeMessage('Destination folder removed.');
 }
 
-// Funzione per rimuovere tutti gli elementi
+// Funzione per rimuovere tutti gli elementi destinazione
 function clearDestinations() {
     destinationFolders = [];
     updateDestinationList();
     writeMessage('All Destination folder removed.');
 }
 
-//Albero
+//Albero render
 // Funzione ricorsiva per costruire la struttura dell'albero dei file
 function buildFileTree(dir, relativePath = '') {
     const tree = [];
@@ -300,13 +300,25 @@ function buildFileTree(dir, relativePath = '') {
                 name: item,
                 path: itemRelativePath,
                 type: 'directory',
-                children: buildFileTree(fullPath, itemRelativePath)
+                children: buildFileTree(fullPath, itemRelativePath),
+                modified: stats.mtime.toLocaleDateString(),
+                size: ""
             });
         } else {
+            // Calcola la dimensione formattata: in KB se < 1MB, altrimenti in MB
+            let formattedSize;
+            if (stats.size < 1024 * 1024) {
+                formattedSize = (stats.size / 1024).toFixed(2) + " kb";
+            } else {
+                formattedSize = (stats.size / (1024 * 1024)).toFixed(2) + " mb";
+            }
+
             tree.push({
                 name: item,
                 path: itemRelativePath,
-                type: 'file'
+                type: 'file',
+                modified: stats.mtime.toLocaleDateString(),
+                size: formattedSize
             });
         }
     });
@@ -325,28 +337,6 @@ function renderFileTree(treeData) {
         }
     });
     container.appendChild(ul);
-}
-
-// Funzione che si occupa della propagazione verso il basso
-function propagateDown(li, isChecked) {
-    // Seleziona tutti i checkbox dei nodi figli (ricorsivamente)
-    const childCheckboxes = li.querySelectorAll("ul input[type='checkbox']");
-    childCheckboxes.forEach(cb => {
-        cb.checked = isChecked;
-    });
-}
-
-// Funzione che si occupa della propagazione verso l'alto
-function propagateUp(li) {
-    // Trova il genitore più vicino che sia un <li> (ovvero la directory padre)
-    const parentLi = li.parentElement.closest('li');
-    if (parentLi) {
-        const parentCheckbox = parentLi.querySelector("input[type='checkbox']");
-        if (parentCheckbox) {
-            parentCheckbox.checked = true;
-            propagateUp(parentLi);
-        }
-    }
 }
 
 // Funzione per creare un nodo (LI) dell'albero con checkbox e, se directory, toggle per espandi/collassa.
@@ -395,6 +385,14 @@ function createTreeNode(node) {
         // Etichetta
         const label = document.createElement('span');
         label.textContent = ' ' + node.name;
+        const labelExtrasDate = document.createElement('span');
+        labelExtrasDate.classList.add('label-extras-date');
+        labelExtrasDate.textContent = node.modified;
+        label.appendChild(labelExtrasDate);
+        const labelExtrasSize = document.createElement('span');
+        labelExtrasSize.classList.add('label-extras-size');
+        labelExtrasSize.textContent = (node.size != "" ? " " + node.size : "");
+        label.appendChild(labelExtrasSize);
         labelContainer.appendChild(label);
 
         li.appendChild(labelContainer);
@@ -434,11 +432,42 @@ function createTreeNode(node) {
         // Etichetta
         const label = document.createElement('span');
         label.textContent = ' ' + node.name;
+        const labelExtrasDate = document.createElement('span');
+        labelExtrasDate.classList.add('label-extras-date');
+        labelExtrasDate.textContent = node.modified;
+        label.appendChild(labelExtrasDate);
+        const labelExtrasSize = document.createElement('span');
+        labelExtrasSize.classList.add('label-extras-size');
+        labelExtrasSize.textContent = (node.size != "" ? " " + node.size : "");
+        label.appendChild(labelExtrasSize);
         labelContainer.appendChild(label);
 
         li.appendChild(labelContainer);
     }
     return li;
+}
+
+//Albero selezione
+// Funzione che si occupa della propagazione verso il basso
+function propagateDown(li, isChecked) {
+    // Seleziona tutti i checkbox dei nodi figli (ricorsivamente)
+    const childCheckboxes = li.querySelectorAll("ul input[type='checkbox']");
+    childCheckboxes.forEach(cb => {
+        cb.checked = isChecked;
+    });
+}
+
+// Funzione che si occupa della propagazione verso l'alto
+function propagateUp(li) {
+    // Trova il genitore più vicino che sia un <li> (ovvero la directory padre)
+    const parentLi = li.parentElement.closest('li');
+    if (parentLi) {
+        const parentCheckbox = parentLi.querySelector("input[type='checkbox']");
+        if (parentCheckbox) {
+            parentCheckbox.checked = true;
+            propagateUp(parentLi);
+        }
+    }
 }
 
 // Funzione per espandere il ramo (impostare display block) per tutti gli antenati del nodo passato
