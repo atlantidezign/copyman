@@ -149,6 +149,10 @@ For example, if a folder is selected but only some of the files inside it are se
 
 ### Menus
 Trough the **contextual menu** (right click) you have shortcuts to the main features of the application.
+Addidional commands are:
+- *Save Settings* to save current folder/filters/settings snapshot
+- *Load Saved Settings* to load saved folder/filters/settings snapshot
+- *Clean Saved Settings* to remove saved folder/filters/settings snapshot
 
 The **main menu** contains generic actions, and the help.
 
