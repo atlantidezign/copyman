@@ -35,22 +35,57 @@
                 class="bi bi-x-circle"></i></a>
     </div>
 </div>
-<div>
+<div id="div-filters1">
     <div class="input-group">
         <a class="btn btn-secondary btn-sm a-filter" title="Filters for Name"><i class="bi bi-funnel"></i></a>
-        <input type="text" class="form-control" id="filterInput" placeholder="Filter for Name">
+        <input type="text" class="form-control" id="filterNameInput" placeholder="Filter for Name">
         <a id="setNameFilter" class="btn btn-primary btn-sm" type="button" title="Set Name Filter"><i
                 class="bi bi-check-square"></i></a>
         <a id="addNamePlusFilter" class="btn btn-primary btn-sm" type="button" title="Add Addictive Name Filter"><i
                 class="bi bi-plus-square"></i></a>
         <a id="addNameMinusFilter" class="btn btn-primary btn-sm" type="button" title="Add Subtractive Name Filter"><i
                 class="bi bi-dash-square"></i></a>
-        <span id="nameFilterList" class="form-control span-list">Filters list</span>
+        <span id="nameFilterList" class="form-control span-list">Name Filters list</span>
         <a id="clearNameFilter" class="btn btn-primary btn-sm" type="button" title="Clear Name Filters"><i
                 class="bi bi-x-circle"></i></a>
     </div>
 </div>
-<div>
+<div id="div-filters2">
+    <div class="input-group">
+        <a class="btn btn-secondary btn-sm a-filter" title="Filters for Date"><i class="bi bi-calendar-range"></i></a>
+        <input type="text" class="form-control" id="filterDateInput" placeholder="Filter for Date">
+        <a id="setDateFilter" class="btn btn-primary btn-sm" type="button" title="Set Date Filter"><i
+                class="bi bi-check-square"></i></a>
+        <a id="addDatePlusFilter" class="btn btn-primary btn-sm" type="button" title="Add Addictive Date Filter"><i
+                class="bi bi-plus-square"></i></a>
+        <a id="addDateMinusFilter" class="btn btn-primary btn-sm" type="button" title="Add Subtractive Date Filter"><i
+                class="bi bi-dash-square"></i></a>
+        <span id="dateFilterList" class="form-control span-list">Date Filters list</span>
+        <a id="clearDateFilter" class="btn btn-primary btn-sm" type="button" title="Clear Date Filters"><i
+                class="bi bi-x-circle"></i></a>
+    </div>
+</div>
+<div id="div-filters3">
+    <div class="input-group">
+        <a class="btn btn-secondary btn-sm a-filter" title="Filters for Size"><i class="bi bi-database"></i></a>
+        <input type="text" class="form-control" id="filterSizeInput" placeholder="Filter for Size">
+        <select id="filterSizeSelect" class="form-select form-select-sm" aria-label="Size Unit">
+            <option value="1" selected>Kb</option>
+            <option value="1000">Mb</option>
+            <option value="1000000">Gb</option>
+        </select>
+        <a id="setSizeFilter" class="btn btn-primary btn-sm" type="button" title="Set Size Filter"><i
+                class="bi bi-check-square"></i></a>
+        <a id="addSizePlusFilter" class="btn btn-primary btn-sm" type="button" title="Add Addictive Size Filter"><i
+                class="bi bi-plus-square"></i></a>
+        <a id="addSizeMinusFilter" class="btn btn-primary btn-sm" type="button" title="Add Subtractive Size Filter"><i
+                class="bi bi-dash-square"></i></a>
+        <span id="sizeFilterList" class="form-control span-list">Size Filters list</span>
+        <a id="clearSizeFilter" class="btn btn-primary btn-sm" type="button" title="Clear Size Filters"><i
+                class="bi bi-x-circle"></i></a>
+    </div>
+</div>
+<div id="div-controls">
     <div class="controls">
         <div class="btn-group">
             <a id="expandAll" class="btn btn-primary btn-sm" type="button" title="Expand All"><i

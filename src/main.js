@@ -156,6 +156,12 @@ app.whenReady().then(() => {
                 }
             },
             {type: 'separator'},
+            {
+                label: 'Help',
+                click: () => {
+                    event.sender.send('context-menu-command', 'menu-help')
+                }
+            },
             {role: 'reload'}
         ]
         const menu = Menu.buildFromTemplate(contextTemplate)

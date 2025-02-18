@@ -25,7 +25,9 @@
     "appId": "it.atlantide-design.copyman",
     "productName": "Copyman",
     "files": [
-      "./**/*"
+      "!*",
+      "!**/*",
+      "./src/**/*"
     ],
     "directories": {
       "buildResources": "build"

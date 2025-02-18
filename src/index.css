@@ -36,6 +36,15 @@ body > div {
 body > div#div-footer {
     padding: 0 10px;
 }
+body > div#div-filters2 {
+    padding-top: 5px;
+}
+body > div#div-filters3 {
+    padding-top: 0;
+}
+body > div#div-controls {
+    padding-top: 0;
+}
 
 #file-tree {
     height: unset;
@@ -45,6 +54,7 @@ body > div#div-footer {
     border-radius: 10px;
     flex-grow: 1;
     margin: 10px;
+    margin-top: 0;
     padding: 10px;
     overflow: auto;
     max-height: calc(100vh - 225px);
@@ -133,7 +143,8 @@ li {
     opacity: 1; /* Firefox */
 }
 
-#addNamePlusFilter, #addNameMinusFilter, #deselectAll, #collapseAll {
+#addNamePlusFilter, #addNameMinusFilter, #addDatePlusFilter, #addDateMinusFilter,
+#addSizePlusFilter, #addSizeMinusFilter, #deselectAll, #collapseAll {
     margin-left: 1px;
 }
 
@@ -169,18 +180,35 @@ li {
     user-select: none;
 }
 
-#filterInput {
-    width: 200px;
-    flex: 0 1 auto;
-    appearance: auto;
-}
-
 .filter-plus {
     background-color: #8510f2 !important;
 }
 
 .filter-minus {
     background-color: #2e10f2 !important;
+}
+
+#filterNameInput {
+    width: 230px;
+    flex: 0 1 auto;
+    appearance: auto;
+}
+
+#filterDateInput {
+    width: 230px;
+    flex: 0 1 auto;
+    appearance: auto;
+}
+
+#filterSizeInput {
+    width: 160px;
+    flex: 0 1 auto;
+    appearance: auto;
+}
+
+#filterSizeSelect {
+    width: 70px;
+    flex: 0 1 auto;
 }
 
 /* Modal */
@@ -224,6 +252,11 @@ body > div.modal {
 #helpContentMD li {
     margin: unset;
     padding-left: unset;
+}
+
+#helpContentMD a {
+    text-decoration: none;
+    color: #863efa;
 }
 
 /* Overlay che copre tutta la pagina */

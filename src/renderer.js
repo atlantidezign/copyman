@@ -1,18 +1,27 @@
-const {ipcRenderer, remote} = require('electron');
+const {ipcRenderer, remote, shell} = require('electron');
 const fs = require('fs');
 const path = require('path');
 
 // Live reload
 (async () => {
-    const watcher_html = fs.watch('./index.html');
+    const watcher_html = fs.watch('./src/index.html');
     watcher_html.on('change', () => {
         ipcRenderer.send('re-render');
     });
-    const watcher_css = fs.watch('./index.css');
+    const watcher_css = fs.watch('./src/index.css');
     watcher_css.on('change', () => {
         ipcRenderer.send('re-render');
     });
 })();
+
+//Links
+document.addEventListener('click', (event) => {
+    const target = event.target;
+    if (target.tagName === 'A' && target.href.startsWith('http')) {
+        event.preventDefault();
+        shell.openExternal(target.href);
+    }
+});
 
 //Context menu
 window.addEventListener('contextmenu', (e) => {
@@ -69,6 +78,9 @@ ipcRenderer.on('context-menu-command', (e, command) => {
         case 'menu-settings-clean':
             cleanSettings()
             break;
+        case 'menu-help':
+            showHelpModal()
+            break;
     }
 });
 ipcRenderer.on('main-menu-command', (e, command) => {
@@ -81,9 +93,7 @@ ipcRenderer.on('main-menu-command', (e, command) => {
 
 //Help Modal
 function initalizeModal() {
-    let markdown = `## Usage
-
-### Folders
+    let markdown = `### Folders
 You need to choose a **Source** folder and at least one **Destination** folder.  
 Use the **Clear** buttons to remove the folder selections.
 
@@ -144,7 +154,11 @@ The **main menu** contains generic actions, and the help.
 
 There is also the **tray** icon and its minimal menu.
 `;
-    document.getElementById('helpContentMD').innerHTML = marked.parse(markdown);
+    let underDocs = `
+    <hr>
+    Written by Alessandro Di Michele<br>
+&copy;2025 Atlantide Design <a href="http://www.atlantide-design.it">www.atlantide-design.it</a> All rights reserved.`;
+    document.getElementById('helpContentMD').innerHTML = marked.parse(markdown) + underDocs;
 }
 function showHelpModal() {
     document.getElementById('modalTrigger').click();
@@ -610,106 +624,31 @@ function expandAncestors(element) {
 
 // Gestione dei filtri
 // Il filtro seleziona (check) tutti i nodi che corrispondono al criterio; se il filtro è vuoto, deseleziona tutto.
-document.getElementById('setNameFilter').addEventListener('click', () => {
-    if (!sourceFolder) {
-        showAlert("Please select a source folder first.");
 
-        return;
-    }
-    const filterValue = document.getElementById('filterInput').value.trim().toLowerCase();
-    if (!filterValue) {
-        showAlert("Please enter a string for filter.");
-        return;
-    }
-    filtersNamePlus = [filterValue];
-    filtersNameMinus = [];
-    document.getElementById('filterInput').value = "";
-    applyAllFilters();
-});
-document.getElementById('addNameMinusFilter').addEventListener('click', () => {
-    if (!sourceFolder) {
-        showAlert("Please select a source folder first.");
-
-        return;
-    }
-    const filterValue = document.getElementById('filterInput').value.trim().toLowerCase();
-    if (!filterValue) {
-        showAlert("Please enter a string for filter.");
-        return;
-    }
-    if (filtersNameMinus.indexOf(filterValue) < 0 && filtersNamePlus.indexOf(filterValue) < 0) {
-        filtersNameMinus.push(filterValue);
-        document.getElementById('filterInput').value = "";
-        applyAllFilters();
-    } else {
-        showAlert("This filter is already present.");
-        writeMessage('Filter "' + filterValue + '" is already present.');
-
-    }
-});
-document.getElementById('addNamePlusFilter').addEventListener('click', () => {
-    if (!sourceFolder) {
-        showAlert("Please select a source folder first.");
-
-        return;
-    }
-    const filterValue = document.getElementById('filterInput').value.trim().toLowerCase();
-    if (!filterValue) {
-        showAlert("Please enter a string for filter.");
-
-        return;
-    }
-    if (filtersNameMinus.indexOf(filterValue) < 0 && filtersNamePlus.indexOf(filterValue) < 0) {
-        filtersNamePlus.push(filterValue);
-        document.getElementById('filterInput').value = "";
-        applyAllFilters();
-    } else {
-        showAlert("This filter is already present.");
-        writeMessage('Filter "' + filterValue + '" is already present.');
-
-    }
-
-});
-document.getElementById('clearNameFilter').addEventListener('click', () => {
-    removeNameFilters();
-});
-function removeNameFilters() {
-    document.getElementById('filterInput').value = "";
-    // Itera su tutti i checkbox dell'albero
-    filtersNamePlus = [];
-    filtersNameMinus = [];
-    renderNameFiltersList();
-    applyAllFilters();
-    writeMessage('Name filters removed.');
-}
-function removeSingleNameFilter(index, kind) {
-    let oldFilter = "";
-    if (kind === "+") {
-        oldFilter = filtersNamePlus[index];
-        filtersNamePlus.splice(index, 1);
-    }
-    if (kind === "-") {
-        oldFilter = filtersNameMinus[index];
-        filtersNameMinus.splice(index, 1);
-    }
-    writeMessage('Removed filter "' + kind + oldFilter + '".');
-    applyAllFilters();
-}
+//Filters common
 function removeAllFilters() {
-    document.getElementById('filterInput').value = "";
+    document.getElementById('filterNameInput').value = "";
+    document.getElementById('filterDateInput').value = "";
+    document.getElementById('filterSizeInput').value = "";
     // Itera su tutti i checkbox dell'albero
     filtersNamePlus = [];
     filtersNameMinus = [];
-    renderNameFiltersList();
+    filtersDatePlus = [];
+    filtersDateMinus = [];
+    filtersSizePlus = [];
+    filtersSizeMinus = [];
 
-    //TODO remove other filters
+    renderNameFiltersList();
+    renderDateFiltersList();
+    renderSizeFiltersList();
 
     removeAllSelection();
     writeMessage('All filters removed.');
 }
 function applyAllFilters() {
     renderNameFiltersList();
-    //TODO devo renderizzare anche le liste degli altri tipi
+    renderDateFiltersList();
+    renderSizeFiltersList();
 
     removeAllSelection();
 
@@ -734,16 +673,109 @@ function applyAllFilters() {
             }
         });
     }
-    //TODO posso fare i filtri su checkbox.modifiedRaw: Date, e checkbox.sizeRaw: number
+    //TODO devo fare i filtri per Date e Size, su checkbox.modifiedRaw: Date, e checkbox.sizeRaw: number
 
     writeMessage('Filters updated.');
+}
+function removeAllSelection() {
+    const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = false;
+    });
+}
+
+//Filters Name
+document.getElementById('setNameFilter').addEventListener('click', () => {
+    if (!sourceFolder) {
+        showAlert("Please select a source folder first.");
+
+        return;
+    }
+    const filterValue = document.getElementById('filterNameInput').value.trim().toLowerCase();
+    if (!filterValue) {
+        showAlert("Please enter a string for filter.");
+        return;
+    }
+    filtersNamePlus = [filterValue];
+    filtersNameMinus = [];
+    document.getElementById('filterNameInput').value = "";
+    applyAllFilters();
+});
+document.getElementById('addNameMinusFilter').addEventListener('click', () => {
+    if (!sourceFolder) {
+        showAlert("Please select a source folder first.");
+
+        return;
+    }
+    const filterValue = document.getElementById('filterNameInput').value.trim().toLowerCase();
+    if (!filterValue) {
+        showAlert("Please enter a string for filter.");
+        return;
+    }
+    if (filtersNameMinus.indexOf(filterValue) < 0 && filtersNamePlus.indexOf(filterValue) < 0) {
+        filtersNameMinus.push(filterValue);
+        document.getElementById('filterNameInput').value = "";
+        applyAllFilters();
+    } else {
+        showAlert("This filter is already present.");
+        writeMessage('Filter "' + filterValue + '" is already present.');
+
+    }
+});
+document.getElementById('addNamePlusFilter').addEventListener('click', () => {
+    if (!sourceFolder) {
+        showAlert("Please select a source folder first.");
+
+        return;
+    }
+    const filterValue = document.getElementById('filterNameInput').value.trim().toLowerCase();
+    if (!filterValue) {
+        showAlert("Please enter a string for filter.");
+
+        return;
+    }
+    if (filtersNameMinus.indexOf(filterValue) < 0 && filtersNamePlus.indexOf(filterValue) < 0) {
+        filtersNamePlus.push(filterValue);
+        document.getElementById('filterNameInput').value = "";
+        applyAllFilters();
+    } else {
+        showAlert("This filter is already present.");
+        writeMessage('Filter "' + filterValue + '" is already present.');
+
+    }
+
+});
+document.getElementById('clearNameFilter').addEventListener('click', () => {
+    removeNameFilters();
+});
+function removeNameFilters() {
+    document.getElementById('filterNameInput').value = "";
+    // Itera su tutti i checkbox dell'albero
+    filtersNamePlus = [];
+    filtersNameMinus = [];
+    renderNameFiltersList();
+    applyAllFilters();
+    writeMessage('Name filters removed.');
+}
+function removeSingleNameFilter(index, kind) {
+    let oldFilter = "";
+    if (kind === "+") {
+        oldFilter = filtersNamePlus[index];
+        filtersNamePlus.splice(index, 1);
+    }
+    if (kind === "-") {
+        oldFilter = filtersNameMinus[index];
+        filtersNameMinus.splice(index, 1);
+    }
+    writeMessage('Removed filter "' + kind + oldFilter + '".');
+    applyAllFilters();
 }
 function renderNameFiltersList() {
     const listContainer = document.getElementById('nameFilterList');
     listContainer.innerHTML = ''; // Svuota la lista esistente
     drawFiltersFor(filtersNamePlus, "+");
     drawFiltersFor(filtersNameMinus, "-");
-    if (listContainer.innerHTML == '') listContainer.innerHTML = 'Filters list'
+    if (listContainer.innerHTML == '') listContainer.innerHTML = 'Name Filters list'
 
     function drawFiltersFor(arrayList, filterKind) {
         arrayList.forEach((filter, index) => {
@@ -767,11 +799,35 @@ function renderNameFiltersList() {
         });
     }
 }
-function removeAllSelection() {
-    const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
-    checkboxes.forEach(checkbox => {
-        checkbox.checked = false;
-    });
+
+//Filters Date
+//TODO ui handlers for Date
+document.getElementById('clearDateFilter').addEventListener('click', () => {
+    removeDateFilters();
+});
+function removeDateFilters() {
+    //TODO
+}
+function removeSingleDateFilter() {
+    //TODO
+}
+function renderDateFiltersList() {
+    //TODO
+}
+
+//Filters Size
+//TODO ui handlers for Size
+document.getElementById('clearSizeFilter').addEventListener('click', () => {
+    removeSizeFilters();
+});
+function removeSizeFilters() {
+    //TODO
+}
+function removeSingleSizeFilter() {
+    //TODO
+}
+function renderSizeFiltersList() {
+    //TODO
 }
 
 // Seleziona/Deseleziona tutti
