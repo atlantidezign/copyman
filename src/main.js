@@ -79,6 +79,19 @@ app.whenReady().then(() => {
                     event.sender.send('context-menu-command', 'menu-destinations-clear')
                 }
             },
+            {
+                label: 'Swap Source/Destination',
+                click: () => {
+                    event.sender.send('context-menu-command', 'menu-source-swap')
+                }
+            },
+            {type: 'separator'},
+            {
+                label: 'Copy Selected Items',
+                click: () => {
+                    event.sender.send('context-menu-command', 'menu-copy-start')
+                }
+            },
             {type: 'separator'},
             {
                 label: 'Clear Name Filters',
@@ -104,18 +117,7 @@ app.whenReady().then(() => {
                     event.sender.send('context-menu-command', 'menu-filter-all-clear')
                 }
             },
-            {
-                label: 'Expand All',
-                click: () => {
-                    event.sender.send('context-menu-command', 'menu-expand-all')
-                }
-            },
-            {
-                label: 'Collapse All',
-                click: () => {
-                    event.sender.send('context-menu-command', 'menu-collapse-all')
-                }
-            },
+            {type: 'separator'},
             {
                 label: 'Select All',
                 click: () => {
@@ -128,31 +130,29 @@ app.whenReady().then(() => {
                     event.sender.send('context-menu-command', 'menu-deselect-all')
                 }
             },
-            {type: 'separator'},
             {
-                label: 'Copy Selected Items',
+                label: 'Expand All',
                 click: () => {
-                    event.sender.send('context-menu-command', 'menu-copy-start')
-                }
-            }
-            ,
-            {type: 'separator'},
-            {
-                label: 'Save Snapshot',
-                click: () => {
-                    event.sender.send('context-menu-command', 'menu-settings-save')
+                    event.sender.send('context-menu-command', 'menu-expand-all')
                 }
             },
             {
-                label: 'Load Saved Snapshot',
+                label: 'Collapse All',
                 click: () => {
-                    event.sender.send('context-menu-command', 'menu-settings-load')
+                    event.sender.send('context-menu-command', 'menu-collapse-all')
+                }
+            },
+            {type: 'separator'},
+            {
+                label: 'Options',
+                click: () => {
+                    event.sender.send('context-menu-command', 'menu-open-options')
                 }
             },
             {
-                label: 'Clean Saved Snapshot',
+                label: 'Snapshots',
                 click: () => {
-                    event.sender.send('context-menu-command', 'menu-settings-clean')
+                    event.sender.send('context-menu-command', 'menu-open-snapshots')
                 }
             },
             {type: 'separator'},

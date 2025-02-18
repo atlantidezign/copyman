@@ -42,6 +42,8 @@ ipcRenderer.on('context-menu-command', (e, command) => {
         case 'menu-destinations-clear':
             document.getElementById('clearAllDestinations').click();
             break;
+            case 'menu-source-swap': swapSourceAndDestination();
+            break;
         case 'menu-filter-name-clear':
             document.getElementById('clearNameFilter').click();
             break;
@@ -69,17 +71,14 @@ ipcRenderer.on('context-menu-command', (e, command) => {
         case 'menu-copy-start':
             document.getElementById('copySelected').click();
             break;
-        case 'menu-settings-save':
-            saveSnapshot();
+        case 'menu-open-options':
+            document.getElementById('modalOptionsTrigger').click();
             break;
-        case 'menu-settings-load':
-            loadSnapshot()
-            break;
-        case 'menu-settings-clean':
-            cleanSnapshot()
+        case 'menu-open-snapshots':
+            document.getElementById('modalSnapshotTrigger').click();
             break;
         case 'menu-help':
-            showHelpModal()
+            document.getElementById('modalHelpTrigger').click();
             break;
     }
 });

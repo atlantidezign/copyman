@@ -190,23 +190,19 @@ li {
 }
 
 #filterDateInput {
-    width: 230px;
+    width: 400px;
     flex: 0 1 auto;
     appearance: auto;
 }
 
 #filterSizeInput {
-    width: 160px;
+    width: 240px;
     flex: 0 1 auto;
     appearance: auto;
 }
 
-#filterSizeSelect {
-    width: 70px;
-    flex: 0 1 auto;
-}
-#filterDateView, #filterSizeView {
-    width: 180px;
+#filterSizeView {
+    width: 160px;
     flex: 0 1 auto;
 }
 /* Modal */
