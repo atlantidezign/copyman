@@ -166,7 +166,11 @@ li {
 .form-check-input {
     cursor: pointer;
 }
-
+.form-select-sm {
+    font-size: 0.80em;
+    background-color: rgba(0, 0, 0, 0.65);
+    color: #8f8f8f !important;
+}
 .a-filter, .span-list {
     cursor: default;
 }
