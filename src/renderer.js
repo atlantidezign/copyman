@@ -70,13 +70,13 @@ ipcRenderer.on('context-menu-command', (e, command) => {
             document.getElementById('copySelected').click();
             break;
         case 'menu-settings-save':
-            saveSettings();
+            saveSnapshot();
             break;
         case 'menu-settings-load':
-            loadSettings()
+            loadSnapshot()
             break;
         case 'menu-settings-clean':
-            cleanSettings()
+            cleanSnapshot()
             break;
         case 'menu-help':
             showHelpModal()
@@ -130,6 +130,13 @@ Accepts text string as input, as file/folder name substring.
 #### Size
 - TBD
 
+### Actions
+There is a panel with action buttons:
+- *Swap* swaps Source and (first) Destination folders
+- *Options* Open Options panel
+- *Snapshots* Open Snapshots panel
+- *Help* Open Help panel
+
 ### Options
 The **options** panel affects copying and selecting behaviours.
 
@@ -140,6 +147,12 @@ The **options** panel affects copying and selecting behaviours.
 - **Propagate Selection** to choose if propagate (checked) or not (unchecked) the selection/deselection click of an item to parent and childen elements.
 - **Relationship OR** to choose the kind of relationship between filter groups, OR (checked) or AND (unchecked).
 
+### Snapshots
+The *snapshot* panel manages snapshot (current configuration of folders, filters, and options) save/load/clear;
+- *Save Settings* to save current folder/filters/settings snapshot
+- *Load Saved Settings* to load saved folder/filters/settings snapshot
+- *Clean Saved Settings* to remove saved folder/filters/settings snapshot
+
 ### Copying
 With the **Copy Selected Items** button, the files are copied from the Source to the Destinations.
 
@@ -149,10 +162,6 @@ For example, if a folder is selected but only some of the files inside it are se
 
 ### Menus
 Trough the **contextual menu** (right click) you have shortcuts to the main features of the application.
-Addidional commands are:
-- *Save Settings* to save current folder/filters/settings snapshot
-- *Load Saved Settings* to load saved folder/filters/settings snapshot
-- *Clean Saved Settings* to remove saved folder/filters/settings snapshot
 
 The **main menu** contains generic actions, and the help.
 
@@ -165,7 +174,13 @@ There is also the **tray** icon and its minimal menu.
     document.getElementById('helpContentMD').innerHTML = marked.parse(markdown) + underDocs;
 }
 function showHelpModal() {
-    document.getElementById('modalTrigger').click();
+    document.getElementById('modalHelpTrigger').click();
+}
+function showOptionsModal() {
+    document.getElementById('modalOptionsTrigger').click();
+}
+function showSnapshotModal() {
+    document.getElementById('modalSnapshotTrigger').click();
 }
 initalizeModal();
 
@@ -191,8 +206,11 @@ let fileOverwrite = true;
 let propagateSelections = true;
 let relationshipOR = true;
 
-//Settings actions
-function saveSettings() {
+//Snapshot actions
+document.getElementById('saveSnapshot').addEventListener('click', saveSnapshot);
+document.getElementById('loadSnapshot').addEventListener('click', loadSnapshot);
+document.getElementById('cleanSnapshot').addEventListener('click', cleanSnapshot);
+function saveSnapshot() {
     let settings = {
         //source and destinations folders
         sourceFolder: sourceFolder,
@@ -213,7 +231,7 @@ function saveSettings() {
     localStorage.setItem('settings', JSON.stringify(settings));
     writeMessage('Settings saved.');
 }
-function loadSettings() {
+function loadSnapshot() {
     writeMessage('Loading settings...');
     // Recupera le impostazioni salvate dal localStorage
     const settingsStr = localStorage.getItem('settings');
@@ -268,8 +286,8 @@ function loadSettings() {
         writeMessage('Error during settings loading.');
     }
 }
-function cleanSettings() {
-    showConfirm('Are you sure you want to clean saved settings?', cleanCallback);
+function cleanSnapshot() {
+    showConfirm('Are you sure you want to Clean Saved Snapshot?', cleanCallback);
     function cleanCallback() {
         localStorage.removeItem('settings');
         writeMessage('Settings cleaned.');
@@ -328,10 +346,14 @@ document.getElementById('clearSource').addEventListener('click', async () => {
     container.innerHTML = '';
     writeMessage('Source folder cleared.');
 });
-
+document.getElementById('buttonSwap').addEventListener('click', swapSourceAndDestination);
+function swapSourceAndDestination() {
+    //TODO
+}
 // Selezione cartelle destinazione
 // Event listener per il pulsante "Aggiungi Destinazione"
 document.getElementById('addDestination').addEventListener('click', addDestination);
+
 // Event listener per il pulsante "Rimuovi Tutti"
 document.getElementById('clearAllDestinations').addEventListener('click', clearDestinations);
 

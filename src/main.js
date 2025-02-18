@@ -138,19 +138,19 @@ app.whenReady().then(() => {
             ,
             {type: 'separator'},
             {
-                label: 'Save Settings',
+                label: 'Save Snapshot',
                 click: () => {
                     event.sender.send('context-menu-command', 'menu-settings-save')
                 }
             },
             {
-                label: 'Load Saved Settings',
+                label: 'Load Saved Snapshot',
                 click: () => {
                     event.sender.send('context-menu-command', 'menu-settings-load')
                 }
             },
             {
-                label: 'Clean Saved Settings',
+                label: 'Clean Saved Snapshot',
                 click: () => {
                     event.sender.send('context-menu-command', 'menu-settings-clean')
                 }

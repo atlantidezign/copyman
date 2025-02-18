@@ -87,6 +87,13 @@ Accepts text string as input, as file/folder name substring.
 #### Size
 - TBD
 
+### Actions
+There is a panel with action buttons:
+- *Swap* swaps Source and (first) Destination folders
+- *Options* Open Options panel
+- *Snapshots* Open Snapshots panel
+- *Help* Open Help panel
+
 ### Options
 The **options** panel affects copying and selecting behaviours.
 
@@ -97,6 +104,12 @@ The **options** panel affects copying and selecting behaviours.
 - **Propagate Selection** to choose if propagate (checked) or not (unchecked) the selection/deselection click of an item to parent and childen elements.
 - **Relationship OR** to choose the kind of relationship between filter groups, OR (checked) or AND (unchecked).
 
+### Snapshots
+The *snapshot* panel manages snapshot (current configuration of folders, filters, and options) save/load/clear;
+- *Save Settings* to save current folder/filters/settings snapshot
+- *Load Saved Settings* to load saved folder/filters/settings snapshot
+- *Clean Saved Settings* to remove saved folder/filters/settings snapshot
+
 ### Copying
 With the **Copy Selected Items** button, the files are copied from the Source to the Destinations.
 
@@ -106,10 +119,6 @@ For example, if a folder is selected but only some of the files inside it are se
 
 ### Menus
 Trough the **contextual menu** (right click) you have shortcuts to the main features of the application.
-Addidional commands are:
-- *Save Settings* to save current folder/filters/settings snapshot
-- *Load Saved Settings* to load saved folder/filters/settings snapshot
-- *Clean Saved Settings* to remove saved folder/filters/settings snapshot
 
 The **main menu** contains generic actions, and the help.
 

@@ -16,8 +16,8 @@ body {
     max-height: 100vh; /* Occupa l'altezza completa della finestra */
     background: url(./images/bg.png) no-repeat center center fixed;
     background-size: cover;
-    min-width: 680px;
-    min-height: 380px;
+    min-width: 700px;
+    min-height: 500px;
     position: relative; /* necessario per il posizionamento assoluto dei figli */
 }
 
@@ -57,7 +57,7 @@ body > div#div-controls {
     margin-top: 0;
     padding: 10px;
     overflow: auto;
-    max-height: calc(100vh - 225px);
+    max-height: calc(100vh - 295px);
 }
 
 .footer {
@@ -148,19 +148,14 @@ li {
     margin-left: 1px;
 }
 
-.span-settings .form-check {
-    margin-left: 15px;
-}
-
-.span-settings {
-    padding-top: 4px;
-    font-size: 0.90em;
+.span-actions {
     flex-grow: 1;
     text-align: center;
 }
 
 .form-check {
     display: inline-block;
+    margin-left: 15px;
 }
 
 #destinationList ul, #destinationList ul li {
@@ -215,13 +210,12 @@ li {
     flex: 0 1 auto;
 }
 /* Modal */
-body > div.modal {
+body > div#div-modals {
     flex-shrink: unset;
     padding: unset;
-}
-
-#modalTrigger {
-    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
 .modal-header {
@@ -232,10 +226,16 @@ body > div.modal {
     padding: 5px;
 }
 
-#helpModal .modal-title {
+.modal-title {
     font-size: 1.4em;
 }
-
+.modal h6 {
+    margin-bottom: 0.5rem;
+    margin-top: 1.5rem;
+}
+#optionsModal .container-fluid {
+    margin-bottom: 1.5rem;
+}
 #helpContentMD {
     font-size: 0.85em;
 }

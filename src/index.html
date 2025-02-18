@@ -95,20 +95,22 @@
             <a id="collapseAll" class="btn btn-primary btn-sm" type="button" title="Collapse All"><i
                     class="bi bi-arrows-collapse"></i></a>
         </div>
-        <span class="span-settings">
-            <div class="form-check form-switch "
-                 title="Overwrite files and folders, during copying, if they already exist">
-              <input class="form-check-input" type="checkbox" role="switch" id="overwriteChecked" checked>
-              <label class="form-check-label" for="overwriteChecked">Overwrite Existing</label>
-            </div>
-            <div class="form-check form-switch" title="Propagate selection of an item to parent and childen elements">
-              <input class="form-check-input" type="checkbox" role="switch" id="propagateChecked" checked>
-              <label class="form-check-label" for="propagateChecked">Propagate Selection</label>
-            </div>
-            <div class="form-check form-switch " title="Relationship between filter groups is OR, otherwise it's AND">
-              <input class="form-check-input" type="checkbox" role="switch" id="relationshipORChecked" checked>
-              <label class="form-check-label" for="relationshipORChecked">Relationship OR</label>
-            </div>
+        <span class="span-actions">
+            <button type="button" id="buttonSwap" class="btn btn-primary btn-sm"
+                    title="Swap Source and (First) Destination Folder"><i class="bi bi-arrow-down-up"></i>
+            </button>
+            <button type="button" id="modalOptionsTrigger" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                    title="Open Options"
+                    data-bs-target="#optionsModal"><i class="bi bi-gear"></i>
+            </button>
+            <button type="button" id="modalSnapshotTrigger" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                    title="Open Snapshots"
+                    data-bs-target="#snapshotModal"><i class="bi bi-floppy"></i>
+            </button>
+            <button type="button" id="modalHelpTrigger" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                    title="Open Help"
+                    data-bs-target="#helpModal"><i class="bi bi-question-lg"></i>
+            </button>
         </span>
         <div class="btn-group">
             <a id="selectAll" class="btn btn-primary btn-sm" type="button" title="Select All">
@@ -125,10 +127,6 @@
     <div class="footer">
         <span id="status"></span>
         <div>
-            <button type="button" id="modalTrigger" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                    data-bs-target="#helpModal"><i class="bi bi-question-lg"></i> Help
-            </button>
-
             <button id="copySelected" class="btn btn-primary btn-sm"><i class="bi bi-copy"></i> Copy Selected Items
             </button>
         </div>
@@ -140,23 +138,102 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="helpModal" tabindex="-1" aria-labelledby="helpModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable modal-fullscreen">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title" id="helpModalLabel">Copyman | Help</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="container-fluid">
-                    <div id="helpContentMD">
+<div id="div-modals">
+    <div class="modal fade" id="helpModal" tabindex="-1" aria-labelledby="helpModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-fullscreen">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title" id="helpModalLabel">Copyman | Help</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div id="helpContentMD">
+                        </div>
                     </div>
                 </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-dismiss="modal"><i
+                            class="bi bi-x-lg"></i>
+                        Close
+                    </button>
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary btn-sm" data-bs-dismiss="modal"><i class="bi bi-x-lg"></i>
-                    Close
-                </button>
+        </div>
+    </div>
+    <div class="modal fade" id="optionsModal" tabindex="-1" aria-labelledby="optionsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title" id="optionsModalLabel">Copyman | Options</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div>
+                            <h6>Copying</h6>
+                            <div class="form-check form-switch"
+                                 title="Overwrite files and folders, during copying, if they already exist">
+                                <input class="form-check-input" type="checkbox" role="switch" id="overwriteChecked"
+                                       checked>
+                                <label class="form-check-label" for="overwriteChecked">Overwrite Existing</label>
+                            </div>
+                        </div>
+                        <div>
+                            <h6>Selecting</h6>
+                            <div class="form-check form-switch"
+                                 title="Propagate selection of an item to parent and childen elements">
+                                <input class="form-check-input" type="checkbox" role="switch" id="propagateChecked"
+                                       checked>
+                                <label class="form-check-label" for="propagateChecked">Propagate Selection</label>
+                            </div>
+                            <div class="form-check form-switch "
+                                 title="Relationship between filter groups is OR, otherwise it's AND">
+                                <input class="form-check-input" type="checkbox" role="switch" id="relationshipORChecked"
+                                       checked>
+                                <label class="form-check-label" for="relationshipORChecked">Relationship OR</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-dismiss="modal"><i
+                            class="bi bi-x-lg"></i>
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="snapshotModal" tabindex="-1" aria-labelledby="snapshotModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title" id="snapshotModalLabel">Copyman | Snapshots</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <button id="saveSnapshot" type="button" class="btn btn-primary btn-sm"><i
+                                class="bi bi-box-arrow-down"></i>
+                            Save
+                        </button>
+                        <button id="loadSnapshot" type="button" class="btn btn-primary btn-sm"><i
+                                class="bi bi-box-arrow-up"></i>
+                            Load
+                        </button>
+                        <button id="cleanSnapshot" type="button" class="btn btn-primary btn-sm"><i
+                                class="bi bi-trash"></i>
+                            Clear
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-dismiss="modal"><i
+                            class="bi bi-x-lg"></i>
+                        Close
+                    </button>
+                </div>
             </div>
         </div>
     </div>
