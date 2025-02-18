@@ -42,7 +42,8 @@ ipcRenderer.on('context-menu-command', (e, command) => {
         case 'menu-destinations-clear':
             document.getElementById('clearAllDestinations').click();
             break;
-            case 'menu-source-swap': swapSourceAndDestination();
+        case 'menu-source-swap':
+            document.getElementById('buttonSwap').click();
             break;
         case 'menu-filter-name-clear':
             document.getElementById('clearNameFilter').click();
@@ -91,7 +92,7 @@ ipcRenderer.on('main-menu-command', (e, command) => {
 });
 
 //Help Modal
-function initalizeModal() {
+function initalizeHelpModal() {
     let markdown = `### Folders
 You need to choose a **Source** folder and at least one **Destination** folder.  
 Use the **Clear** buttons to remove the folder selections.
@@ -131,10 +132,10 @@ Accepts text string as input, as file/folder name substring.
 
 ### Actions
 There is a panel with action buttons:
-- *Swap* swaps Source and (first) Destination folders
-- *Options* Open Options panel
-- *Snapshots* Open Snapshots panel
-- *Help* Open Help panel
+- **Swap** swaps Source and (first) Destination folders.
+- **Options** Open Options panel.
+- **Snapshots** Open Snapshots panel.
+- **Help** Open Help panel.
 
 ### Options
 The **options** panel affects copying and selecting behaviours.
@@ -147,10 +148,11 @@ The **options** panel affects copying and selecting behaviours.
 - **Relationship OR** to choose the kind of relationship between filter groups, OR (checked) or AND (unchecked).
 
 ### Snapshots
-The *snapshot* panel manages snapshot (current configuration of folders, filters, and options) save/load/clear;
-- *Save Settings* to save current folder/filters/settings snapshot
-- *Load Saved Settings* to load saved folder/filters/settings snapshot
-- *Clean Saved Settings* to remove saved folder/filters/settings snapshot
+The **snapshot** panel manages snapshot (current configuration of folders, filters, and options) save/load/clear;
+- **Save Shapshot** to save current snapshot, with a name.
+- **Load Saved Shapshot** to load saved snapshot by selected name.
+- **Clear Saved Shapshot** to remove saved snapshot by selected name.
+- **Clear All Shapshots** to remove all saved snapshots.
 
 ### Copying
 With the **Copy Selected Items** button, the files are copied from the Source to the Destinations.
@@ -172,16 +174,31 @@ There is also the **tray** icon and its minimal menu.
 &copy;2025 Atlantide Design <a href="http://www.atlantide-design.it">www.atlantide-design.it</a> All rights reserved.`;
     document.getElementById('helpContentMD').innerHTML = marked.parse(markdown) + underDocs;
 }
+
 function showHelpModal() {
     document.getElementById('modalHelpTrigger').click();
 }
+
 function showOptionsModal() {
     document.getElementById('modalOptionsTrigger').click();
 }
+
 function showSnapshotModal() {
     document.getElementById('modalSnapshotTrigger').click();
 }
-initalizeModal();
+
+//Shapshot Modal
+function initializeSnapshotModal() {
+    listSnapshots();
+}
+
+//Common for Modals
+function initalizeModals() {
+    initalizeHelpModal();
+    initializeSnapshotModal();
+}
+
+initalizeModals();
 
 //Business vars
 let clicksActive = true; //system: to disactivate clicks while copying
@@ -200,7 +217,7 @@ let filtersDateMinus = []; //Array<{ from: Date, to: Date}>
 let filtersSizePlus = []; //Array<{ from: number, to: number}>
 let filtersSizeMinus = []; //Array<{ from: number, to: number}>
 
-//User settings
+//User Options
 let fileOverwrite = true;
 let propagateSelections = true;
 let relationshipOR = true;
@@ -209,8 +226,60 @@ let relationshipOR = true;
 document.getElementById('saveSnapshot').addEventListener('click', saveSnapshot);
 document.getElementById('loadSnapshot').addEventListener('click', loadSnapshot);
 document.getElementById('cleanSnapshot').addEventListener('click', cleanSnapshot);
+document.getElementById('cleanAllSnapshots').addEventListener('click', cleanAllSnapshots);
+
+function listSnapshots() {
+    let selectEl = document.getElementById('loadSnapshotInput');
+    selectEl.innerHTML = '';
+    let useSettings = [];
+    const settingsStr = localStorage.getItem('settings');
+    if (settingsStr) {
+        useSettings = JSON.parse(settingsStr);
+    }
+    if (useSettings.length > 0) {
+        useSettings.reverse();
+        useSettings.forEach((element, index) => {
+            //carica tutti nomi, fa elenco e lo append in selectEl e seleziona il primo
+            let name = element.name;
+            let opt = document.createElement("option");
+            opt.value = element.name;
+            opt.text = element.name;
+            if (index === 0) {
+                opt.selected = true;
+            }
+            selectEl.appendChild(opt);
+        });
+    }
+}
+
 function saveSnapshot() {
-    let settings = {
+    let useName = document.getElementById('saveSnapshotInput').value.trim().toLowerCase();
+    if (!useName) {
+        showAlert('Please enter a name for Snapshot to save.');
+        return;
+    }
+    document.getElementById('saveSnapshotInput').value = useName;
+
+    if (sourceFolder === '' && destinationFolders.length === 0 && filtersDateMinus.length == 0 && filtersDatePlus.length === 0 &&
+        filtersSizeMinus.length === 0 && filtersSizePlus.length === 0 && filtersNameMinus.length === 0 && filtersNamePlus.length === 0) {
+        showAlert('Please enter some Folder/Filter to save.');
+        return;
+    }
+
+    let useSettings = [];
+    const settingsStr = localStorage.getItem('settings');
+    if (settingsStr) {
+        useSettings = JSON.parse(settingsStr);
+    }
+
+    const index = useSettings.findIndex(setting => setting.name === useName);
+    if (index !== -1) {
+        useSettings.splice(index, 1);
+        writeMessage(`Old Snapshot named "${useName}" removed.`);
+    }
+
+    let newSettings = {
+        name: useName,
         //source and destinations folders
         sourceFolder: sourceFolder,
         destinationFolders: destinationFolders,
@@ -221,27 +290,38 @@ function saveSnapshot() {
         //filters (name + nuovi)
         filtersNamePlus: filtersNamePlus,
         filtersNameMinus: filtersNameMinus,
-        filtersDatePlus:filtersDatePlus,
-        filtersDateMinus:filtersDateMinus,
-        filtersSizePlus:filtersSizePlus,
-        filtersSizeMinus:filtersSizeMinus,
+        filtersDatePlus: filtersDatePlus,
+        filtersDateMinus: filtersDateMinus,
+        filtersSizePlus: filtersSizePlus,
+        filtersSizeMinus: filtersSizeMinus,
     }
+    useSettings.push(newSettings);
     // Serializzazione dell'oggetto settings in formato JSON e salvataggio nel localStorage
-    localStorage.setItem('settings', JSON.stringify(settings));
-    writeMessage('Settings saved.');
+    localStorage.setItem('settings', JSON.stringify(useSettings));
+    listSnapshots();
+    writeMessage('Snapshot saved.');
 }
+
 function loadSnapshot() {
-    writeMessage('Loading settings...');
+    writeMessage('Loading Snapshot...');
+    let useName = document.getElementById('loadSnapshotInput').value.trim().toLowerCase();
+    if (!useName) {
+        showAlert('Please enter a name for Snapshot to load.');
+        return;
+    }
     // Recupera le impostazioni salvate dal localStorage
+    let useSettings = [];
     const settingsStr = localStorage.getItem('settings');
-    if (!settingsStr) {
-        writeMessage('No saved settings found.');
+    if (settingsStr) {
+        useSettings = JSON.parse(settingsStr);
+    }
+    let settings = useSettings.find((setting) => setting.name === useName);
+    if (!settings) {
+        writeMessage('No saved Snapshot found with name "' + useName + '"');
         return;
     }
     try {
-        const settings = JSON.parse(settingsStr);
         removeAllFilters();
-
         // Aggiorna le variabili globali dell'applicazione
         sourceFolder = settings.sourceFolder || '';
         destinationFolders = settings.destinationFolders || [];
@@ -279,17 +359,48 @@ function loadSnapshot() {
 
         applyAllFilters();
 
-        writeMessage('Settings loaded.');
+        writeMessage('Snapshot loaded.');
     } catch (error) {
-        console.error("Error during settings loading:", error);
-        writeMessage('Error during settings loading.');
+        console.error("Error during Snapshot loading:", error);
+        writeMessage('Error during Snapshot loading.');
     }
 }
+
 function cleanSnapshot() {
-    showConfirm('Are you sure you want to Clean Saved Snapshot?', cleanCallback);
+    let useName = document.getElementById('loadSnapshotInput').value.trim().toLowerCase();
+    if (!useName) {
+        showAlert('Please enter a name for Snapshot to remove.');
+        return;
+    }
+
+    let useSettings = [];
+    const settingsStr = localStorage.getItem('settings');
+    if (settingsStr) {
+        useSettings = JSON.parse(settingsStr);
+    }
+
+    const index = useSettings.findIndex(setting => setting.name === useName);
+    if (index !== -1) {
+        showConfirm('Are you sure you want to remove Saved Snapshot named ' + useName+ '?', cleanCallback);
+    } else {
+        writeMessage(`No Snapshot with name "${useName}".`);
+    }
+
+    function cleanCallback() {
+        useSettings.splice(index, 1);
+        localStorage.setItem('settings', JSON.stringify(useSettings));
+        listSnapshots();
+        writeMessage(`Snapshot named "${useName}" removed.`);
+    }
+}
+
+function cleanAllSnapshots() {
+    showConfirm('Are you sure you want to Clean all saved Snapshots?', cleanCallback);
+
     function cleanCallback() {
         localStorage.removeItem('settings');
-        writeMessage('Settings cleaned.');
+        listSnapshots();
+        writeMessage('Snapshots cleaned.');
     }
 }
 
@@ -346,6 +457,7 @@ document.getElementById('clearSource').addEventListener('click', async () => {
     writeMessage('Source folder cleared.');
 });
 document.getElementById('buttonSwap').addEventListener('click', swapSourceAndDestination);
+
 function swapSourceAndDestination() {
     let oldsource = sourceFolder;
     sourceFolder = destinationFolders[0];
@@ -357,6 +469,7 @@ function swapSourceAndDestination() {
     applyAllFilters();
     writeMessage('Source / Destination Folders swapped.');
 }
+
 // Selezione cartelle destinazione
 // Event listener per il pulsante "Aggiungi Destinazione"
 document.getElementById('addDestination').addEventListener('click', addDestination);
@@ -391,12 +504,13 @@ function updateDestinationList() {
         });
     }
 }
+
 // Funzione per aggiungere una directory
 async function addDestination() {
     writeMessage('Choose a Destination folder.');
     clicksActive = false;
     toggleSpinner(!clicksActive);
-    const folder = await ipcRenderer.invoke('select-folder', 'Select destination folder', destinationFolders.length > 0? destinationFolders[destinationFolders.length-1] : "");
+    const folder = await ipcRenderer.invoke('select-folder', 'Select destination folder', destinationFolders.length > 0 ? destinationFolders[destinationFolders.length - 1] : "");
     if (folder) {
         // Controlla che la cartella non sia uguale a sourceFolder
         if (folder === sourceFolder) {
@@ -437,12 +551,14 @@ async function addDestination() {
     clicksActive = true;
     toggleSpinner(!clicksActive);
 }
+
 // Funzione per rimuovere una directory dall'array destinazioni data la sua posizione
 function removeDestination(index) {
     destinationFolders.splice(index, 1);
     updateDestinationList();
     writeMessage('Destination folder removed.');
 }
+
 // Funzione per rimuovere tutti gli elementi destinazione
 function clearDestinations() {
     destinationFolders = [];
@@ -492,6 +608,7 @@ function buildFileTree(dir, relativePath = '') {
     });
     return tree;
 }
+
 // Funzione per renderizzare l'albero in HTML mantenendo lo stato di espansione/collasso predefinito
 function renderFileTree(treeData) {
     const container = document.getElementById('file-tree');
@@ -505,6 +622,7 @@ function renderFileTree(treeData) {
     });
     container.appendChild(ul);
 }
+
 // Funzione per creare un nodo (LI) dell'albero con checkbox e, se directory, toggle per espandi/collassa.
 // Viene aggiunto un data attribute "nodeName" al checkbox per facilitare il filtraggio.
 function createTreeNode(node) {
@@ -624,6 +742,7 @@ function propagateDown(li, isChecked) {
         cb.checked = isChecked;
     });
 }
+
 // Funzione che si occupa della propagazione verso l'alto
 function propagateUp(li) {
     // Trova il genitore più vicino che sia un <li> (ovvero la directory padre)
@@ -636,6 +755,7 @@ function propagateUp(li) {
         }
     }
 }
+
 // Funzione per espandere il ramo (impostare display block) per tutti gli antenati del nodo passato
 function expandAncestors(element) {
     let parent = element.parentElement;
@@ -678,6 +798,7 @@ function removeAllFilters() {
     removeAllSelection();
     writeMessage('All filters removed.');
 }
+
 function applyAllFilters() {
     renderNameFiltersList();
     renderDateFiltersList();
@@ -710,6 +831,7 @@ function applyAllFilters() {
 
     writeMessage('Filters updated.');
 }
+
 function removeAllSelection() {
     const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
     checkboxes.forEach(checkbox => {
@@ -781,6 +903,7 @@ document.getElementById('addNamePlusFilter').addEventListener('click', () => {
 document.getElementById('clearNameFilter').addEventListener('click', () => {
     removeNameFilters();
 });
+
 function removeNameFilters() {
     document.getElementById('filterNameInput').value = "";
     // Itera su tutti i checkbox dell'albero
@@ -790,6 +913,7 @@ function removeNameFilters() {
     applyAllFilters();
     writeMessage('Name filters removed.');
 }
+
 function removeSingleNameFilter(index, kind) {
     let oldFilter = "";
     if (kind === "+") {
@@ -803,6 +927,7 @@ function removeSingleNameFilter(index, kind) {
     writeMessage('Removed filter "' + kind + oldFilter + '".');
     applyAllFilters();
 }
+
 function renderNameFiltersList() {
     const listContainer = document.getElementById('nameFilterList');
     listContainer.innerHTML = ''; // Svuota la lista esistente
@@ -838,12 +963,15 @@ function renderNameFiltersList() {
 document.getElementById('clearDateFilter').addEventListener('click', () => {
     removeDateFilters();
 });
+
 function removeDateFilters() {
     //TODO
 }
+
 function removeSingleDateFilter() {
     //TODO
 }
+
 function renderDateFiltersList() {
     //TODO
 }
@@ -853,12 +981,15 @@ function renderDateFiltersList() {
 document.getElementById('clearSizeFilter').addEventListener('click', () => {
     removeSizeFilters();
 });
+
 function removeSizeFilters() {
     //TODO
 }
+
 function removeSingleSizeFilter() {
     //TODO
 }
+
 function renderSizeFiltersList() {
     //TODO
 }
@@ -957,7 +1088,7 @@ document.getElementById('collapseAll').addEventListener('click', () => {
     collapseAllFileTree();
 });
 
-//Settings
+//Options
 document.getElementById("overwriteChecked").addEventListener("change", function () {
     fileOverwrite = this.checked;
     writeMessage('Overwrite Existing setting is now ' + fileOverwrite);
@@ -1006,6 +1137,7 @@ document.getElementById('copySelected').addEventListener('click', async () => {
     let destinations = destinationFolders.join(", ");
     writeMessage('Asking for confirmation...');
     showConfirm('Are you sure you want to copy ' + selectedPaths.length + ' items\nfrom ' + sourceFolder + '\nto ' + destinations + '?', copyCallback);
+
     async function copyCallback() {
         writeMessage('Copy Started...');
         clicksActive = false;
@@ -1085,7 +1217,8 @@ function toggleSpinner(active) {
 function showAlert(message) {
     ipcRenderer.invoke("show-alert", message);
 }
+
 async function showConfirm(message, callback) {
     const confirmation = await ipcRenderer.invoke('show-confirm', message);
-    if(confirmation) callback();
+    if (confirmation) callback();
 }

@@ -232,6 +232,12 @@ body > div#div-modals {
 #optionsModal .container-fluid {
     margin-bottom: 1.5rem;
 }
+#snapshotModal .input-group {
+    margin-bottom: 1.5rem;
+}
+#cleanSnapshot{
+    margin-left: 1px
+}
 #helpContentMD {
     font-size: 0.85em;
 }

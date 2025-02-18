@@ -208,10 +208,16 @@
                 </div>
                 <div class="modal-body">
                     <div class="container-fluid">
-                        <button id="saveSnapshot" type="button" class="btn btn-primary btn-sm"><i
-                                class="bi bi-box-arrow-down"></i>
-                            Save
-                        </button>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="saveSnapshotInput" placeholder="Name of Snapshot">
+                            <button id="saveSnapshot" type="button" class="btn btn-primary btn-sm"><i
+                                    class="bi bi-box-arrow-down"></i>
+                                Save
+                            </button>
+                        </div>
+                        <div class="input-group">
+                            <select class="form-select form-select-sm" aria-label="Choose a Snapshot" id="loadSnapshotInput">
+                            </select>
                         <button id="loadSnapshot" type="button" class="btn btn-primary btn-sm"><i
                                 class="bi bi-box-arrow-up"></i>
                             Load
@@ -219,6 +225,11 @@
                         <button id="cleanSnapshot" type="button" class="btn btn-primary btn-sm"><i
                                 class="bi bi-trash"></i>
                             Clear
+                        </button>
+                        </div>
+                        <button id="cleanAllSnapshots" type="button" class="btn btn-primary btn-sm"><i
+                                class="bi bi-trash"></i>
+                            Clear All
                         </button>
                     </div>
                 </div>

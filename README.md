@@ -89,10 +89,10 @@ Accepts text string as input, as file/folder name substring.
 
 ### Actions
 There is a panel with action buttons:
-- *Swap* swaps Source and (first) Destination folders
-- *Options* Open Options panel
-- *Snapshots* Open Snapshots panel
-- *Help* Open Help panel
+- **Swap** swaps Source and (first) Destination folders.
+- **Options** Open Options panel.
+- **Snapshots** Open Snapshots panel.
+- **Help** Open Help panel.
 
 ### Options
 The **options** panel affects copying and selecting behaviours.
@@ -105,10 +105,11 @@ The **options** panel affects copying and selecting behaviours.
 - **Relationship OR** to choose the kind of relationship between filter groups, OR (checked) or AND (unchecked).
 
 ### Snapshots
-The *snapshot* panel manages snapshot (current configuration of folders, filters, and options) save/load/clear;
-- *Save Settings* to save current folder/filters/settings snapshot
-- *Load Saved Settings* to load saved folder/filters/settings snapshot
-- *Clean Saved Settings* to remove saved folder/filters/settings snapshot
+The **snapshot** panel manages snapshot (current configuration of folders, filters, and options) save/load/clear;
+- **Save Shapshot** to save current snapshot, with a name.
+- **Load Saved Shapshot** to load saved snapshot by selected name.
+- **Clear Saved Shapshot** to remove saved snapshot by selected name.
+- **Clear All Shapshots** to remove all saved snapshots.
 
 ### Copying
 With the **Copy Selected Items** button, the files are copied from the Source to the Destinations.
