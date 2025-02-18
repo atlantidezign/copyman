@@ -348,7 +348,15 @@ document.getElementById('clearSource').addEventListener('click', async () => {
 });
 document.getElementById('buttonSwap').addEventListener('click', swapSourceAndDestination);
 function swapSourceAndDestination() {
-    //TODO
+    let oldsource = sourceFolder;
+    sourceFolder = destinationFolders[0];
+    destinationFolders[0] = oldsource;
+    document.getElementById('sourcePath').textContent = sourceFolder;
+    fileTreeData = buildFileTree(sourceFolder);
+    renderFileTree(fileTreeData);
+    updateDestinationList();
+    applyAllFilters();
+    writeMessage('Source / Destination Folders swapped.');
 }
 // Selezione cartelle destinazione
 // Event listener per il pulsante "Aggiungi Destinazione"
