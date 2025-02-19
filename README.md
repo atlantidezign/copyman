@@ -82,10 +82,20 @@ Accepts text string as input, as file/folder name substring.
 - Using the **Clear Name Filters** button, it removes the Name filters.  
 
 #### Date
-- TBD
+Accepts one or two dates as input, as file/folder date container range. If one date is null, it will be threaded as -infinity (start) or  +infinity (end).
+- By clicking the **Set Date Filter** button, it selects the items with date inside the range while deselecting the others.
+- By clicking the **Add Addictive Date Filter** button, it adds the items that match, without altering the others.
+- By clicking the **Add Subtractive Date Filter** button, it removes any selected item that matches with the date range.
+- In the **Date Filters List** you can see all Date filters applyed and remove individual filters.
+- Using the **Clear Date Filters** button, it removes the Date filters.
 
 #### Size
-- TBD
+Accepts one or two numbers (expressed in Kb) as input, as file/folder size container range. If one number is null, it will be threaded as 0 (start) or  1.000.000.000 (end).
+- By clicking the **Set Size Filter** button, it selects the items with size inside the range while deselecting the others.
+- By clicking the **Add Addictive Size Filter** button, it adds the items that match, without altering the others.
+- By clicking the **Add Subtractive Size Filter** button, it removes any selected item that matches with the size range.
+- In the **Size Filters List** you can see all Size filters applyed and remove individual filters.
+- Using the **Clear Size Filters** button, it removes the Size filters.
 
 ### Actions
 There is a panel with action buttons:

@@ -16,7 +16,7 @@ body {
     max-height: 100vh; /* Occupa l'altezza completa della finestra */
     background: url(./images/bg.png) no-repeat center center fixed;
     background-size: cover;
-    min-width: 740px;
+    min-width: 775px;
     min-height: 500px;
     position: relative; /* necessario per il posizionamento assoluto dei figli */
 }
@@ -299,6 +299,7 @@ body > div#div-modals {
 }
 
 #helpContentMD a, #aboutContentMD a {
+    font-weight: bold;
     text-decoration: none;
     color: #863efa;
 }

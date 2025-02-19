@@ -131,10 +131,20 @@ Accepts text string as input, as file/folder name substring.
 - Using the **Clear Name Filters** button, it removes the Name filters.  
 
 #### Date
-- TBD
+Accepts one or two dates as input, as file/folder date container range. If one date is null, it will be threaded as -infinity (start) or  +infinity (end).
+- By clicking the **Set Date Filter** button, it selects the items with date inside the range while deselecting the others.
+- By clicking the **Add Addictive Date Filter** button, it adds the items that match, without altering the others.
+- By clicking the **Add Subtractive Date Filter** button, it removes any selected item that matches with the date range.
+- In the **Date Filters List** you can see all Date filters applyed and remove individual filters.
+- Using the **Clear Date Filters** button, it removes the Date filters.
 
 #### Size
-- TBD
+Accepts one or two numbers (expressed in Kb) as input, as file/folder size container range. If one number is null, it will be threaded as 0 (start) or  1.000.000.000 (end).
+- By clicking the **Set Size Filter** button, it selects the items with size inside the range while deselecting the others.
+- By clicking the **Add Addictive Size Filter** button, it adds the items that match, without altering the others.
+- By clicking the **Add Subtractive Size Filter** button, it removes any selected item that matches with the size range.
+- In the **Size (Kb) Filters List** you can see all Size filters applyed and remove individual filters.
+- Using the **Clear Size Filters** button, it removes the Size filters.
 
 ### Actions
 There is a panel with action buttons:
@@ -178,6 +188,8 @@ There is also the **tray** icon and its minimal menu.
     <hr>
     Written by Alessandro Di Michele<br>
 &copy;2025 Atlantide Design <a href="http://www.atlantide-design.it">www.atlantide-design.it</a> All rights reserved.<br>
+<br>
+Binaries download available on <a href="http://www.atlantide-design.it/copyman"><img src="images/80x80_1col_alt.svg" height="14" /> Copyman</a> website. <br>
 Source code available on <a href="https://github.com/atlantidezign/copyman"><i class="bi bi-github"></i> GitHub</a>`;
 
     let aboutDocs = `
@@ -191,6 +203,7 @@ Source code available on <a href="https://github.com/atlantidezign/copyman"><i c
 function showAboutModal() {
     document.getElementById('modalAboutTrigger').click();
 }
+
 function showHelpModal() {
     document.getElementById('modalHelpTrigger').click();
 }
@@ -215,11 +228,21 @@ function initalizeModals() {
 }
 
 //Components
-var rangepicker, rangeSlider;
+var rangePicker, rangeSlider;
+
+var initialRangeSliderValues = [500000, 1000000];
+var limitRangeSliderValues = [0, 1000000000];
+var dateFormat = 'mm/dd/yyyy';
+var localeLang = 'en';
 
 function initializeComponents() {
+    if (navigator.language && navigator.language.toLowerCase().startsWith('it')) {
+        dateFormat = 'dd/mm/yyyy';
+        localeLang = 'it';
+    }
+
     const elem = document.querySelector('.input-daterange');
-    rangepicker = new DateRangePicker(elem, {
+    rangePicker = new DateRangePicker(elem, {
         buttonClass: 'btn',
         allowOneSidedRange: true,
         enableOnReadonly: true,
@@ -227,18 +250,19 @@ function initializeComponents() {
         todayButton: true,
         todayButtonMode: 0,
         todayHighlight: true,
-        language: 'en'
+        format: dateFormat,
+        language: localeLang
     });
 
     rangeSlider = document.getElementById('slider-range');
     noUiSlider.create(rangeSlider, {
-        start: [1000, 1000000],
+        start: initialRangeSliderValues,
         step: 1,
         range: {
-            'min': [0],
+            'min': [limitRangeSliderValues[0]],
             '25%': [1000],
             '75%': [1000000],
-            'max': [1000000000]
+            'max': [limitRangeSliderValues[1]]
         },
         connect: true,
         tooltips: [true, true],
@@ -455,7 +479,7 @@ function cleanSnapshot() {
 
     const index = useSettings.findIndex(setting => setting.name === useName);
     if (index !== -1) {
-        showConfirm('Are you sure you want to remove Saved Snapshot named ' + useName+ '?', cleanCallback);
+        showConfirm('Are you sure you want to remove Saved Snapshot named ' + useName + '?', cleanCallback);
     } else {
         writeMessage(`No Snapshot with name "${useName}".`);
     }
@@ -662,12 +686,7 @@ function buildFileTree(dir, relativePath = '') {
             });
         } else {
             // Calcola la dimensione formattata: in KB se < 1MB, altrimenti in MB
-            let formattedSize;
-            if (stats.size < 1024 * 1024) {
-                formattedSize = (stats.size / 1024).toFixed(2) + " Kb";
-            } else {
-                formattedSize = (stats.size / (1024 * 1024)).toFixed(2) + " Mb";
-            }
+            let formattedSize = formatSizeForThree(stats.size);
 
             tree.push({
                 name: item,
@@ -855,7 +874,9 @@ function expandAncestors(element) {
 //Filters common
 function removeAllFilters() {
     document.getElementById('filterNameInput').value = "";
-    //TODO AZZERARE Date e Size
+    resetDateUI();
+    resetSizeUI();
+
     // Itera su tutti i checkbox dell'albero
     filtersNamePlus = [];
     filtersNameMinus = [];
@@ -900,8 +921,73 @@ function applyAllFilters() {
             }
         });
     }
-    //TODO devo fare i filtri per Date e Size, su checkbox.modifiedRaw: Date, e checkbox.sizeRaw: number
+    
+    //devo applicare i filtri per Date e Size, tenendo conto di relationshipOR true o false (AND)
+    for (const filterValue of filtersDatePlus) {
+        // Itera su tutti i checkbox dell'albero
+        const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            const nodeDate = checkbox.dataset.nodeModified;
+            if (dateSingleInsideArrayOfRanges(nodeDate, filterValue)) {
+                if (relationshipOR) {
+                    checkbox.checked = true;
+                    // Espande i rami per rendere visibile il nodo selezionato
+                    expandAncestors(checkbox);
+                } else {
+                    if (filterNameMinus.length === 0 && filtersNamePlus.length === 0) {
+                        checkbox.checked = true;
+                        // Espande i rami per rendere visibile il nodo selezionato
+                        expandAncestors(checkbox);
+                    }
+                    //accende se non esistevano i set di condizioni precedenti (nomi per date)
+                }
+            } else {
+                if (!relationshipOR) checkbox.checked = false;
+            }
+        });
+    }
+    for (const filterValue of filtersDateMinus) {
+        const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            const nodeDate = checkbox.dataset.nodeModified;
+            if (dateSingleInsideArrayOfRanges(nodeDate, filterValue)) {
+                checkbox.checked = false;
+            }
+        });
+    }
 
+    for (const filterValue of filtersSizePlus) {
+        // Itera su tutti i checkbox dell'albero
+        const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            const nodeSize = checkbox.dataset.nodeSize;
+            if (sizeSingleInsideArrayOfRanges(nodeSize, filterValue)) {
+                if (relationshipOR) {
+                    checkbox.checked = true;
+                    // Espande i rami per rendere visibile il nodo selezionato
+                    expandAncestors(checkbox);
+                } else {
+                    if (filterNameMinus.length === 0 && filtersNamePlus.length === 0 && filterDateMinus.length === 0 && filtersDatePlus.length === 0 ) {
+                        checkbox.checked = true;
+                        // Espande i rami per rendere visibile il nodo selezionato
+                        expandAncestors(checkbox);
+                    }
+                    //accende se non esistevano i set di condizioni precedenti (nomi e date per size)
+                }
+            } else {
+                if (!relationshipOR) checkbox.checked = false;
+            }
+        });
+    }
+    for (const filterValue of filtersSizeMinus) {
+        const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            const nodeSize = checkbox.dataset.nodeSize;
+            if (sizeSingleInsideArrayOfRanges(nodeSize, filterValue)) {
+                checkbox.checked = false;
+            }
+        });
+    }
     writeMessage('Filters updated.');
 }
 
@@ -997,7 +1083,7 @@ function removeSingleNameFilter(index, kind) {
         oldFilter = filtersNameMinus[index];
         filtersNameMinus.splice(index, 1);
     }
-    writeMessage('Removed filter "' + kind + oldFilter + '".');
+    writeMessage('Removed Name filter "' + kind + oldFilter + '".');
     applyAllFilters();
 }
 
@@ -1032,39 +1118,347 @@ function renderNameFiltersList() {
 }
 
 //Filters Date
-//TODO ui handlers for Date
+document.getElementById('setDateFilter').addEventListener('click', () => {
+    if (!sourceFolder) {
+        showAlert("Please select a source folder first.");
+        return;
+    }
+
+    let rangePickerGet = rangePicker.getDates(); //Date
+    let rangePickerStart = rangePickerGet[0] ? rangePickerGet[0] : null;
+    let rangePickerEnd = rangePickerGet[1] ? rangePickerGet[1] : null;
+    if (!rangePickerStart && !rangePickerEnd) {
+        showAlert("Please enter at least a date for filter.");
+        return;
+    }
+    filtersDatePlus = [rangePickerGet];
+    filtersDateMinus = [];
+    resetDateUI();
+    applyAllFilters();
+});
+document.getElementById('addDateMinusFilter').addEventListener('click', () => {
+    if (!sourceFolder) {
+        showAlert("Please select a source folder first.");
+        return;
+    }
+    let rangePickerGet = rangePicker.getDates(); //Date
+    let rangePickerStart = rangePickerGet[0] ? rangePickerGet[0] : null;
+    let rangePickerEnd = rangePickerGet[1] ? rangePickerGet[1] : null;
+    if (!rangePickerStart && !rangePickerEnd) {
+        showAlert("Please enter at least a date for filter.");
+        return;
+    }
+    if (!dateRangeInsideAnotherArrayOfRanges(rangePickerGet, filtersDateMinus) && !dateRangeInsideAnotherArrayOfRanges(rangePickerGet, filtersDatePlus)) {
+        filtersDateMinus.push(rangePickerGet);
+        resetDateUI();
+        applyAllFilters();
+    } else {
+        showAlert("This filter is already present.");
+        writeMessage('Filter "' + renderSingleDateFilter(rangePickerGet) + '" is already present.');
+    }
+});
+document.getElementById('addDatePlusFilter').addEventListener('click', () => {
+    if (!sourceFolder) {
+        showAlert("Please select a source folder first.");
+        return;
+    }
+    let rangePickerGet = rangePicker.getDates(); //Date
+    let rangePickerStart = rangePickerGet[0] ? rangePickerGet[0] : null;
+    let rangePickerEnd = rangePickerGet[1] ? rangePickerGet[1] : null;
+    if (!rangePickerStart && !rangePickerEnd) {
+        showAlert("Please enter at least a date for filter.");
+        return;
+    }
+
+    if (!dateRangeInsideAnotherArrayOfRanges(rangePickerGet, filtersNameMinus) && !dateRangeInsideAnotherArrayOfRanges(rangePickerGet, filtersDatePlus)) {
+        filtersDatePlus.push(rangePickerGet);
+        resetDateUI();
+        applyAllFilters();
+    } else {
+        showAlert("This filter is already present.");
+        writeMessage('Filter "' + renderSingleDateFilter(rangePickerGet) + '" is already present.');
+    }
+});
 document.getElementById('clearDateFilter').addEventListener('click', () => {
     removeDateFilters();
 });
 
-function removeDateFilters() {
-    //TODO
+function dateRangeInsideAnotherArrayOfRanges(rangeToCheck, rangeOrigin) {
+    let isInside = false
+
+    const pickerStart = rangeToCheck[0] ? rangeToCheck[0].getTime() : Number.NEGATIVE_INFINITY;
+    const pickerEnd = rangeToCheck[1] ? rangeToCheck[1].getTime() : Number.POSITIVE_INFINITY;
+
+    rangeOrigin.forEach(function (rangePresent) {
+        const originStart = rangePresent[0] ? rangePresent[0].getTime() : Number.NEGATIVE_INFINITY;
+        const originEnd = rangePresent[1] ? rangePresent[1].getTime() : Number.POSITIVE_INFINITY;
+
+        // Verifica se l'intervallo da controllare è compreso nell'intervallo corrente
+        if (originStart <= pickerStart && pickerEnd <= originEnd) {
+            isInside = true;
+        }
+    });
+
+    return isInside
 }
 
-function removeSingleDateFilter() {
-    //TODO
+function dateSingleInsideArrayOfRanges(dateToCheck, rangeOrigin) {
+    let isInside = false;
+    if (!dateToCheck) return false;
+    const pickerPoint = dateToCheck ? dateToCheck.getTime() : Number.NEGATIVE_INFINITY;
+
+    rangeOrigin.forEach(function (rangePresent) {
+        const originStart = rangePresent[0] ? rangePresent[0].getTime() : Number.NEGATIVE_INFINITY;
+        const originEnd = rangePresent[1] ? rangePresent[1].getTime() : Number.POSITIVE_INFINITY;
+
+        // Verifica se l'intervallo da controllare è compreso nell'intervallo corrente
+        if (originStart <= pickerPoint && pickerPoint <= originEnd) {
+            isInside = true;
+        }
+    });
+
+    return isInside
+}
+
+function removeDateFilters() {
+    resetDateUI();
+    // Itera su tutti i checkbox dell'albero
+    filtersDatePlus = [];
+    filtersDateMinus = [];
+    renderDateFiltersList();
+    applyAllFilters();
+    writeMessage('Date filters removed.');
+}
+
+function removeSingleDateFilter(index, kind) {
+    let oldFilter = "";
+    if (kind === "+") {
+        oldFilter = filtersDatePlus[index];
+        filtersDatePlus.splice(index, 1);
+    }
+    if (kind === "-") {
+        oldFilter = filtersDateMinus[index];
+        filtersDateMinus.splice(index, 1);
+    }
+    writeMessage('Removed Date filter "' + kind + renderSingleDateFilter(oldFilter) + '".');
+    applyAllFilters();
+}
+
+function renderSingleDateFilter(filter) {
+    return formatDate(filter[0]) + "-" + formatDate(filter[1]);
 }
 
 function renderDateFiltersList() {
-    //TODO
+    const listContainer = document.getElementById('dateFilterList');
+    listContainer.innerHTML = ''; // Svuota la lista esistente
+    drawFiltersFor(filtersDatePlus, "+");
+    drawFiltersFor(filtersDateMinus, "-");
+    if (listContainer.innerHTML == '') listContainer.innerHTML = 'Date Filters list'
+
+    function drawFiltersFor(arrayList, filterKind) {
+        arrayList.forEach((filter, index) => {
+            const listItem = document.createElement('span');
+            listItem.classList.add('badge', 'text-bg-secondary', 'position-relative', 'me-2');
+            if (filterKind === "+") listItem.classList.add('filter-plus');
+            if (filterKind === "-") listItem.classList.add('filter-minus');
+            listItem.textContent = filterKind + renderSingleDateFilter(filter);
+            const listItemInner = document.createElement('span');
+            listItemInner.classList.add('position-absolute', 'start-100', 'translate-middle', 'badge', 'rounded-pill', 'bg-danger');
+            // Bottone per rimuovere l'elemento singolarmente
+            const removeButton = document.createElement('a');
+            removeButton.textContent = 'X';
+            removeButton.addEventListener('click', () => {
+                removeSingleDateFilter(index, filterKind);
+            });
+            removeButton.style.cursor = 'pointer';
+            listItemInner.appendChild(removeButton);
+            listItem.appendChild(listItemInner);
+            listContainer.appendChild(listItem);
+        });
+    }
+}
+
+function resetDateUI() {
+    rangePicker.setDates({clear: true}, {clear: true});
 }
 
 //Filters Size
-//TODO ui handlers for Size
+document.getElementById('setSizeFilter').addEventListener('click', () => {
+    if (!sourceFolder) {
+        showAlert("Please select a source folder first.");
+        return;
+    }
+
+    let rangeSliderGet = rangeSlider.noUiSlider.get(); //string -> Number(string) -> number
+    let rangeSliderStart = rangeSliderGet[0] ? Number(rangeSliderGet[0]) : limitRangeSliderValues[0];
+    let rangeSliderEnd = rangeSliderGet[1] ? Number(rangeSliderGet[1]) : limitRangeSliderValues[1];
+    if (rangeSliderStart == limitRangeSliderValues[0] && rangeSliderEnd == limitRangeSliderValues[1]) {
+        showAlert("Please enter at least a size for filter.");
+        return;
+    }
+    filtersSizePlus = [rangeSliderGet];
+    filtersSizeMinus = [];
+    resetSizeUI();
+    applyAllFilters();
+});
+document.getElementById('addSizeMinusFilter').addEventListener('click', () => {
+    if (!sourceFolder) {
+        showAlert("Please select a source folder first.");
+        return;
+    }
+    let rangeSliderGet = rangeSlider.noUiSlider.get(); //string -> Number(string) -> number
+    let rangeSliderStart = rangeSliderGet[0] ? Number(rangeSliderGet[0]) : limitRangeSliderValues[0];
+    let rangeSliderEnd = rangeSliderGet[1] ? Number(rangeSliderGet[1]) : limitRangeSliderValues[1];
+    if (rangeSliderStart == limitRangeSliderValues[0] && rangeSliderEnd == limitRangeSliderValues[1]) {
+        showAlert("Please enter at least a size for filter.");
+        return;
+    }
+    if (!sizeRangeInsideAnotherArrayOfRanges(rangeSliderGet, filtersSizeMinus) && !sizeRangeInsideAnotherArrayOfRanges(rangeSliderGet, filtersSizePlus)) {
+        filtersSizeMinus.push(rangeSliderGet);
+        resetSizeUI();
+        applyAllFilters();
+    } else {
+        showAlert("This filter is already present.");
+        writeMessage('Filter "' + renderSingleSizeFilter(rangeSliderGet) + '" is already present.');
+    }
+});
+document.getElementById('addSizePlusFilter').addEventListener('click', () => {
+    if (!sourceFolder) {
+        showAlert("Please select a source folder first.");
+        return;
+    }
+    let rangeSliderGet = rangeSlider.noUiSlider.get(); //string -> Number(string) -> number
+    let rangeSliderStart = rangeSliderGet[0] ? Number(rangeSliderGet[0]) : limitRangeSliderValues[0];
+    let rangeSliderEnd = rangeSliderGet[1] ? Number(rangeSliderGet[1]) : limitRangeSliderValues[1];
+    if (rangeSliderStart == limitRangeSliderValues[0] && rangeSliderEnd == limitRangeSliderValues[1]) {
+        showAlert("Please enter at least a size for filter.");
+        return;
+    }
+    if (!sizeRangeInsideAnotherArrayOfRanges(rangeSliderGet, filtersSizeMinus) && !sizeRangeInsideAnotherArrayOfRanges(rangeSliderGet, filtersSizePlus)) {
+        filtersSizePlus.push(rangeSliderGet);
+        resetSizeUI();
+        applyAllFilters();
+    } else {
+        showAlert("This filter is already present.");
+        writeMessage('Filter "' + renderSingleSizeFilter(rangeSliderGet) + '" is already present.');
+    }
+});
 document.getElementById('clearSizeFilter').addEventListener('click', () => {
     removeSizeFilters();
 });
 
+function sizeRangeInsideAnotherArrayOfRanges(rangeToCheck, rangeOrigin) {
+    let isInside = false
+    const sliderStart = (rangeToCheck[0] !== null && rangeToCheck[0] !== undefined)
+        ? rangeToCheck[0]
+        : limitRangeSliderValues[0];
+    const sliderEnd = (rangeToCheck[1] !== null && rangeToCheck[1] !== undefined)
+        ? rangeToCheck[1]
+        : limitRangeSliderValues[1];
+
+    rangeOrigin.forEach(function (rangePresent) {
+        // Imposta gli estremi dell'intervallo dell'origine:
+        const originStart = (rangePresent[0] !== null && rangePresent[0] !== undefined)
+            ? rangePresent[0]
+            : limitRangeSliderValues[0];
+        const originEnd = (rangePresent[1] !== null && rangePresent[1] !== undefined)
+            ? rangePresent[1]
+            : limitRangeSliderValues[1];
+
+        // Controllo se l'intervallo dello slider è contenuto nell'intervallo corrente
+        if (originStart <= sliderStart && sliderEnd <= originEnd) {
+            isInside = true;
+        }
+    });
+
+    return isInside
+}
+
+function sizeSingleInsideArrayOfRanges(sizeToCheck, rangeOrigin) {
+    let isInside = false
+    if (!sizeToCheck) return false;
+    const sliderPoint = (sizeToCheck !== null && sizeToCheck !== undefined)
+        ? sizeToCheck / 1024  //attenzione sizeToCheck è in in bytes - dividere per 1024
+        : limitRangeSliderValues[0];
+
+    rangeOrigin.forEach(function (rangePresent) {
+        // Imposta gli estremi dell'intervallo dell'origine:
+        const originStart = (rangePresent[0] !== null && rangePresent[0] !== undefined)
+            ? rangePresent[0]
+            : limitRangeSliderValues[0];
+        const originEnd = (rangePresent[1] !== null && rangePresent[1] !== undefined)
+            ? rangePresent[1]
+            : limitRangeSliderValues[1];
+
+        // Controllo se l'intervallo dello slider è contenuto nell'intervallo corrente
+        if (originStart <= sizeToCheck && sizeToCheck <= originEnd) {
+            isInside = true;
+        }
+    });
+
+    return isInside
+}
+
 function removeSizeFilters() {
-    //TODO
+    resetSizeUI();
+    // Itera su tutti i checkbox dell'albero
+    filtersSizePlus = [];
+    filtersSizeMinus = [];
+    renderSizeFiltersList();
+    applyAllFilters();
+    writeMessage('Size filters removed.');
 }
 
 function removeSingleSizeFilter() {
-    //TODO
+    let oldFilter = "";
+    if (kind === "+") {
+        oldFilter = filtersSizePlus[index];
+        filtersSizePlus.splice(index, 1);
+    }
+    if (kind === "-") {
+        oldFilter = filtersSizeMinus[index];
+        filtersSizeMinus.splice(index, 1);
+    }
+    writeMessage('Removed Size filter "' + kind + renderSingleSizeFilter(oldFilter) + '".');
+    applyAllFilters();
+}
+
+function renderSingleSizeFilter(filter) {
+    return formatSize(filter[0]) + "-" + formatSize(filter[1]);
 }
 
 function renderSizeFiltersList() {
-    //TODO
+    const listContainer = document.getElementById('sizeFilterList');
+    listContainer.innerHTML = ''; // Svuota la lista esistente
+    drawFiltersFor(filtersSizePlus, "+");
+    drawFiltersFor(filtersSizeMinus, "-");
+    if (listContainer.innerHTML == '') listContainer.innerHTML = 'Size (Kb) Filters list'
+
+    function drawFiltersFor(arrayList, filterKind) {
+        arrayList.forEach((filter, index) => {
+            const listItem = document.createElement('span');
+            listItem.classList.add('badge', 'text-bg-secondary', 'position-relative', 'me-2');
+            if (filterKind === "+") listItem.classList.add('filter-plus');
+            if (filterKind === "-") listItem.classList.add('filter-minus');
+            listItem.textContent = filterKind + renderSingleSizeFilter(filter);
+            const listItemInner = document.createElement('span');
+            listItemInner.classList.add('position-absolute', 'start-100', 'translate-middle', 'badge', 'rounded-pill', 'bg-danger');
+            // Bottone per rimuovere l'elemento singolarmente
+            const removeButton = document.createElement('a');
+            removeButton.textContent = 'X';
+            removeButton.addEventListener('click', () => {
+                removeSingleSizeFilter(index, filterKind);
+            });
+            removeButton.style.cursor = 'pointer';
+            listItemInner.appendChild(removeButton);
+            listItem.appendChild(listItemInner);
+            listContainer.appendChild(listItem);
+        });
+    }
+}
+
+function resetSizeUI() {
+    rangeSlider.noUiSlider.set(initialRangeSliderValues)
 }
 
 // Seleziona/Deseleziona tutti
@@ -1264,6 +1658,7 @@ async function copyRecursive(src, dest) {
 //Utils
 // Funzione per messaggio
 let messageTimeout = null;
+
 function writeMessage(message) {
     if (messageTimeout) clearTimeout(messageTimeout);
     document.getElementById('status').textContent = message;
@@ -1295,8 +1690,20 @@ async function showConfirm(message, callback) {
     if (confirmation) callback();
 }
 
-//Funzione per format size
+//Funzione per format date e size
 function formatSize(size) {
+    if (size == undefined || size == null) return "???";
+    let formattedSize; //attenzione qui è espresso già in kb
+    if (size < 1024) {
+        formattedSize = (size).toFixed(2) + " Kb";
+    } else {
+        formattedSize = (size / (1024)).toFixed(2) + " Mb";
+    }
+    return formattedSize;
+}
+
+function formatSizeForThree(size) {
+    if (size == undefined || size == null) return "???";
     let formattedSize;
     if (size < 1024 * 1024) {
         formattedSize = (size / 1024).toFixed(2) + " Kb";
@@ -1304,4 +1711,16 @@ function formatSize(size) {
         formattedSize = (size / (1024 * 1024)).toFixed(2) + " Mb";
     }
     return formattedSize;
+}
+
+function formatDate(date) {
+    if (date == undefined || date == null) return "???";
+    return date.toLocaleDateString();
+    // Estrae giorno, mese e anno dalla data
+    const dd = String(date.getDate()).padStart(2, '0');
+    const mm = String(date.getMonth() + 1).padStart(2, '0'); // getMonth() restituisce il mese da 0 a 11
+    const yyyy = date.getFullYear();
+
+    // Sostituisce i placeholder nel formato fornito
+    return dateFormat.replace('dd', dd).replace('mm', mm).replace('yyyy', yyyy);
 }

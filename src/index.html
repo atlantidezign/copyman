@@ -38,7 +38,7 @@
 <div id="div-filters1">
     <div class="input-group">
         <a class="btn btn-secondary btn-sm a-filter" title="Filters for Name"><i class="bi bi-funnel"></i></a>
-        <input type="text" class="form-control" id="filterNameInput" placeholder="Filter for Name">
+        <input type="text" class="form-control" id="filterNameInput" placeholder="Filter for Name" title="Filter for Name">
         <a id="setNameFilter" class="btn btn-primary btn-sm" type="button" title="Set Name Filter"><i
                 class="bi bi-check-square"></i></a>
         <a id="addNamePlusFilter" class="btn btn-primary btn-sm" type="button" title="Add Addictive Name Filter"><i
@@ -54,9 +54,9 @@
     <div class="input-group">
         <a class="btn btn-secondary btn-sm a-filter" title="Filters for Date"><i class="bi bi-calendar-range"></i></a>
         <div class="input-group date input-daterange" id="filterDateInput">
-            <input type="text" name="range-start" class="form-control" placeholder="Start Date">
+            <input type="text" name="range-start" class="form-control" placeholder="Start Date" title="Start Date">
             <span class="input-group-text">to</span>
-            <input type="text" name="range-end" class="form-control" placeholder="End Date">
+            <input type="text" name="range-end" class="form-control" placeholder="End Date" title="End Date">
         </div>
         <a id="setDateFilter" class="btn btn-primary btn-sm" type="button" title="Set Date Filter"><i
                 class="bi bi-check-square"></i></a>
@@ -73,9 +73,9 @@
     <div class="input-group">
         <a class="btn btn-secondary btn-sm a-filter" title="Filters for Size"><i class="bi bi-database"></i></a>
         <div id="slider-view" class="input-group">
-            <input type="number" id="slider-from" class="form-control" step="1" min="0" max="1000000000" placeholder="Min Size"/>
+            <input type="number" id="slider-from" class="form-control" step="1" min="0" max="1000000000" placeholder="Min Size (Kb)" title="Min Size (Kb)"/>
             <span class="input-group-text">to</span>
-            <input type="number" id="slider-to" class="form-control" step="1" min="0" max="1000000000" placeholder="Max Size"/>
+            <input type="number" id="slider-to" class="form-control" step="1" min="0" max="1000000000" placeholder="Max Size (Kb)" title="Max Size (Kb)"/>
         </div>
         <div id="slider-range"></div>
         <a id="setSizeFilter" class="btn btn-primary btn-sm" type="button" title="Set Size Filter"><i
@@ -84,7 +84,7 @@
                 class="bi bi-plus-square"></i></a>
         <a id="addSizeMinusFilter" class="btn btn-primary btn-sm" type="button" title="Add Subtractive Size Filter"><i
                 class="bi bi-dash-square"></i></a>
-        <span id="sizeFilterList" class="form-control span-list">Size Filters list</span>
+        <span id="sizeFilterList" class="form-control span-list">Size (Kb) Filters list</span>
         <a id="clearSizeFilter" class="btn btn-primary btn-sm" type="button" title="Clear Size Filters"><i
                 class="bi bi-x-circle"></i></a>
     </div>
