@@ -198,6 +198,64 @@ function initalizeModals() {
     initializeSnapshotModal();
 }
 
+//Components
+var rangepicker, rangeSlider;
+
+function initializeComponents() {
+    const elem = document.querySelector('.input-daterange');
+    rangepicker = new DateRangePicker(elem, {
+        buttonClass: 'btn',
+        allowOneSidedRange: true,
+        enableOnReadonly: true,
+        clearButton: true,
+        todayButton: true,
+        todayButtonMode: 0,
+        todayHighlight: true,
+        language: 'en'
+    });
+
+    rangeSlider = document.getElementById('slider-range');
+    noUiSlider.create(rangeSlider, {
+        start: [1000, 1000000],
+        step: 1,
+        range: {
+            'min': [0],
+            '25%': [1000],
+            '75%': [1000000],
+            'max': [1000000000]
+        },
+        connect: true,
+        tooltips: [true, true],
+        behaviour: 'drag-smooth-steps-tap'
+    });
+
+    var sliderFrom = document.getElementById('slider-from');
+    var sliderTo = document.getElementById('slider-to');
+
+    rangeSlider.noUiSlider.on('update', function (values, handle) {
+
+        var value = values[handle];
+
+        if (handle) {
+            sliderTo.value = Number(value);
+        } else {
+            sliderFrom.value = Number(value);
+        }
+    });
+
+    sliderFrom.addEventListener('change', function () {
+        rangeSlider.noUiSlider.set([this.value, null]);
+    });
+
+    sliderTo.addEventListener('change', function () {
+        rangeSlider.noUiSlider.set([null, this.value]);
+    });
+
+
+}
+
+//start
+initializeComponents();
 initalizeModals();
 
 //Business vars
@@ -590,9 +648,9 @@ function buildFileTree(dir, relativePath = '') {
             // Calcola la dimensione formattata: in KB se < 1MB, altrimenti in MB
             let formattedSize;
             if (stats.size < 1024 * 1024) {
-                formattedSize = (stats.size / 1024).toFixed(2) + " kb";
+                formattedSize = (stats.size / 1024).toFixed(2) + " Kb";
             } else {
-                formattedSize = (stats.size / (1024 * 1024)).toFixed(2) + " mb";
+                formattedSize = (stats.size / (1024 * 1024)).toFixed(2) + " Mb";
             }
 
             tree.push({
@@ -781,8 +839,7 @@ function expandAncestors(element) {
 //Filters common
 function removeAllFilters() {
     document.getElementById('filterNameInput').value = "";
-    document.getElementById('filterDateInput').value = "";
-    document.getElementById('filterSizeInput').value = "";
+    //TODO AZZERARE Date e Size
     // Itera su tutti i checkbox dell'albero
     filtersNamePlus = [];
     filtersNameMinus = [];
@@ -1191,7 +1248,6 @@ async function copyRecursive(src, dest) {
 //Utils
 // Funzione per messaggio
 let messageTimeout = null;
-
 function writeMessage(message) {
     if (messageTimeout) clearTimeout(messageTimeout);
     document.getElementById('status').textContent = message;
@@ -1213,7 +1269,7 @@ function toggleSpinner(active) {
     spinnerOverlay.style.display = active ? 'flex' : 'none';
 }
 
-//Funzione per gli alert
+//Funzione per gli alert e i confirm
 function showAlert(message) {
     ipcRenderer.invoke("show-alert", message);
 }
@@ -1221,4 +1277,15 @@ function showAlert(message) {
 async function showConfirm(message, callback) {
     const confirmation = await ipcRenderer.invoke('show-confirm', message);
     if (confirmation) callback();
+}
+
+//Funzione per format size
+function formatSize(size) {
+    let formattedSize;
+    if (size < 1024 * 1024) {
+        formattedSize = (size / 1024).toFixed(2) + " Kb";
+    } else {
+        formattedSize = (size / (1024 * 1024)).toFixed(2) + " Mb";
+    }
+    return formattedSize;
 }
