@@ -81,10 +81,16 @@ ipcRenderer.on('context-menu-command', (e, command) => {
         case 'menu-help':
             document.getElementById('modalHelpTrigger').click();
             break;
+        case 'menu-about':
+            document.getElementById('modalAboutTrigger').click();
+            break;
     }
 });
 ipcRenderer.on('main-menu-command', (e, command) => {
     switch (command) {
+        case 'menu-about':
+            showAboutModal();
+            break;
         case 'menu-help':
             showHelpModal();
             break;
@@ -171,10 +177,20 @@ There is also the **tray** icon and its minimal menu.
     let underDocs = `
     <hr>
     Written by Alessandro Di Michele<br>
-&copy;2025 Atlantide Design <a href="http://www.atlantide-design.it">www.atlantide-design.it</a> All rights reserved.`;
+&copy;2025 Atlantide Design <a href="http://www.atlantide-design.it">www.atlantide-design.it</a> All rights reserved.<br>
+Source code available on <a href="https://github.com/atlantidezign/copyman"><i class="bi bi-github"></i> GitHub</a>`;
+
+    let aboutDocs = `
+    <h3>Copyman</h3>
+    <p>Select and copy files from one folder to multiple destinations while preserving the folder structure.</p>
+    `;
     document.getElementById('helpContentMD').innerHTML = marked.parse(markdown) + underDocs;
+    document.getElementById('aboutContentMD').innerHTML = aboutDocs + underDocs;
 }
 
+function showAboutModal() {
+    document.getElementById('modalAboutTrigger').click();
+}
 function showHelpModal() {
     document.getElementById('modalHelpTrigger').click();
 }

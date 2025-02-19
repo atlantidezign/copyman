@@ -23,7 +23,9 @@ body {
 
 .folder-selection {
 }
-
+.hidden {
+    display: none;
+}
 body > div {
     flex-shrink: 0; /* Per non farli ridurre */
     margin: 0;
@@ -274,15 +276,16 @@ body > div#div-modals {
     margin-left: 1px
 }
 
-#helpContentMD {
+#helpContentMD, #aboutContentMD {
     font-size: 0.85em;
 }
 
-#helpContentMD .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+#helpContentMD .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 ,
+#aboutContentMD .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
     margin-bottom: 1.5rem;
 }
 
-#helpContentMD p {
+#helpContentMD p , #aboutContentMD p {
     margin-bottom: 2rem;
 }
 
@@ -295,7 +298,7 @@ body > div#div-modals {
     padding-left: unset;
 }
 
-#helpContentMD a {
+#helpContentMD a, #aboutContentMD a {
     text-decoration: none;
     color: #863efa;
 }
@@ -635,6 +638,7 @@ body > div#spinner-overlay {
 .datepicker-cell.range {
     border-radius: 0;
     background-color: #e9ecef;
+    color: #000;
 }
 
 .datepicker-cell.range:not(.disabled):not(.focused):not(.today):hover {

@@ -113,6 +113,10 @@
                     title="Open Help"
                     data-bs-target="#helpModal"><i class="bi bi-question-lg"></i>
             </button>
+            <button type="button" id="modalAboutTrigger" class="btn btn-primary btn-sm hidden" data-bs-toggle="modal"
+                    title="Open About"
+                    data-bs-target="#aboutModal"><i class="bi bi-info"></i>
+            </button>
         </span>
         <div class="btn-group">
             <a id="selectAll" class="btn btn-primary btn-sm" type="button" title="Select All">
@@ -141,6 +145,28 @@
 
 <!-- Modal -->
 <div id="div-modals">
+    <div class="modal fade" id="aboutModal" tabindex="-1" aria-labelledby="aboutModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title" id="aboutModalLabel">Copyman | About</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div id="aboutContentMD">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-dismiss="modal"><i
+                            class="bi bi-x-lg"></i>
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade" id="helpModal" tabindex="-1" aria-labelledby="helpModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-fullscreen">
             <div class="modal-content">

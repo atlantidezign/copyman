@@ -232,6 +232,11 @@ app.whenReady().then(() => {
             role: 'help',
             submenu: [
                 {
+                    label: 'About',
+                    click: () => {
+                        win.webContents.send('main-menu-command', 'menu-about')
+                    }
+                },{
                     label: 'Usage',
                     click: () => {
                         win.webContents.send('main-menu-command', 'menu-help')
