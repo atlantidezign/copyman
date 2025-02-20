@@ -100,8 +100,9 @@ Accepts one or two numbers (expressed in Kb) as input, as file/folder size conta
 ### Actions
 There is a panel with action buttons:
 - **Swap** swaps Source and (first) Destination folders.
-- **Options** Open Options panel.
+- **Selection List** Open Selection List panel.
 - **Snapshots** Open Snapshots panel.
+- **Options** Open Options panel.
 - **Help** Open Help panel.
 
 ### Options

@@ -149,8 +149,9 @@ Accepts one or two numbers (expressed in Kb) as input, as file/folder size conta
 ### Actions
 There is a panel with action buttons:
 - **Swap** swaps Source and (first) Destination folders.
-- **Options** Open Options panel.
+- **Selection List** Open Selection List panel.
 - **Snapshots** Open Snapshots panel.
+- **Options** Open Options panel.
 - **Help** Open Help panel.
 
 ### Options
@@ -835,6 +836,8 @@ function renderFileTree(treeData) {
         }
     });
     container.appendChild(ul);
+
+    updateListContent();
 }
 
 // Funzione per creare un nodo (LI) dell'albero con checkbox e, se directory, toggle per espandi/collassa.
@@ -854,6 +857,7 @@ function createTreeNode(node) {
     checkbox.dataset.nodeName = node.name;
     checkbox.dataset.nodeSize = node.sizeRaw;
     checkbox.dataset.nodeModified = node.modifiedRaw;
+    checkbox.dataset.isDirectory = (node.type === 'directory') ? "1":"0";
     checkbox.classList.add('form-check-input');
 
     // Aggiungiamo il listener per il cambio di stato
@@ -869,6 +873,8 @@ function createTreeNode(node) {
             if (propagateSelections) propagateUp(currentLi);
         }
         // Se viene deselezionato non facciamo propagazione verso l'alto
+
+        updateListContent();
     });
 
     if (node.type === 'directory') {
@@ -1854,6 +1860,43 @@ async function copyRecursive(src, dest) {
     }
 }
 
+//Lista selezionati
+//Funzione per generare html da lista selezionati
+function updateListContent() {
+    let selectedItems = getListOfSelectedItems();
+    let htmlContent = '<table class="table table-striped">' +
+        '<tr><th> </th><th>Path</th><th>Modified</th><th>Size</th></tr>';
+
+    selectedItems.forEach( (item, index) => {
+        htmlContent += '<tr><td>' + (item.isDirectory === "1" ? '<i class="bi bi-folder2"></i>':'<i class="bi bi-file"></i>') + '</td><td>' + item.path + '</td><td>' + item.modified + '</td><td>' + item.size + '</td></tr>';
+    })
+    htmlContent += '</table>';
+    document.getElementById('listFooterTotal').innerHTML = 'Selected: ' + selectedItems.length;
+    document.getElementById('listContentMD').innerHTML = htmlContent;
+}
+//Genera array dei selezionati
+function getListOfSelectedItems() {
+    // Seleziona il div #file-tree
+    const fileTree = document.getElementById('file-tree');
+
+// All'interno di questo div, seleziona tutti i checkbox che sono selezionati
+    const checkedCheckboxes = fileTree.querySelectorAll('input[type="checkbox"]:checked');
+
+// Mappa ogni checkbox nelle informazioni associate
+    const files = Array.from(checkedCheckboxes).map(checkbox => ({
+        path: checkbox.dataset.filePath,
+        fullPath: path.join(sourceFolder, checkbox.dataset.filePath),
+        name: checkbox.dataset.nodeName,
+        fullSize: checkbox.dataset.nodeSize,
+        size: formatSizeForThree(checkbox.dataset.nodeSize),
+        modified: checkbox.dataset.nodeModified,
+        isDirectory: checkbox.dataset.isDirectory
+    }));
+
+    return files;
+}
+
+
 //Utils
 // Funzione per messaggio
 let messageTimeout = null;
@@ -1935,3 +1978,5 @@ function formatDate(date) {
     // Sostituisce i placeholder nel formato fornito
     return dateFormat.replace('dd', dd).replace('mm', mm).replace('yyyy', yyyy);
 }
+
+

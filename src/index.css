@@ -23,9 +23,11 @@ body {
 
 .folder-selection {
 }
+
 .hidden {
     display: none;
 }
+
 body > div {
     flex-shrink: 0; /* Per non farli ridurre */
     margin: 0;
@@ -239,6 +241,10 @@ li {
     border-radius: 0;
 }
 
+#modalSnapshotTrigger, #modalOptionsTrigger {
+    margin-left: 10px;
+}
+
 /* Modal */
 body > div#div-modals {
     flex-shrink: unset;
@@ -277,16 +283,17 @@ body > div#div-modals {
     margin-left: 1px
 }
 
-#helpContentMD, #aboutContentMD {
+#helpContentMD, #aboutContentMD, #listContentMD {
     font-size: 0.85em;
 }
 
-#helpContentMD .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 ,
-#aboutContentMD .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+#helpContentMD .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6,
+#aboutContentMD .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6,
+#listContentMD .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
     margin-bottom: 1.5rem;
 }
 
-#helpContentMD p , #aboutContentMD p {
+#helpContentMD p, #aboutContentMD p, #listContentMD p {
     margin-bottom: 2rem;
 }
 
@@ -299,10 +306,20 @@ body > div#div-modals {
     padding-left: unset;
 }
 
-#helpContentMD a, #aboutContentMD a {
+#helpContentMD a, #aboutContentMD a, #listContentMD a {
     font-weight: bold;
     text-decoration: none;
     color: #863efa;
+}
+
+#listFooterTotal {
+    position: absolute;
+    left: 10px;
+}
+
+#listContentMD .table > :not(caption) > * > * {
+    padding: .2rem .4rem;
+    font-size: 0.85em;
 }
 
 /* Overlay che copre tutta la pagina */

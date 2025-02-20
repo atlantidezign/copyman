@@ -102,13 +102,18 @@
             <button type="button" id="buttonSwap" class="btn btn-primary btn-sm"
                     title="Swap Source and (First) Destination Folder"><i class="bi bi-arrow-down-up"></i>
             </button>
-            <button type="button" id="modalOptionsTrigger" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                    title="Open Options"
-                    data-bs-target="#optionsModal"><i class="bi bi-gear"></i>
+             <button type="button" id="modalListTrigger" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                     title="Open Selection List"
+                     data-bs-target="#listModal"><i class="bi bi-list"></i>
             </button>
+
             <button type="button" id="modalSnapshotTrigger" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                     title="Open Snapshots"
                     data-bs-target="#snapshotModal"><i class="bi bi-floppy"></i>
+            </button>
+            <button type="button" id="modalOptionsTrigger" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                    title="Open Options"
+                    data-bs-target="#optionsModal"><i class="bi bi-gear"></i>
             </button>
             <button type="button" id="modalHelpTrigger" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                     title="Open Help"
@@ -146,6 +151,29 @@
 
 <!-- Modal -->
 <div id="div-modals">
+    <div class="modal fade" id="listModal" tabindex="-1" aria-labelledby="listModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title" id="listModalLabel">Copyman | Selection List</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div id="listContentMD">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <span id="listFooterTotal"></span>
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-dismiss="modal"><i
+                            class="bi bi-x-lg"></i>
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade" id="aboutModal" tabindex="-1" aria-labelledby="aboutModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
