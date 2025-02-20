@@ -16,7 +16,7 @@ body {
     max-height: 100vh; /* Occupa l'altezza completa della finestra */
     background: url(./images/bg.png) no-repeat center center fixed;
     background-size: cover;
-    min-width: 775px;
+    min-width: 850px;
     min-height: 500px;
     position: relative; /* necessario per il posizionamento assoluto dei figli */
 }
@@ -195,14 +195,14 @@ li {
 }
 
 #filterNameInput {
-    width: 230px;
+    width: 220px;
     flex: 0 1 auto;
     appearance: auto;
 }
 
 
 #filterDateInput {
-    width: 230px;
+    width: 220px;
     flex: 0 1 auto;
     appearance: auto;
 }
@@ -213,7 +213,7 @@ li {
 }
 
 #slider-range {
-    width: 227px;
+    width: 200px;
     flex: 0 1 auto;
     appearance: auto;
     z-index: 900;
@@ -221,7 +221,7 @@ li {
 }
 
 #slider-view {
-    width: 230px;
+    width: 244px;
     flex: 0 1 auto;
 }
 
@@ -236,6 +236,7 @@ li {
 #slider-view .input-group-text {
     padding: 0 5px;
     font-size: 0.80em;
+    border-radius: 0;
 }
 
 /* Modal */

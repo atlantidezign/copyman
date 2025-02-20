@@ -269,27 +269,146 @@ function initializeComponents() {
         behaviour: 'drag-smooth-steps-tap'
     });
 
+    //date
+    var dateFrom = document.getElementById('range-start');
+    var dateTo = document.getElementById('range-end');
+    // Mantieni il descrittore originale per la proprietà "value"
+    // Flag per evitare ricorsioni
+    let updating1 = false;
+    let updating2 = false;
+
+// Mantieni il descrittore originale per la proprietà "value"
+    const originalDescriptor = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value');
+
+    Object.defineProperty(dateFrom, 'value', {
+        get() {
+            return originalDescriptor.get.call(this);
+        },
+        set(newValue) {
+            // Se siamo già in aggiornamento, aggiorna semplicemente il valore senza dispatchare l'evento
+            if (updating1) {
+                originalDescriptor.set.call(this, newValue);
+                return;
+            }
+
+            updating1 = true;
+            originalDescriptor.set.call(this, newValue);
+            this.dispatchEvent(new Event('change', { bubbles: true }));
+            updating1 = false;
+        }
+    });
+    Object.defineProperty(dateTo, 'value', {
+        get() {
+            return originalDescriptor.get.call(this);
+        },
+        set(newValue) {
+            // Se siamo già in aggiornamento, aggiorna semplicemente il valore senza dispatchare l'evento
+            if (updating2) {
+                originalDescriptor.set.call(this, newValue);
+                return;
+            }
+
+            updating2 = true;
+            originalDescriptor.set.call(this, newValue);
+            this.dispatchEvent(new Event('change', { bubbles: true }));
+            updating2 = false;
+        }
+    });
+
+
+    dateFrom.addEventListener('change', function (e) {
+        let rawValue = this.value;
+        const correctedValue = correctDateInput(rawValue, dateFormat);
+        this.value = correctedValue;
+    });
+
+    dateTo.addEventListener('change', function (e) {
+        let rawValue = this.value;
+        const correctedValue = correctDateInput(rawValue, dateFormat);
+        this.value = correctedValue;
+    });
+
+    //size
     var sliderFrom = document.getElementById('slider-from');
     var sliderTo = document.getElementById('slider-to');
-
     rangeSlider.noUiSlider.on('update', function (values, handle) {
-
         var value = values[handle];
-
         if (handle) {
             sliderTo.value = Number(value);
         } else {
             sliderFrom.value = Number(value);
         }
     });
-
     sliderFrom.addEventListener('change', function () {
-        rangeSlider.noUiSlider.set([this.value, null]);
+        let rawValue = this.value;
+        rangeSlider.noUiSlider.set([rawValue, null]);
     });
 
     sliderTo.addEventListener('change', function () {
-        rangeSlider.noUiSlider.set([null, this.value]);
+        let rawValue = this.value;
+        rangeSlider.noUiSlider.set([null, rawValue]);
     });
+    function correctDateInput(inputValue, dateFormat) {
+        // Estrae giorno, mese e anno dalla stringa in formato numerico
+        const regex = /^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/;
+        const match = inputValue.match(regex);
+
+        if (!match) {
+            // Se il formato non corrisponde, restituisco il valore originale oppure gestisci l'errore come preferisci.
+            return inputValue;
+        }
+
+        // In base al dateFormat indico quale gruppo rappresenta giorno e mese.
+        let day, month, year;
+        if (dateFormat === 'dd/mm/yyyy') {
+            day   = parseInt(match[1], 10);
+            month = parseInt(match[2], 10);
+        } else if (dateFormat === 'mm/dd/yyyy') {
+            month = parseInt(match[1], 10);
+            day   = parseInt(match[2], 10);
+        } else {
+            // Se il formato non è riconosciuto, restituisco il valore originale.
+            return inputValue;
+        }
+        const cleanYearStr = match[3].replace(/^0+/, '');
+// Converte la stringa pulita in numero
+        year = parseInt(cleanYearStr, 10);
+        // Se l'anno è scritto con 2 cifre, assumiamo il secolo 2000+
+        if (cleanYearStr.length < (dateFormat.match(/y/g) || []).length) {
+            year += 2000;
+        }
+
+        // Corregge il mese se necessario: deve essere tra 1 e 12
+        if (month < 1) {
+            month = 1;
+        }
+        if (month > 12) {
+            month = 12;
+        }
+
+        // Determina il numero massimo di giorni per il mese e l'anno specificati
+        const maxDays = new Date(year, month, 0).getDate();
+        if (day < 1) {
+            day = 1;
+        }
+        if (day > maxDays) {
+            day = maxDays;
+        }
+
+        // Formatta giorno e mese con due cifre
+        const dayFormatted = day < 10 ? '0' + day : day.toString();
+        const monthFormatted = month < 10 ? '0' + month : month.toString();
+
+        // Ricompone la stringa di output basata sul formato originale
+        let outputString;
+        if (dateFormat === 'dd/mm/yyyy') {
+            outputString = `${dayFormatted}/${monthFormatted}/${year}`;
+        } else if (dateFormat === 'mm/dd/yyyy') {
+            outputString = `${monthFormatted}/${dayFormatted}/${year}`;
+        }
+
+        return outputString;
+    }
 
 
 }
@@ -923,12 +1042,13 @@ function applyAllFilters() {
     }
     
     //devo applicare i filtri per Date e Size, tenendo conto di relationshipOR true o false (AND)
+
     for (const filterValue of filtersDatePlus) {
         // Itera su tutti i checkbox dell'albero
         const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
         checkboxes.forEach(checkbox => {
             const nodeDate = checkbox.dataset.nodeModified;
-            if (dateSingleInsideArrayOfRanges(nodeDate, filterValue)) {
+            if (dateSingleInsideARange(nodeDate, filterValue)) {
                 if (relationshipOR) {
                     checkbox.checked = true;
                     // Espande i rami per rendere visibile il nodo selezionato
@@ -950,7 +1070,7 @@ function applyAllFilters() {
         const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
         checkboxes.forEach(checkbox => {
             const nodeDate = checkbox.dataset.nodeModified;
-            if (dateSingleInsideArrayOfRanges(nodeDate, filterValue)) {
+            if (dateSingleInsideARange(nodeDate, filterValue)) {
                 checkbox.checked = false;
             }
         });
@@ -961,7 +1081,7 @@ function applyAllFilters() {
         const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
         checkboxes.forEach(checkbox => {
             const nodeSize = checkbox.dataset.nodeSize;
-            if (sizeSingleInsideArrayOfRanges(nodeSize, filterValue)) {
+            if (sizeSingleInsideARange(nodeSize, filterValue)) {
                 if (relationshipOR) {
                     checkbox.checked = true;
                     // Espande i rami per rendere visibile il nodo selezionato
@@ -983,7 +1103,7 @@ function applyAllFilters() {
         const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
         checkboxes.forEach(checkbox => {
             const nodeSize = checkbox.dataset.nodeSize;
-            if (sizeSingleInsideArrayOfRanges(nodeSize, filterValue)) {
+            if (sizeSingleInsideARange(nodeSize, filterValue)) {
                 checkbox.checked = false;
             }
         });
@@ -1170,7 +1290,7 @@ document.getElementById('addDatePlusFilter').addEventListener('click', () => {
         return;
     }
 
-    if (!dateRangeInsideAnotherArrayOfRanges(rangePickerGet, filtersNameMinus) && !dateRangeInsideAnotherArrayOfRanges(rangePickerGet, filtersDatePlus)) {
+    if (!dateRangeInsideAnotherArrayOfRanges(rangePickerGet, filtersDateMinus) && !dateRangeInsideAnotherArrayOfRanges(rangePickerGet, filtersDatePlus)) {
         filtersDatePlus.push(rangePickerGet);
         resetDateUI();
         applyAllFilters();
@@ -1185,11 +1305,22 @@ document.getElementById('clearDateFilter').addEventListener('click', () => {
 
 function dateRangeInsideAnotherArrayOfRanges(rangeToCheck, rangeOrigin) {
     let isInside = false
-
-    const pickerStart = rangeToCheck[0] ? rangeToCheck[0].getTime() : Number.NEGATIVE_INFINITY;
-    const pickerEnd = rangeToCheck[1] ? rangeToCheck[1].getTime() : Number.POSITIVE_INFINITY;
+    if (rangeToCheck[0] !== null && rangeToCheck[0] !== undefined && rangeToCheck[0] !== "undefined"  && (!(rangeToCheck[0] instanceof Date) || rangeToCheck[0].toString() === "Invalid Date")) {
+        rangeToCheck[0] = new Date(rangeToCheck[0]);
+    }
+    if (rangeToCheck[1] !== null && rangeToCheck[1] !== undefined && rangeToCheck[1] !== "undefined" && (!(rangeToCheck[1] instanceof Date) || rangeToCheck[1].toString() === "Invalid Date")) {
+        rangeToCheck[1] = new Date(rangeToCheck[1]);
+    }
+    const pickerStart = rangeToCheck[0] ? rangeToCheck[0].getTime() : 0;
+    const pickerEnd = rangeToCheck[1] ? rangeToCheck[1].getTime() : 0;
 
     rangeOrigin.forEach(function (rangePresent) {
+        if (rangePresent[0] !== null && rangePresent[0] !== undefined && rangePresent[0] !== "undefined"  && (!(rangePresent[0] instanceof Date) || rangePresent[0].toString() === "Invalid Date")) {
+            rangePresent[0] = new Date(rangePresent[0]);
+        }
+        if (rangePresent[1] !== null && rangePresent[1] !== undefined && rangePresent[1] !== "undefined" && (!(rangePresent[1] instanceof Date) || rangePresent[1].toString() === "Invalid Date")) {
+            rangePresent[1] = new Date(rangePresent[1]);
+        }
         const originStart = rangePresent[0] ? rangePresent[0].getTime() : Number.NEGATIVE_INFINITY;
         const originEnd = rangePresent[1] ? rangePresent[1].getTime() : Number.POSITIVE_INFINITY;
 
@@ -1202,20 +1333,27 @@ function dateRangeInsideAnotherArrayOfRanges(rangeToCheck, rangeOrigin) {
     return isInside
 }
 
-function dateSingleInsideArrayOfRanges(dateToCheck, rangeOrigin) {
+function dateSingleInsideARange(dateToCheck, rangePresent) {
     let isInside = false;
-    if (!dateToCheck) return false;
-    const pickerPoint = dateToCheck ? dateToCheck.getTime() : Number.NEGATIVE_INFINITY;
+    if (!dateToCheck || (dateToCheck.toString() === "Invalid Date")) return false;
+    if (!(dateToCheck instanceof Date)) {
+        dateToCheck = new Date(dateToCheck);
+    }
+    if (rangePresent[0] !== null && rangePresent[0] !== undefined  && rangePresent[0] !== "undefined"  && (!(rangePresent[0] instanceof Date) || rangePresent[0].toString() === "Invalid Date")) {
+        rangePresent[0] = new Date(rangePresent[0]);
+    }
+    if (rangePresent[1] !== null && rangePresent[1] !== undefined && rangePresent[1] !== "undefined" && (!(rangePresent[1] instanceof Date) || rangePresent[1].toString() === "Invalid Date")) {
+        rangePresent[1] = new Date(rangePresent[1]);
+    }
+    const pickerPoint = dateToCheck ? dateToCheck.getTime() : 0;
 
-    rangeOrigin.forEach(function (rangePresent) {
-        const originStart = rangePresent[0] ? rangePresent[0].getTime() : Number.NEGATIVE_INFINITY;
-        const originEnd = rangePresent[1] ? rangePresent[1].getTime() : Number.POSITIVE_INFINITY;
+    const originStart = rangePresent[0] ? rangePresent[0].getTime() : Number.NEGATIVE_INFINITY;
+    const originEnd = rangePresent[1] ? rangePresent[1].getTime() : Number.POSITIVE_INFINITY;
 
-        // Verifica se l'intervallo da controllare è compreso nell'intervallo corrente
-        if (originStart <= pickerPoint && pickerPoint <= originEnd) {
-            isInside = true;
-        }
-    });
+    // Verifica se l'intervallo da controllare è compreso nell'intervallo corrente
+    if (originStart <= pickerPoint && pickerPoint <= originEnd) {
+        isInside = true;
+    }
 
     return isInside
 }
@@ -1349,22 +1487,56 @@ document.getElementById('clearSizeFilter').addEventListener('click', () => {
 
 function sizeRangeInsideAnotherArrayOfRanges(rangeToCheck, rangeOrigin) {
     let isInside = false
-    const sliderStart = (rangeToCheck[0] !== null && rangeToCheck[0] !== undefined)
+    let sliderStart = (rangeToCheck[0] !== null && rangeToCheck[0] !== undefined)
         ? rangeToCheck[0]
         : limitRangeSliderValues[0];
-    const sliderEnd = (rangeToCheck[1] !== null && rangeToCheck[1] !== undefined)
+    let sliderEnd = (rangeToCheck[1] !== null && rangeToCheck[1] !== undefined)
         ? rangeToCheck[1]
         : limitRangeSliderValues[1];
-
+    if (typeof sliderStart !== 'number') {
+        const convertedSize = Number(sliderStart);
+        if (!isNaN(convertedSize)) {
+            sliderStart = convertedSize;
+        } else {
+            // Gestisci il caso in cui la conversione non riesca, ad esempio impostando un valore di default
+            sliderStart = limitRangeSliderValues[0];
+        }
+    }
+    if (typeof sliderEnd !== 'number') {
+        const convertedSize = Number(sliderEnd);
+        if (!isNaN(convertedSize)) {
+            sliderEnd = convertedSize;
+        } else {
+            // Gestisci il caso in cui la conversione non riesca, ad esempio impostando un valore di default
+            sliderEnd = limitRangeSliderValues[1];
+        }
+    }
     rangeOrigin.forEach(function (rangePresent) {
         // Imposta gli estremi dell'intervallo dell'origine:
-        const originStart = (rangePresent[0] !== null && rangePresent[0] !== undefined)
+        let originStart = (rangePresent[0] !== null && rangePresent[0] !== undefined)
             ? rangePresent[0]
             : limitRangeSliderValues[0];
-        const originEnd = (rangePresent[1] !== null && rangePresent[1] !== undefined)
+        let originEnd = (rangePresent[1] !== null && rangePresent[1] !== undefined)
             ? rangePresent[1]
             : limitRangeSliderValues[1];
-
+        if (typeof originStart !== 'number') {
+            const convertedSize = Number(originStart);
+            if (!isNaN(convertedSize)) {
+                originStart = convertedSize;
+            } else {
+                // Gestisci il caso in cui la conversione non riesca, ad esempio impostando un valore di default
+                originStart = limitRangeSliderValues[0];
+            }
+        }
+        if (typeof originEnd !== 'number') {
+            const convertedSize = Number(originEnd);
+            if (!isNaN(convertedSize)) {
+                originEnd = convertedSize;
+            } else {
+                // Gestisci il caso in cui la conversione non riesca, ad esempio impostando un valore di default
+                originEnd = limitRangeSliderValues[1];
+            }
+        }
         // Controllo se l'intervallo dello slider è contenuto nell'intervallo corrente
         if (originStart <= sliderStart && sliderEnd <= originEnd) {
             isInside = true;
@@ -1374,28 +1546,52 @@ function sizeRangeInsideAnotherArrayOfRanges(rangeToCheck, rangeOrigin) {
     return isInside
 }
 
-function sizeSingleInsideArrayOfRanges(sizeToCheck, rangeOrigin) {
+function sizeSingleInsideARange(sizeToCheck, rangePresent) {
     let isInside = false
     if (!sizeToCheck) return false;
-    const sliderPoint = (sizeToCheck !== null && sizeToCheck !== undefined)
+
+    let sliderPoint = (sizeToCheck !== null && sizeToCheck !== undefined)
         ? sizeToCheck / 1024  //attenzione sizeToCheck è in in bytes - dividere per 1024
         : limitRangeSliderValues[0];
-
-    rangeOrigin.forEach(function (rangePresent) {
-        // Imposta gli estremi dell'intervallo dell'origine:
-        const originStart = (rangePresent[0] !== null && rangePresent[0] !== undefined)
-            ? rangePresent[0]
-            : limitRangeSliderValues[0];
-        const originEnd = (rangePresent[1] !== null && rangePresent[1] !== undefined)
-            ? rangePresent[1]
-            : limitRangeSliderValues[1];
-
-        // Controllo se l'intervallo dello slider è contenuto nell'intervallo corrente
-        if (originStart <= sizeToCheck && sizeToCheck <= originEnd) {
-            isInside = true;
+    if (typeof sliderPoint !== 'number') {
+        const convertedSize = Number(sliderPoint);
+        if (!isNaN(convertedSize)) {
+            sliderPoint = convertedSize;
+        } else {
+            // Gestisci il caso in cui la conversione non riesca, ad esempio impostando un valore di default
+            sliderPoint = limitRangeSliderValues[0];
         }
-    });
+    }
+    // Imposta gli estremi dell'intervallo dell'origine:
+    let originStart = (rangePresent[0] !== null && rangePresent[0] !== undefined)
+        ? rangePresent[0]
+        : limitRangeSliderValues[0];
+    let originEnd = (rangePresent[1] !== null && rangePresent[1] !== undefined)
+        ? rangePresent[1]
+        : limitRangeSliderValues[1];
+    if (typeof originStart !== 'number') {
+        const convertedSize = Number(originStart);
+        if (!isNaN(convertedSize)) {
+            originStart = convertedSize;
+        } else {
+            // Gestisci il caso in cui la conversione non riesca, ad esempio impostando un valore di default
+            originStart = limitRangeSliderValues[0];
+        }
+    }
+    if (typeof originEnd !== 'number') {
+        const convertedSize = Number(originEnd);
+        if (!isNaN(convertedSize)) {
+            originEnd = convertedSize;
+        } else {
+            // Gestisci il caso in cui la conversione non riesca, ad esempio impostando un valore di default
+            originEnd = limitRangeSliderValues[1];
+        }
+    }
 
+    // Controllo se l'intervallo dello slider è contenuto nell'intervallo corrente
+    if (originStart <= sliderPoint && sliderPoint <= originEnd) {
+        isInside = true;
+    }
     return isInside
 }
 
@@ -1680,7 +1876,7 @@ function toggleSpinner(active) {
     spinnerOverlay.style.display = active ? 'flex' : 'none';
 }
 
-//Funzione per gli alert e i confirm
+//Funzione per gli alert e i confirm che wrappano su native dialogs tramite ipcRender
 function showAlert(message) {
     ipcRenderer.invoke("show-alert", message);
 }
@@ -1692,6 +1888,15 @@ async function showConfirm(message, callback) {
 
 //Funzione per format date e size
 function formatSize(size) {
+    if (typeof size !== 'number') {
+        const convertedSize = Number(size);
+        if (!isNaN(convertedSize)) {
+            size = convertedSize;
+        } else {
+            // Gestisci il caso in cui la conversione non riesca, ad esempio impostando un valore di default
+            size = 0;
+        }
+    }
     if (size == undefined || size == null) return "???";
     let formattedSize; //attenzione qui è espresso già in kb
     if (size < 1024) {
@@ -1714,8 +1919,11 @@ function formatSizeForThree(size) {
 }
 
 function formatDate(date) {
-    if (date == undefined || date == null) return "???";
-    return date.toLocaleDateString();
+    if (date == undefined || date == null || (date.toString() === "Invalid Date")) return "???";
+    if (!(date instanceof Date)) {
+        // Tenta di convertire ad una data
+        date = new Date(date);
+    }
     // Estrae giorno, mese e anno dalla data
     const dd = String(date.getDate()).padStart(2, '0');
     const mm = String(date.getMonth() + 1).padStart(2, '0'); // getMonth() restituisce il mese da 0 a 11

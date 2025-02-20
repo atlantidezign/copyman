@@ -54,9 +54,9 @@
     <div class="input-group">
         <a class="btn btn-secondary btn-sm a-filter" title="Filters for Date"><i class="bi bi-calendar-range"></i></a>
         <div class="input-group date input-daterange" id="filterDateInput">
-            <input type="text" name="range-start" class="form-control" placeholder="Start Date" title="Start Date">
+            <input type="text" id="range-start" name="range-start" class="form-control" placeholder="Start Date" title="Start Date">
             <span class="input-group-text">to</span>
-            <input type="text" name="range-end" class="form-control" placeholder="End Date" title="End Date">
+            <input type="text" id="range-end" name="range-end" class="form-control" placeholder="End Date" title="End Date">
         </div>
         <a id="setDateFilter" class="btn btn-primary btn-sm" type="button" title="Set Date Filter"><i
                 class="bi bi-check-square"></i></a>
@@ -76,6 +76,7 @@
             <input type="number" id="slider-from" class="form-control" step="1" min="0" max="1000000000" placeholder="Min Size (Kb)" title="Min Size (Kb)"/>
             <span class="input-group-text">to</span>
             <input type="number" id="slider-to" class="form-control" step="1" min="0" max="1000000000" placeholder="Max Size (Kb)" title="Max Size (Kb)"/>
+            <span class="input-group-text">Kb</span>
         </div>
         <div id="slider-range"></div>
         <a id="setSizeFilter" class="btn btn-primary btn-sm" type="button" title="Set Size Filter"><i
