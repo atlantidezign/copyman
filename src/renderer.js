@@ -161,6 +161,8 @@ The **options** panel affects copying and selecting behaviours.
 
 #### Selecting
 - **Propagate Selection** to choose if propagate (checked) or not (unchecked) the selection/deselection click of an item to parent and childen elements.
+
+#### Filtering
 - **Relationship OR** to choose the kind of relationship between filter groups, OR (checked) or AND (unchecked).
 
 ### Snapshots
@@ -1054,7 +1056,7 @@ function applyAllFilters() {
                     // Espande i rami per rendere visibile il nodo selezionato
                     expandAncestors(checkbox);
                 } else {
-                    if (filterNameMinus.length === 0 && filtersNamePlus.length === 0) {
+                    if (filtersNameMinus.length === 0 && filtersNamePlus.length === 0) {
                         checkbox.checked = true;
                         // Espande i rami per rendere visibile il nodo selezionato
                         expandAncestors(checkbox);
@@ -1087,7 +1089,7 @@ function applyAllFilters() {
                     // Espande i rami per rendere visibile il nodo selezionato
                     expandAncestors(checkbox);
                 } else {
-                    if (filterNameMinus.length === 0 && filtersNamePlus.length === 0 && filterDateMinus.length === 0 && filtersDatePlus.length === 0 ) {
+                    if (filtersNameMinus.length === 0 && filtersNamePlus.length === 0 && filterDateMinus.length === 0 && filtersDatePlus.length === 0 ) {
                         checkbox.checked = true;
                         // Espande i rami per rendere visibile il nodo selezionato
                         expandAncestors(checkbox);
@@ -1605,7 +1607,7 @@ function removeSizeFilters() {
     writeMessage('Size filters removed.');
 }
 
-function removeSingleSizeFilter() {
+function removeSingleSizeFilter(index, kind) {
     let oldFilter = "";
     if (kind === "+") {
         oldFilter = filtersSizePlus[index];
@@ -1763,6 +1765,7 @@ document.getElementById("propagateChecked").addEventListener("change", function 
 document.getElementById("relationshipORChecked").addEventListener("change", function () {
     relationshipOR = this.checked;
     writeMessage('Relationship OR setting is now ' + relationshipOR);
+    applyAllFilters();
 });
 
 //Copia

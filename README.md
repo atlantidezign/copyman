@@ -112,6 +112,8 @@ The **options** panel affects copying and selecting behaviours.
 
 #### Selecting
 - **Propagate Selection** to choose if propagate (checked) or not (unchecked) the selection/deselection click of an item to parent and childen elements.
+
+#### Filtering
 - **Relationship OR** to choose the kind of relationship between filter groups, OR (checked) or AND (unchecked).
 
 ### Snapshots
