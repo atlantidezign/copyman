@@ -102,7 +102,7 @@
             </button>
              <button type="button" id="modalListTrigger" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                      title="Open Selection List"
-                     data-bs-target="#listModal"><i class="bi bi-list"></i>
+                     data-bs-target="#listModal"><i class="bi bi-list-check"></i>
             </button>
 
             <button type="button" id="modalSnapshotTrigger" class="btn btn-primary btn-sm" data-bs-toggle="modal"
@@ -164,6 +164,12 @@
                 </div>
                 <div class="modal-footer">
                     <span id="listFooterTotal"></span>
+                    <button type="button" id="listModalButtonSaveJson" class="btn btn-primary btn-sm"
+                            title="Export Selection List to JSON"><i class="bi bi-filetype-json"></i> Export JSON
+                    </button>
+                    <button type="button" id="listModalButtonSaveCsv" class="btn btn-primary btn-sm"
+                            title="Export Selection List to JSON"><i class="bi bi-filetype-csv"></i> Export CSV
+                    </button>
                     <button type="button" class="btn btn-primary btn-sm" data-bs-dismiss="modal"><i
                             class="bi bi-x-lg"></i>
                         Close

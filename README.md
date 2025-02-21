@@ -73,7 +73,7 @@ A **Substractive Filter** removes from selection every item matches, as a **NOT*
 **Relationship** between Addictive filters of different groups can be an **OR** or **AND** condition, according to options.
 OR means that item is selected if **at least one** of the group conditions matches, AND means that **all** conditions must match.
 
-#### Name
+#### Name Filter
 Accepts text string as input, as file/folder name substring.
 - By clicking the **Set Name Filter** button, it selects the items that contain the specified string while deselecting the others.
 - By clicking the **Add Addictive Name Filter** button, it adds the items that match, without altering the others.
@@ -81,7 +81,7 @@ Accepts text string as input, as file/folder name substring.
 - In the **Name Filters List** you can see all Name filters applyed and remove individual filters.
 - Using the **Clear Name Filters** button, it removes the Name filters.  
 
-#### Date
+#### Date Filter
 Accepts one or two dates as input, as file/folder date container range. If one date is null, it will be threaded as -infinity (start) or  +infinity (end).
 - By clicking the **Set Date Filter** button, it selects the items with date inside the range while deselecting the others.
 - By clicking the **Add Addictive Date Filter** button, it adds the items that match, without altering the others.
@@ -89,7 +89,7 @@ Accepts one or two dates as input, as file/folder date container range. If one d
 - In the **Date Filters List** you can see all Date filters applyed and remove individual filters.
 - Using the **Clear Date Filters** button, it removes the Date filters.
 
-#### Size
+#### Size Filter
 Accepts one or two numbers (expressed in Kb) as input, as file/folder size container range. If one number is null, it will be threaded as 0 (start) or  1.000.000.000 (end).
 - By clicking the **Set Size Filter** button, it selects the items with size inside the range while deselecting the others.
 - By clicking the **Add Addictive Size Filter** button, it adds the items that match, without altering the others.
@@ -124,6 +124,10 @@ The **snapshot** panel manages snapshot (current configuration of folders, filte
 - **Clear Saved Shapshot** to remove saved snapshot by selected name.
 - **Clear All Shapshots** to remove all saved snapshots.
 
+### Selection List 
+In the **Selection List** panel you'll find a table list of the selected items.
+Trough **Export JSON** or **Export CSV** button you can export the list in your preferred format.
+
 ### Copying
 With the **Copy Selected Items** button, the files are copied from the Source to the Destinations.
 
@@ -133,9 +137,7 @@ For example, if a folder is selected but only some of the files inside it are se
 
 ### Menus
 Trough the **contextual menu** (right click) you have shortcuts to the main features of the application.
-
 The **main menu** contains generic actions, and the help.
-
 There is also the **tray** icon and its minimal menu.
 
 

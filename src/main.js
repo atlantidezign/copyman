@@ -1,6 +1,7 @@
 const {app, BrowserWindow, ipcMain, dialog, nativeImage, nativeTheme, Tray, Menu, shell} = require('electron')
 const path = require('path');
 const fs = require('fs');
+const os = require('os');
 
 let inDebug = false;
 if (process.argv.indexOf('--inDebug') > -1) { inDebug = true;}
@@ -276,6 +277,37 @@ app.whenReady().then(() => {
         return null;
     });
 
+    ipcMain.handle('select-export-file', async (event, dataToExport, kind) => {
+        const pad = (number) => (number < 10 ? '0' + number : number);
+        const now = new Date();
+        const defaultFileName = `copyman_selection_export-${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}-${pad(now.getHours())}-${pad(now.getMinutes())}-${pad(now.getSeconds())}.${kind}`;
+        const options = {
+            title: 'Export selection as JSON file',
+            defaultPath: defaultFileName,
+            buttonLabel: 'Export'
+        };
+        let useText = "";
+        if (kind == 'json') {
+            options.filters = [{ name: 'JSON', extensions: ['json'] }]
+            useText = JSON.stringify(dataToExport, null, 2);
+        } else if (kind == 'csv') {
+            options.filters = [{ name: 'CSV', extensions: ['csv'] }]
+            useText = createCsv(dataToExport);
+        } else {
+            useText = dataToExport;
+        }
+        const result = await dialog.showSaveDialog(options);
+        if (!result.canceled && result.filePath) {
+            try {
+                fs.writeFileSync(result.filePath, useText);
+            } catch (err) {
+                return false
+            }
+            return true;
+        }
+        return false;
+    });
+
     //Business: gestione chiamate alert e confirm
     ipcMain.handle("show-alert", (e, message) => {
         dialog.showMessageBox(win, { title: "Copyman | Alert", message: message });
@@ -308,3 +340,41 @@ app.on('window-all-closed', function () {
 });
 
 Menu.setApplicationMenu(null)
+
+//utils
+function createCsv(dataToExport) {
+    if (!dataToExport || dataToExport.length === 0) {
+        return '';
+    }
+    const headers = Object.keys(dataToExport[0]);
+    function encloseInQuotes(text) {
+        return `"${text.replace(/"/g, '""')}"`;
+    }
+    function formatField(field) {
+        if (field == null) {
+            return '';
+        }
+        if (field instanceof Date) {
+            return encloseInQuotes(field.toLocaleDateString());
+        }
+        if (field.indexOf(' GMT') >= 0) {
+            return encloseInQuotes((new Date(field)).toLocaleDateString());
+        }
+        if (typeof field === 'string') {
+            return encloseInQuotes(field);
+        }
+        const fieldString = field.toString();
+        if (fieldString.includes(';') || fieldString.includes('"') || fieldString.includes('\n')) {
+            return encloseInQuotes(fieldString);
+        }
+        return fieldString;
+    }
+    const csvRows = [];
+    csvRows.push(headers.map(header => encloseInQuotes(header)).join(';'));
+    dataToExport.forEach(item => {
+        const row = headers.map(header => formatField(item[header])).join(';');
+        csvRows.push(row);
+    });
+    return csvRows.join('\n');
+}
+

@@ -122,7 +122,7 @@ A **Substractive Filter** removes from selection every item matches, as a **NOT*
 **Relationship** between Addictive filters of different groups can be an **OR** or **AND** condition, according to options.
 OR means that item is selected if **at least one** of the group conditions matches, AND means that **all** conditions must match.
 
-#### Name
+#### Name Filter
 Accepts text string as input, as file/folder name substring.
 - By clicking the **Set Name Filter** button, it selects the items that contain the specified string while deselecting the others.
 - By clicking the **Add Addictive Name Filter** button, it adds the items that match, without altering the others.
@@ -130,7 +130,7 @@ Accepts text string as input, as file/folder name substring.
 - In the **Name Filters List** you can see all Name filters applyed and remove individual filters.
 - Using the **Clear Name Filters** button, it removes the Name filters.  
 
-#### Date
+#### Date Filter
 Accepts one or two dates as input, as file/folder date container range. If one date is null, it will be threaded as -infinity (start) or  +infinity (end).
 - By clicking the **Set Date Filter** button, it selects the items with date inside the range while deselecting the others.
 - By clicking the **Add Addictive Date Filter** button, it adds the items that match, without altering the others.
@@ -138,12 +138,12 @@ Accepts one or two dates as input, as file/folder date container range. If one d
 - In the **Date Filters List** you can see all Date filters applyed and remove individual filters.
 - Using the **Clear Date Filters** button, it removes the Date filters.
 
-#### Size
+#### Size Filter
 Accepts one or two numbers (expressed in Kb) as input, as file/folder size container range. If one number is null, it will be threaded as 0 (start) or  1.000.000.000 (end).
 - By clicking the **Set Size Filter** button, it selects the items with size inside the range while deselecting the others.
 - By clicking the **Add Addictive Size Filter** button, it adds the items that match, without altering the others.
 - By clicking the **Add Subtractive Size Filter** button, it removes any selected item that matches with the size range.
-- In the **Size (Kb) Filters List** you can see all Size filters applyed and remove individual filters.
+- In the **Size Filters List** you can see all Size filters applyed and remove individual filters.
 - Using the **Clear Size Filters** button, it removes the Size filters.
 
 ### Actions
@@ -172,6 +172,10 @@ The **snapshot** panel manages snapshot (current configuration of folders, filte
 - **Load Saved Shapshot** to load saved snapshot by selected name.
 - **Clear Saved Shapshot** to remove saved snapshot by selected name.
 - **Clear All Shapshots** to remove all saved snapshots.
+
+### Selection List 
+In the **Selection List** panel you'll find a table list of the selected items.
+Trough **Export JSON** or **Export CSV** button you can export the list in your preferred format.
 
 ### Copying
 With the **Copy Selected Items** button, the files are copied from the Source to the Destinations.
@@ -228,6 +232,7 @@ function initializeSnapshotModal() {
 function initalizeModals() {
     initalizeHelpModal();
     initializeSnapshotModal();
+    updateListContent();
 }
 
 //Components
@@ -1896,8 +1901,8 @@ function updateListContent() {
         htmlContent += '<tr><td>' + (item.isDirectory === "1" ? '<i class="bi bi-folder2"></i>':'<i class="bi bi-file"></i>') + '</td><td>' + item.path + '</td><td>' + item.modified + '</td><td>' + item.size + '</td></tr>';
     })
     htmlContent += '</table>';
-    document.getElementById('listFooterTotal').innerHTML = 'Selected: ' + selectedItems.length;
     document.getElementById('listContentMD').innerHTML = htmlContent;
+    document.getElementById('listFooterTotal').innerHTML = 'Selected: ' + selectedItems.length;
 }
 //Genera array dei selezionati
 function getListOfSelectedItems() {
@@ -1920,7 +1925,37 @@ function getListOfSelectedItems() {
 
     return files;
 }
-
+document.getElementById('listModalButtonSaveJson').addEventListener('click', saveListOfSelectedItemsToJson);
+document.getElementById('listModalButtonSaveCsv').addEventListener('click', saveListOfSelectedItemsToCsv);
+function saveListOfSelectedItemsToJson() {
+    let dataToExport = getListOfSelectedItems();
+    if (dataToExport.length > 0) {
+        saveListOfSelectedItems("json", dataToExport);
+    } else {
+        showAlert("No items to export.");
+    }
+}
+function saveListOfSelectedItemsToCsv() {
+    let dataToExport = getListOfSelectedItems();
+    if (dataToExport.length > 0) {
+        saveListOfSelectedItems("csv", dataToExport);
+    } else {
+        showAlert("No items to export.");
+    }
+}
+async function saveListOfSelectedItems(kind, dataToExport) {
+    writeMessage('Choose '+kind.toUpperCase()+' Export file.');
+    clicksActive = false;
+    toggleSpinner(!clicksActive);
+    const saved = await ipcRenderer.invoke('select-export-file', dataToExport, kind);
+    if (saved) {
+        writeMessage('Selection List '+kind.toUpperCase()+' exported successfully.');
+    } else {
+        writeMessage('Selection List '+kind.toUpperCase()+' not exported.');
+    }
+    clicksActive = true;
+    toggleSpinner(!clicksActive);
+}
 
 //Utils
 // Funzione per messaggio
