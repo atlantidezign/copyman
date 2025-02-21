@@ -442,10 +442,14 @@ let filtersDateMinus = []; //Array<{ from: Date, to: Date}>
 let filtersSizePlus = []; //Array<{ from: number, to: number}>
 let filtersSizeMinus = []; //Array<{ from: number, to: number}>
 
+//User Options Defaults
+let fileOverwriteDefault = true;
+let propagateSelectionsDefault = true;
+let relationshipORDefault = true;
 //User Options
-let fileOverwrite = true;
-let propagateSelections = true;
-let relationshipOR = true;
+let propagateSelections = propagateSelectionsDefault;
+let fileOverwrite = fileOverwriteDefault;
+let relationshipOR = relationshipORDefault;
 
 //Snapshot actions
 document.getElementById('saveSnapshot').addEventListener('click', saveSnapshot);
@@ -457,7 +461,7 @@ function listSnapshots() {
     let selectEl = document.getElementById('loadSnapshotInput');
     selectEl.innerHTML = '';
     let useSettings = [];
-    const settingsStr = localStorage.getItem('settings');
+    const settingsStr = localStorage.getItem('snapshots');
     if (settingsStr) {
         useSettings = JSON.parse(settingsStr);
     }
@@ -492,7 +496,7 @@ function saveSnapshot() {
     }
 
     let useSettings = [];
-    const settingsStr = localStorage.getItem('settings');
+    const settingsStr = localStorage.getItem('snapshots');
     if (settingsStr) {
         useSettings = JSON.parse(settingsStr);
     }
@@ -522,7 +526,7 @@ function saveSnapshot() {
     }
     useSettings.push(newSettings);
     // Serializzazione dell'oggetto settings in formato JSON e salvataggio nel localStorage
-    localStorage.setItem('settings', JSON.stringify(useSettings));
+    localStorage.setItem('snapshots', JSON.stringify(useSettings));
     listSnapshots();
     writeMessage('Snapshot saved.');
 }
@@ -536,7 +540,7 @@ function loadSnapshot() {
     }
     // Recupera le impostazioni salvate dal localStorage
     let useSettings = [];
-    const settingsStr = localStorage.getItem('settings');
+    const settingsStr = localStorage.getItem('snapshots');
     if (settingsStr) {
         useSettings = JSON.parse(settingsStr);
     }
@@ -599,7 +603,7 @@ function cleanSnapshot() {
     }
 
     let useSettings = [];
-    const settingsStr = localStorage.getItem('settings');
+    const settingsStr = localStorage.getItem('snapshots');
     if (settingsStr) {
         useSettings = JSON.parse(settingsStr);
     }
@@ -613,7 +617,7 @@ function cleanSnapshot() {
 
     function cleanCallback() {
         useSettings.splice(index, 1);
-        localStorage.setItem('settings', JSON.stringify(useSettings));
+        localStorage.setItem('snapshots', JSON.stringify(useSettings));
         listSnapshots();
         writeMessage(`Snapshot named "${useName}" removed.`);
     }
@@ -623,10 +627,17 @@ function cleanAllSnapshots() {
     showConfirm('Are you sure you want to Clean all saved Snapshots?', cleanCallback);
 
     function cleanCallback() {
-        localStorage.removeItem('settings');
+        localStorage.removeItem('snapshots');
         listSnapshots();
         writeMessage('Snapshots cleaned.');
     }
+}
+
+function exportSnapshot() {
+    //TODO
+}
+function importSnapshot() {
+    //TODO
 }
 
 //Generale click
@@ -688,7 +699,6 @@ document.getElementById('clearSource').addEventListener('click', async () => {
     writeMessage('Source folder cleared.');
 });
 document.getElementById('buttonSwap').addEventListener('click', swapSourceAndDestination);
-
 function swapSourceAndDestination() {
     let oldsource = sourceFolder;
     sourceFolder = destinationFolders[0];
@@ -702,12 +712,10 @@ function swapSourceAndDestination() {
 }
 
 // Selezione cartelle destinazione
-// Event listener per il pulsante "Aggiungi Destinazione"
 document.getElementById('addDestination').addEventListener('click', addDestination);
 document.getElementById('clearAllDestinations').addEventListener('click', clearDestinations);
 
 //Destinazione
-// Funzione per aggiornare la UI mostrando la lista attuale delle directory
 function updateDestinationList() {
     const listContainer = document.getElementById('destinationList');
     listContainer.innerHTML = ''; // Svuota la lista esistente
@@ -744,8 +752,6 @@ function updateDestinationList() {
     }
 
 }
-
-// Funzione per aggiungere una directory
 async function addDestination() {
     writeMessage('Choose a Destination folder.');
     clicksActive = false;
@@ -801,15 +807,11 @@ async function addDestination() {
     clicksActive = true;
     toggleSpinner(!clicksActive);
 }
-
-// Funzione per rimuovere una directory dall'array destinazioni data la sua posizione
 function removeDestination(index) {
     destinationFolders.splice(index, 1);
     updateDestinationList();
     writeMessage('Destination folder removed.');
 }
-
-// Funzione per rimuovere tutti gli elementi destinazione
 function clearDestinations() {
     destinationFolders = [];
     updateDestinationList();
@@ -817,7 +819,6 @@ function clearDestinations() {
 }
 
 //Albero render
-// Funzione ricorsiva per costruire la struttura dell'albero dei file
 function buildFileTree(dir, relativePath = '') {
     const tree = [];
     const items = fs.readdirSync(dir);
@@ -853,8 +854,6 @@ function buildFileTree(dir, relativePath = '') {
     });
     return tree;
 }
-
-// Funzione per renderizzare l'albero in HTML mantenendo lo stato di espansione/collasso predefinito
 function renderFileTree(treeData) {
     const container = document.getElementById('file-tree');
     container.innerHTML = '';
@@ -869,9 +868,6 @@ function renderFileTree(treeData) {
 
     updateListContent();
 }
-
-// Funzione per creare un nodo (LI) dell'albero con checkbox e, se directory, toggle per espandi/collassa.
-// Viene aggiunto un data attribute "nodeName" al checkbox per facilitare il filtraggio.
 function createTreeNode(node) {
     const li = document.createElement('li');
 
@@ -984,7 +980,6 @@ function createTreeNode(node) {
 }
 
 //Albero selezione
-// Funzione che si occupa della propagazione verso il basso
 function propagateDown(li, isChecked) {
     // Seleziona tutti i checkbox dei nodi figli (ricorsivamente)
     const childCheckboxes = li.querySelectorAll("ul input[type='checkbox']");
@@ -992,8 +987,6 @@ function propagateDown(li, isChecked) {
         cb.checked = isChecked;
     });
 }
-
-// Funzione che si occupa della propagazione verso l'alto
 function propagateUp(li) {
     // Trova il genitore più vicino che sia un <li> (ovvero la directory padre)
     const parentLi = li.parentElement.closest('li');
@@ -1005,8 +998,6 @@ function propagateUp(li) {
         }
     }
 }
-
-// Funzione per espandere il ramo (impostare display block) per tutti gli antenati del nodo passato
 function expandAncestors(element) {
     let parent = element.parentElement;
     while (parent && parent.id !== 'file-tree') {
@@ -1026,13 +1017,12 @@ function expandAncestors(element) {
 }
 
 // Gestione dei filtri
-// Il filtro seleziona (check) tutti i nodi che corrispondono al criterio; se il filtro è vuoto, deseleziona tutto.
 
 //Filters common
 function removeAllFilters() {
-    document.getElementById('filterNameInput').value = "";
-    resetDateUI();
-    resetSizeUI();
+    resetNameFilterUI();
+    resetDateFilterUI();
+    resetSizeFilterUI();
 
     // Itera su tutti i checkbox dell'albero
     filtersNamePlus = [];
@@ -1049,7 +1039,6 @@ function removeAllFilters() {
     removeAllSelection();
     writeMessage('All filters removed.');
 }
-
 function applyAllFilters() {
     renderNameFiltersList();
     renderDateFiltersList();
@@ -1148,7 +1137,6 @@ function applyAllFilters() {
     }
     writeMessage('Filters updated.');
 }
-
 function removeAllSelection() {
     const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
     checkboxes.forEach(checkbox => {
@@ -1170,7 +1158,7 @@ document.getElementById('setNameFilter').addEventListener('click', () => {
     }
     filtersNamePlus = [filterValue];
     filtersNameMinus = [];
-    document.getElementById('filterNameInput').value = "";
+    resetNameFilterUI();
     applyAllFilters();
 });
 document.getElementById('addNameMinusFilter').addEventListener('click', () => {
@@ -1186,7 +1174,7 @@ document.getElementById('addNameMinusFilter').addEventListener('click', () => {
     }
     if (filtersNameMinus.indexOf(filterValue) < 0 && filtersNamePlus.indexOf(filterValue) < 0) {
         filtersNameMinus.push(filterValue);
-        document.getElementById('filterNameInput').value = "";
+        resetNameFilterUI();
         applyAllFilters();
     } else {
         showAlert("This filter is already present.");
@@ -1208,7 +1196,7 @@ document.getElementById('addNamePlusFilter').addEventListener('click', () => {
     }
     if (filtersNameMinus.indexOf(filterValue) < 0 && filtersNamePlus.indexOf(filterValue) < 0) {
         filtersNamePlus.push(filterValue);
-        document.getElementById('filterNameInput').value = "";
+        resetNameFilterUI();
         applyAllFilters();
     } else {
         showAlert("This filter is already present.");
@@ -1220,9 +1208,8 @@ document.getElementById('addNamePlusFilter').addEventListener('click', () => {
 document.getElementById('clearNameFilter').addEventListener('click', () => {
     removeNameFilters();
 });
-
 function removeNameFilters() {
-    document.getElementById('filterNameInput').value = "";
+    resetNameFilterUI();
     // Itera su tutti i checkbox dell'albero
     filtersNamePlus = [];
     filtersNameMinus = [];
@@ -1230,7 +1217,6 @@ function removeNameFilters() {
     applyAllFilters();
     writeMessage('Name filters removed.');
 }
-
 function removeSingleNameFilter(index, kind) {
     let oldFilter = "";
     if (kind === "+") {
@@ -1244,7 +1230,6 @@ function removeSingleNameFilter(index, kind) {
     writeMessage('Removed Name filter "' + kind + oldFilter + '".');
     applyAllFilters();
 }
-
 function renderNameFiltersList() {
     const listContainer = document.getElementById('nameFilterList');
     listContainer.innerHTML = ''; // Svuota la lista esistente
@@ -1274,6 +1259,9 @@ function renderNameFiltersList() {
         });
     }
 }
+function resetNameFilterUI() {
+    document.getElementById('filterNameInput').value = "";
+}
 
 //Filters Date
 document.getElementById('setDateFilter').addEventListener('click', () => {
@@ -1291,7 +1279,7 @@ document.getElementById('setDateFilter').addEventListener('click', () => {
     }
     filtersDatePlus = [rangePickerGet];
     filtersDateMinus = [];
-    resetDateUI();
+    resetDateFilterUI();
     applyAllFilters();
 });
 document.getElementById('addDateMinusFilter').addEventListener('click', () => {
@@ -1308,7 +1296,7 @@ document.getElementById('addDateMinusFilter').addEventListener('click', () => {
     }
     if (!dateRangeInsideAnotherArrayOfRanges(rangePickerGet, filtersDateMinus) && !dateRangeInsideAnotherArrayOfRanges(rangePickerGet, filtersDatePlus)) {
         filtersDateMinus.push(rangePickerGet);
-        resetDateUI();
+        resetDateFilterUI();
         applyAllFilters();
     } else {
         showAlert("This filter is already present.");
@@ -1330,7 +1318,7 @@ document.getElementById('addDatePlusFilter').addEventListener('click', () => {
 
     if (!dateRangeInsideAnotherArrayOfRanges(rangePickerGet, filtersDateMinus) && !dateRangeInsideAnotherArrayOfRanges(rangePickerGet, filtersDatePlus)) {
         filtersDatePlus.push(rangePickerGet);
-        resetDateUI();
+        resetDateFilterUI();
         applyAllFilters();
     } else {
         showAlert("This filter is already present.");
@@ -1340,7 +1328,6 @@ document.getElementById('addDatePlusFilter').addEventListener('click', () => {
 document.getElementById('clearDateFilter').addEventListener('click', () => {
     removeDateFilters();
 });
-
 function dateRangeInsideAnotherArrayOfRanges(rangeToCheck, rangeOrigin) {
     let isInside = false
     if (rangeToCheck[0] !== null && rangeToCheck[0] !== undefined && rangeToCheck[0] !== "undefined"  && (!(rangeToCheck[0] instanceof Date) || rangeToCheck[0].toString() === "Invalid Date")) {
@@ -1370,7 +1357,6 @@ function dateRangeInsideAnotherArrayOfRanges(rangeToCheck, rangeOrigin) {
 
     return isInside
 }
-
 function dateSingleInsideARange(dateToCheck, rangePresent) {
     let isInside = false;
     if (!dateToCheck || (dateToCheck.toString() === "Invalid Date")) return false;
@@ -1395,9 +1381,8 @@ function dateSingleInsideARange(dateToCheck, rangePresent) {
 
     return isInside
 }
-
 function removeDateFilters() {
-    resetDateUI();
+    resetDateFilterUI();
     // Itera su tutti i checkbox dell'albero
     filtersDatePlus = [];
     filtersDateMinus = [];
@@ -1405,7 +1390,6 @@ function removeDateFilters() {
     applyAllFilters();
     writeMessage('Date filters removed.');
 }
-
 function removeSingleDateFilter(index, kind) {
     let oldFilter = "";
     if (kind === "+") {
@@ -1419,11 +1403,9 @@ function removeSingleDateFilter(index, kind) {
     writeMessage('Removed Date filter "' + kind + renderSingleDateFilter(oldFilter) + '".');
     applyAllFilters();
 }
-
 function renderSingleDateFilter(filter) {
     return formatDate(filter[0]) + "-" + formatDate(filter[1]);
 }
-
 function renderDateFiltersList() {
     const listContainer = document.getElementById('dateFilterList');
     listContainer.innerHTML = ''; // Svuota la lista esistente
@@ -1453,8 +1435,7 @@ function renderDateFiltersList() {
         });
     }
 }
-
-function resetDateUI() {
+function resetDateFilterUI() {
     rangePicker.setDates({clear: true}, {clear: true});
 }
 
@@ -1474,7 +1455,7 @@ document.getElementById('setSizeFilter').addEventListener('click', () => {
     }
     filtersSizePlus = [rangeSliderGet];
     filtersSizeMinus = [];
-    resetSizeUI();
+    resetSizeFilterUI();
     applyAllFilters();
 });
 document.getElementById('addSizeMinusFilter').addEventListener('click', () => {
@@ -1491,7 +1472,7 @@ document.getElementById('addSizeMinusFilter').addEventListener('click', () => {
     }
     if (!sizeRangeInsideAnotherArrayOfRanges(rangeSliderGet, filtersSizeMinus) && !sizeRangeInsideAnotherArrayOfRanges(rangeSliderGet, filtersSizePlus)) {
         filtersSizeMinus.push(rangeSliderGet);
-        resetSizeUI();
+        resetSizeFilterUI();
         applyAllFilters();
     } else {
         showAlert("This filter is already present.");
@@ -1512,7 +1493,7 @@ document.getElementById('addSizePlusFilter').addEventListener('click', () => {
     }
     if (!sizeRangeInsideAnotherArrayOfRanges(rangeSliderGet, filtersSizeMinus) && !sizeRangeInsideAnotherArrayOfRanges(rangeSliderGet, filtersSizePlus)) {
         filtersSizePlus.push(rangeSliderGet);
-        resetSizeUI();
+        resetSizeFilterUI();
         applyAllFilters();
     } else {
         showAlert("This filter is already present.");
@@ -1522,7 +1503,6 @@ document.getElementById('addSizePlusFilter').addEventListener('click', () => {
 document.getElementById('clearSizeFilter').addEventListener('click', () => {
     removeSizeFilters();
 });
-
 function sizeRangeInsideAnotherArrayOfRanges(rangeToCheck, rangeOrigin) {
     let isInside = false
     let sliderStart = (rangeToCheck[0] !== null && rangeToCheck[0] !== undefined)
@@ -1583,7 +1563,6 @@ function sizeRangeInsideAnotherArrayOfRanges(rangeToCheck, rangeOrigin) {
 
     return isInside
 }
-
 function sizeSingleInsideARange(sizeToCheck, rangePresent) {
     let isInside = false
     if (!sizeToCheck) return false;
@@ -1632,9 +1611,8 @@ function sizeSingleInsideARange(sizeToCheck, rangePresent) {
     }
     return isInside
 }
-
 function removeSizeFilters() {
-    resetSizeUI();
+    resetSizeFilterUI();
     // Itera su tutti i checkbox dell'albero
     filtersSizePlus = [];
     filtersSizeMinus = [];
@@ -1642,7 +1620,6 @@ function removeSizeFilters() {
     applyAllFilters();
     writeMessage('Size filters removed.');
 }
-
 function removeSingleSizeFilter(index, kind) {
     let oldFilter = "";
     if (kind === "+") {
@@ -1656,11 +1633,9 @@ function removeSingleSizeFilter(index, kind) {
     writeMessage('Removed Size filter "' + kind + renderSingleSizeFilter(oldFilter) + '".');
     applyAllFilters();
 }
-
 function renderSingleSizeFilter(filter) {
     return formatSize(filter[0]) + "-" + formatSize(filter[1]);
 }
-
 function renderSizeFiltersList() {
     const listContainer = document.getElementById('sizeFilterList');
     listContainer.innerHTML = ''; // Svuota la lista esistente
@@ -1690,8 +1665,7 @@ function renderSizeFiltersList() {
         });
     }
 }
-
-function resetSizeUI() {
+function resetSizeFilterUI() {
     rangeSlider.noUiSlider.set(initialRangeSliderValues)
 }
 
@@ -1805,7 +1779,6 @@ document.getElementById("relationshipORChecked").addEventListener("change", func
 });
 
 //Copia
-// Funzione che gestisce la copia degli elementi selezionati
 document.getElementById('copySelected').addEventListener('click', async () => {
     // Controlla che sia stata selezionata almeno la cartella di destinazione
     writeMessage('Checking for Copy...');
@@ -1865,8 +1838,6 @@ document.getElementById('copySelected').addEventListener('click', async () => {
         writeMessage('Copy Completed!');
     }
 });
-
-// Funzione ricorsiva per copiare file e directory
 async function copyRecursive(src, dest) {
     const stats = fs.statSync(src);
     if (stats.isDirectory()) {
@@ -1891,7 +1862,6 @@ async function copyRecursive(src, dest) {
 }
 
 //Lista selezionati
-//Funzione per generare html da lista selezionati
 function updateListContent() {
     let selectedItems = getListOfSelectedItems();
     let htmlContent = '<table class="table table-striped">' +
@@ -1904,7 +1874,6 @@ function updateListContent() {
     document.getElementById('listContentMD').innerHTML = htmlContent;
     document.getElementById('listFooterTotal').innerHTML = 'Selected: ' + selectedItems.length;
 }
-//Genera array dei selezionati
 function getListOfSelectedItems() {
     // Seleziona il div #file-tree
     const fileTree = document.getElementById('file-tree');
@@ -1958,9 +1927,9 @@ async function saveListOfSelectedItems(kind, dataToExport) {
 }
 
 //Utils
-// Funzione per messaggio
-let messageTimeout = null;
 
+// Funzione per messaggi
+let messageTimeout = null;
 function writeMessage(message) {
     if (messageTimeout) clearTimeout(messageTimeout);
     document.getElementById('status').textContent = message;
@@ -1986,7 +1955,6 @@ function toggleSpinner(active) {
 function showAlert(message) {
     ipcRenderer.invoke("show-alert", message);
 }
-
 async function showConfirm(message, callback) {
     const confirmation = await ipcRenderer.invoke('show-confirm', message);
     if (confirmation) callback();
@@ -2012,7 +1980,6 @@ function formatSize(size) {
     }
     return formattedSize;
 }
-
 function formatSizeForThree(size) {
     if (size == undefined || size == null) return "???";
     let formattedSize;
@@ -2023,7 +1990,6 @@ function formatSizeForThree(size) {
     }
     return formattedSize;
 }
-
 function formatDate(date) {
     if (date == undefined || date == null || (date.toString() === "Invalid Date")) return "???";
     if (!(date instanceof Date)) {
