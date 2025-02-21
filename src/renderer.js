@@ -642,16 +642,22 @@ document.getElementById('selectSource').addEventListener('click', async () => {
         writeMessage('Scanning Source folder...');
         if (destinationFolders.includes(folder)) {
             showAlert("This folder is in the destination list.");
+            clicksActive = true;
+            toggleSpinner(!clicksActive);
             return;
         }
         // Controlla che la cartella non sia una sottocartella di una qualsiasi delle cartelle già selezionate
         for (const destFolder of destinationFolders) {
             if (isSubFolder(folder, destFolder)) {
                 showAlert("The source folder cannot be a subfolder of an already selected destination folder.");
+                clicksActive = true;
+                toggleSpinner(!clicksActive);
                 return;
             }
             if (isSubFolder(destFolder, folder)) {
                 showAlert("The source folder cannot be a parent folder of an already selected destination folder.");
+                clicksActive = true;
+                toggleSpinner(!clicksActive);
                 return;
             }
         }
@@ -693,8 +699,6 @@ function swapSourceAndDestination() {
 // Selezione cartelle destinazione
 // Event listener per il pulsante "Aggiungi Destinazione"
 document.getElementById('addDestination').addEventListener('click', addDestination);
-
-// Event listener per il pulsante "Rimuovi Tutti"
 document.getElementById('clearAllDestinations').addEventListener('click', clearDestinations);
 
 //Destinazione
@@ -708,7 +712,8 @@ function updateDestinationList() {
         destinationFolders.forEach((folder, index) => {
             const listItem = document.createElement('span');
             listItem.classList.add('badge', 'text-bg-secondary', 'position-relative', 'me-2');
-            listItem.textContent = folder;
+            listItem.title = folder;
+            listItem.textContent = getLastTwoElements(folder);
             const listItemInner = document.createElement('span');
             listItemInner.classList.add('position-absolute', 'start-100', 'translate-middle', 'badge', 'rounded-pill', 'bg-danger');
             // Bottone per rimuovere l'elemento singolarmente
@@ -723,6 +728,16 @@ function updateDestinationList() {
             listContainer.appendChild(listItem);
         });
     }
+
+    function getLastTwoElements(folderPath) {
+        const normalizedPath = path.normalize(folderPath);
+        const parts = normalizedPath.split(path.sep).filter(Boolean);
+        if (parts.length <= 2) {
+            return folderPath;
+        }
+        return '...' + path.sep + parts.slice(-2).join(path.sep);
+    }
+
 }
 
 // Funzione per aggiungere una directory
@@ -735,17 +750,23 @@ async function addDestination() {
         // Controlla che la cartella non sia uguale a sourceFolder
         if (folder === sourceFolder) {
             showAlert("The destination folder cannot be the same as the source folder.");
+            clicksActive = true;
+            toggleSpinner(!clicksActive);
             return;
         }
         // Check that the folder is not already present in the array
         if (destinationFolders.includes(folder)) {
             showAlert("This folder has already been added.");
+            clicksActive = true;
+            toggleSpinner(!clicksActive);
             return;
         }
 
         // Controlla che la cartella non sia una sottocartella di sourceFolder
         if (sourceFolder && isSubFolder(folder, sourceFolder) && isSubFolder(sourceFolder, folder)) {
             showAlert("The destination folder cannot be a subfolder or a parent of source folder.");
+            clicksActive = true;
+            toggleSpinner(!clicksActive);
             return;
         }
 
@@ -753,10 +774,14 @@ async function addDestination() {
         for (const destFolder of destinationFolders) {
             if (isSubFolder(folder, destFolder)) {
                 showAlert("The destination folder cannot be a subfolder of an already selected destination folder.");
+                clicksActive = true;
+                toggleSpinner(!clicksActive);
                 return;
             }
             if (isSubFolder(destFolder, folder)) {
                 showAlert("The destination folder cannot be a parent folder of an already selected destination folder.");
+                clicksActive = true;
+                toggleSpinner(!clicksActive);
                 return;
             }
         }
