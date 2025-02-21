@@ -97,7 +97,7 @@ ipcRenderer.on('main-menu-command', (e, command) => {
     }
 });
 
-//Help Modal
+//Modals
 function initalizeHelpModal() {
     let markdown = `### Folders
 You need to choose a **Source** folder and at least one **Destination** folder.  
@@ -206,29 +206,21 @@ Source code available on <a href="https://github.com/atlantidezign/copyman"><i c
     document.getElementById('helpContentMD').innerHTML = marked.parse(markdown) + underDocs;
     document.getElementById('aboutContentMD').innerHTML = aboutDocs + underDocs;
 }
-
 function showAboutModal() {
     document.getElementById('modalAboutTrigger').click();
 }
-
 function showHelpModal() {
     document.getElementById('modalHelpTrigger').click();
 }
-
 function showOptionsModal() {
     document.getElementById('modalOptionsTrigger').click();
 }
-
 function showSnapshotModal() {
     document.getElementById('modalSnapshotTrigger').click();
 }
-
-//Shapshot Modal
 function initializeSnapshotModal() {
     listSnapshots();
 }
-
-//Common for Modals
 function initalizeModals() {
     initalizeHelpModal();
     initializeSnapshotModal();
@@ -237,12 +229,10 @@ function initalizeModals() {
 
 //Components
 var rangePicker, rangeSlider;
-
 var initialRangeSliderValues = [500000, 1000000];
 var limitRangeSliderValues = [0, 1000000000];
 var dateFormat = 'mm/dd/yyyy';
 var localeLang = 'en';
-
 function initializeComponents() {
     if (navigator.language && navigator.language.toLowerCase().startsWith('it')) {
         dateFormat = 'dd/mm/yyyy';
@@ -421,7 +411,55 @@ function initializeComponents() {
 
 }
 
-//start
+//User Options Defaults
+let fileOverwriteDefault = true;
+let propagateSelectionsDefault = true;
+let relationshipORDefault = true;
+//User Options
+let propagateSelections = propagateSelectionsDefault;
+let fileOverwrite = fileOverwriteDefault;
+let relationshipOR = relationshipORDefault;
+function initializeOptions() {
+    const savedOptions = localStorage.getItem('options');
+    if (savedOptions) {
+        const options = JSON.parse(savedOptions);
+        propagateSelections = options.propagateSelections;
+        fileOverwrite = options.fileOverwrite;
+        relationshipOR = options.relationshipOR;
+    } else {
+        const saveOptions = {
+            propagateSelections: propagateSelections,
+            fileOverwrite: fileOverwrite,
+            relationshipOR: relationshipOR,
+        };
+        localStorage.setItem('options', JSON.stringify(saveOptions));
+    }
+    applyOptions();
+}
+function saveOptions() {
+    const saveOptions = {
+        propagateSelections: propagateSelections,
+        fileOverwrite: fileOverwrite,
+        relationshipOR: relationshipOR,
+    };
+    localStorage.setItem('options', JSON.stringify(saveOptions));
+}
+function resetOptions() {
+    propagateSelections = propagateSelectionsDefault;
+    fileOverwrite = fileOverwriteDefault;
+    relationshipOR = relationshipORDefault;
+    saveOptions();
+    applyOptions();
+    applyAllFilters();
+}
+function applyOptions() {
+    document.getElementById("overwriteChecked").checked = fileOverwrite;
+    document.getElementById("propagateChecked").checked = propagateSelections;
+    document.getElementById("relationshipORChecked").checked = relationshipOR;
+}
+
+//START
+initializeOptions();
 initializeComponents();
 initalizeModals();
 
@@ -442,21 +480,11 @@ let filtersDateMinus = []; //Array<{ from: Date, to: Date}>
 let filtersSizePlus = []; //Array<{ from: number, to: number}>
 let filtersSizeMinus = []; //Array<{ from: number, to: number}>
 
-//User Options Defaults
-let fileOverwriteDefault = true;
-let propagateSelectionsDefault = true;
-let relationshipORDefault = true;
-//User Options
-let propagateSelections = propagateSelectionsDefault;
-let fileOverwrite = fileOverwriteDefault;
-let relationshipOR = relationshipORDefault;
-
 //Snapshot actions
 document.getElementById('saveSnapshot').addEventListener('click', saveSnapshot);
 document.getElementById('loadSnapshot').addEventListener('click', loadSnapshot);
 document.getElementById('cleanSnapshot').addEventListener('click', cleanSnapshot);
 document.getElementById('cleanAllSnapshots').addEventListener('click', cleanAllSnapshots);
-
 function listSnapshots() {
     let selectEl = document.getElementById('loadSnapshotInput');
     selectEl.innerHTML = '';
@@ -480,7 +508,6 @@ function listSnapshots() {
         });
     }
 }
-
 function saveSnapshot() {
     let useName = document.getElementById('saveSnapshotInput').value.trim().toLowerCase();
     if (!useName) {
@@ -530,7 +557,6 @@ function saveSnapshot() {
     listSnapshots();
     writeMessage('Snapshot saved.');
 }
-
 function loadSnapshot() {
     writeMessage('Loading Snapshot...');
     let useName = document.getElementById('loadSnapshotInput').value.trim().toLowerCase();
@@ -594,7 +620,6 @@ function loadSnapshot() {
         writeMessage('Error during Snapshot loading.');
     }
 }
-
 function cleanSnapshot() {
     let useName = document.getElementById('loadSnapshotInput').value.trim().toLowerCase();
     if (!useName) {
@@ -622,7 +647,6 @@ function cleanSnapshot() {
         writeMessage(`Snapshot named "${useName}" removed.`);
     }
 }
-
 function cleanAllSnapshots() {
     showConfirm('Are you sure you want to Clean all saved Snapshots?', cleanCallback);
 
@@ -632,15 +656,14 @@ function cleanAllSnapshots() {
         writeMessage('Snapshots cleaned.');
     }
 }
-
 function exportSnapshot() {
-    //TODO
+    //TODO export to json file
 }
 function importSnapshot() {
-    //TODO
+    //TODO load from json file
 }
 
-//Generale click
+//General click
 document.addEventListener('click', function (event) {
     if (!clicksActive) {
         event.stopImmediatePropagation();
@@ -648,7 +671,7 @@ document.addEventListener('click', function (event) {
     }
 }, true);
 
-// Selezione cartella sorgente
+// Source folder
 document.getElementById('selectSource').addEventListener('click', async () => {
     writeMessage('Choose Source folder.');
     clicksActive = false;
@@ -711,11 +734,9 @@ function swapSourceAndDestination() {
     writeMessage('Source / Destination Folders swapped.');
 }
 
-// Selezione cartelle destinazione
+// Destination Folders
 document.getElementById('addDestination').addEventListener('click', addDestination);
 document.getElementById('clearAllDestinations').addEventListener('click', clearDestinations);
-
-//Destinazione
 function updateDestinationList() {
     const listContainer = document.getElementById('destinationList');
     listContainer.innerHTML = ''; // Svuota la lista esistente
@@ -818,7 +839,7 @@ function clearDestinations() {
     writeMessage('All Destination folder removed.');
 }
 
-//Albero render
+//Tree render
 function buildFileTree(dir, relativePath = '') {
     const tree = [];
     const items = fs.readdirSync(dir);
@@ -979,7 +1000,7 @@ function createTreeNode(node) {
     return li;
 }
 
-//Albero selezione
+//Tree selections
 function propagateDown(li, isChecked) {
     // Seleziona tutti i checkbox dei nodi figli (ricorsivamente)
     const childCheckboxes = li.querySelectorAll("ul input[type='checkbox']");
@@ -1015,8 +1036,6 @@ function expandAncestors(element) {
         parent = parent.parentElement;
     }
 }
-
-// Gestione dei filtri
 
 //Filters common
 function removeAllFilters() {
@@ -1669,7 +1688,7 @@ function resetSizeFilterUI() {
     rangeSlider.noUiSlider.set(initialRangeSliderValues)
 }
 
-// Seleziona/Deseleziona tutti
+// Select/Deselect all
 document.getElementById('selectAll').addEventListener('click', () => {
     if (!sourceFolder) {
         showAlert("Please select a source folder first.");
@@ -1693,7 +1712,7 @@ document.getElementById('deselectAll').addEventListener('click', () => {
     removeAllFilters();
 });
 
-// Apri/chiudi tutti
+// Expand/Collapse all
 document.getElementById('expandAll').addEventListener('click', () => {
     if (!sourceFolder) {
         showAlert("Please select a source folder first.");
@@ -1763,22 +1782,32 @@ document.getElementById('collapseAll').addEventListener('click', () => {
     collapseAllFileTree();
 });
 
-//Options
+//Options ui
 document.getElementById("overwriteChecked").addEventListener("change", function () {
     fileOverwrite = this.checked;
+    saveOptions();
     writeMessage('Overwrite Existing setting is now ' + fileOverwrite);
 });
 document.getElementById("propagateChecked").addEventListener("change", function () {
     propagateSelections = this.checked;
+    saveOptions();
     writeMessage('Propagate Selection setting is now ' + propagateSelections);
 });
 document.getElementById("relationshipORChecked").addEventListener("change", function () {
     relationshipOR = this.checked;
+    saveOptions();
     writeMessage('Relationship OR setting is now ' + relationshipOR);
     applyAllFilters();
 });
+document.getElementById("resetOptions").addEventListener("click", function () {
+    showConfirm('Are you sure you want to reset Options to defaults?', resetCallback);
+    function resetCallback() {
+        resetOptions();
+        writeMessage('Options have been reset to defaults.');
+    }
+});
 
-//Copia
+//Copying
 document.getElementById('copySelected').addEventListener('click', async () => {
     // Controlla che sia stata selezionata almeno la cartella di destinazione
     writeMessage('Checking for Copy...');
@@ -1861,7 +1890,7 @@ async function copyRecursive(src, dest) {
     }
 }
 
-//Lista selezionati
+//Selection list
 function updateListContent() {
     let selectedItems = getListOfSelectedItems();
     let htmlContent = '<table class="table table-striped">' +
@@ -1926,9 +1955,7 @@ async function saveListOfSelectedItems(kind, dataToExport) {
     toggleSpinner(!clicksActive);
 }
 
-//Utils
-
-// Funzione per messaggi
+// Utils: messages
 let messageTimeout = null;
 function writeMessage(message) {
     if (messageTimeout) clearTimeout(messageTimeout);
@@ -1938,20 +1965,20 @@ function writeMessage(message) {
     }, messageLife);
 }
 
-// Funzione helper per verificare se 'child' è una sottocartella di 'parent'
+// Utils: check if 'child' is a subfolder of 'parent'
 function isSubFolder(child, parent) {
     const relative = path.relative(parent, child);
     // Se relative è una stringa vuota oppure inizia con ".." o è una path assoluta, child non è una sottocartella di parent
     return relative && !relative.startsWith('..') && !path.isAbsolute(relative);
 }
 
-// Funzione per attivare/disattivare lo spinner
+// Utils: spinner
 function toggleSpinner(active) {
     const spinnerOverlay = document.getElementById('spinner-overlay');
     spinnerOverlay.style.display = active ? 'flex' : 'none';
 }
 
-//Funzione per gli alert e i confirm che wrappano su native dialogs tramite ipcRender
+//Utils: alert and confirm wrapped on native dialogs trough ipcRender
 function showAlert(message) {
     ipcRenderer.invoke("show-alert", message);
 }
@@ -1960,7 +1987,7 @@ async function showConfirm(message, callback) {
     if (confirmation) callback();
 }
 
-//Funzione per format date e size
+//Utils: date and size formatting
 function formatSize(size) {
     if (typeof size !== 'number') {
         const convertedSize = Number(size);
