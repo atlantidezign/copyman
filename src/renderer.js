@@ -1,6 +1,7 @@
 const {ipcRenderer, remote, shell} = require('electron');
 const fs = require('fs');
 const path = require('path');
+const { version } = require('../package.json');
 
 // Live reload
 (async () => {
@@ -96,6 +97,12 @@ ipcRenderer.on('main-menu-command', (e, command) => {
             break;
     }
 });
+
+//Title
+document.addEventListener('DOMContentLoaded', () => {
+    document.title += ` v${version}`;
+});
+
 
 //Modals
 function initalizeHelpModal() {
@@ -227,13 +234,11 @@ function initializeComponents() {
         }
     });
 
-
     dateFrom.addEventListener('change', function (e) {
         let rawValue = this.value;
         const correctedValue = correctDateInput(rawValue, dateFormat);
         this.value = correctedValue;
     });
-
     dateTo.addEventListener('change', function (e) {
         let rawValue = this.value;
         const correctedValue = correctDateInput(rawValue, dateFormat);
