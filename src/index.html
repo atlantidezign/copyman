@@ -105,11 +105,10 @@
             <a type="button" id="buttonSwap" class="btn btn-primary btn-sm"
                title="Swap Source and (First) Destination Folder"><i class="bi bi-arrow-down-up"></i>
             </a>
-             <a type="button" id="modalListTrigger" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+            <a type="button" id="modalListTrigger" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                 title="Open Selection List panel"
                 data-bs-target="#listModal"><i class="bi bi-list-check"></i>
             </a>
-
             <a type="button" id="modalSnapshotTrigger" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                title="Open Snapshots panel"
                data-bs-target="#snapshotModal"><i class="bi bi-floppy"></i>
@@ -122,9 +121,14 @@
                title="Open Help panel"
                data-bs-target="#helpModal"><i class="bi bi-question-lg"></i>
             </a>
+
             <a type="button" id="modalAboutTrigger" class="btn btn-primary btn-sm hidden" data-bs-toggle="modal"
                title="Open About panel"
                data-bs-target="#aboutModal"><i class="bi bi-info"></i>
+            </a>
+            <a type="button" id="modalVerboseTrigger" class="btn btn-primary btn-sm hidden" data-bs-toggle="modal"
+               title="Open Verbose panel"
+               data-bs-target="#verboseModal"><i class="bi bi-chat-left-text"></i>
             </a>
         </span>
         <div class="btn-group">
@@ -154,11 +158,39 @@
 
 <!-- Modal -->
 <div id="div-modals">
-    <div class="modal fade" id="listModal" tabindex="-1" aria-labelledby="listModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal fade" id="verboseModal" tabindex="-1" aria-labelledby="verboseModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title" id="listModalLabel">Copyman | Selection List</h1>
+                    <h1 class="modal-title" id="verboseModalLabel"><img src="images/logotype_indigo_alt.svg" alt="Copyman" title="Copyman"/> Copying</h1>
+                    <button type="button" class="btn-close verboseClose" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div id="verboseProgress" class="d-flex hidden">
+                            <div class="p-2 flex-shrink-0"><div id="spinner2"></div></div>
+                            <div class="p-2 flex-grow-1" id="verboseProgressMD"> </div>
+                        </div>
+                        <div id="verboseReport" class="d-flex hidden">
+                            <div class="p-2 flex-shrink-0"><i class="bi bi-eye-fill" id="verboseReportIcon"></i></div>
+                            <div class="p-2 flex-grow-1" id="verboseReportMD"> </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm verboseClose" data-bs-dismiss="modal"><i
+                            class="bi bi-x-lg"></i>
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="listModal" tabindex="-1" aria-labelledby="listModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title" id="listModalLabel"><img src="images/logotype_indigo_alt.svg" alt="Copyman" title="Copyman"/> Selection List</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -184,10 +216,10 @@
         </div>
     </div>
     <div class="modal fade" id="aboutModal" tabindex="-1" aria-labelledby="aboutModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title" id="aboutModalLabel">Copyman | About</h1>
+                    <h1 class="modal-title" id="aboutModalLabel"><img src="images/logotype_indigo_alt.svg" alt="Copyman" title="Copyman"/> About</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -206,10 +238,10 @@
         </div>
     </div>
     <div class="modal fade" id="helpModal" tabindex="-1" aria-labelledby="helpModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-fullscreen">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title" id="helpModalLabel">Copyman | Help</h1>
+                    <h1 class="modal-title" id="helpModalLabel"><img src="images/logotype_indigo_alt.svg" alt="Copyman" title="Copyman"/> Help</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -228,10 +260,10 @@
         </div>
     </div>
     <div class="modal fade" id="optionsModal" tabindex="-1" aria-labelledby="optionsModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title" id="optionsModalLabel">Copyman | Options</h1>
+                    <h1 class="modal-title" id="optionsModalLabel"><img src="images/logotype_indigo_alt.svg" alt="Copyman" title="Copyman"/> Options</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -243,6 +275,12 @@
                                 <input class="form-check-input" type="checkbox" role="switch" id="overwriteChecked" title="Overwrite files, during copying, if existing"
                                        checked/>
                                 <label class="form-check-label" for="overwriteChecked">Overwrite Existing</label>
+                            </div>
+                            <div class="form-check form-switch"
+                                 title="Verborse progress and report during copying phase">
+                                <input class="form-check-input" type="checkbox" role="switch" id="verboseChecked" title="Verborse progress and report during copying phase"
+                                       checked/>
+                                <label class="form-check-label" for="verboseChecked">Verbose Copying</label>
                             </div>
                         </div>
                         <div>
@@ -279,10 +317,10 @@
         </div>
     </div>
     <div class="modal fade" id="snapshotModal" tabindex="-1" aria-labelledby="snapshotModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title" id="snapshotModalLabel">Copyman | Snapshots</h1>
+                    <h1 class="modal-title" id="snapshotModalLabel"><img src="images/logotype_indigo_alt.svg" alt="Copyman" title="Copyman"/> Snapshots</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">

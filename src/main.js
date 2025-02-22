@@ -16,7 +16,7 @@ function createWindow() {
         webPreferences: {
             nodeIntegration: true,
             enableRemoteModule: true,
-            contextIsolation: false // in production have to be more secure.
+            contextIsolation: false // for production it has to be more secure.
         },
         icon: appIcon
     });

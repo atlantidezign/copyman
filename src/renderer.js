@@ -120,10 +120,13 @@ function initalizeHelpModal() {
     Written by Alessandro Di Michele<br>
 &copy;2025 Atlantide Design <a href="http://www.atlantide-design.it">www.atlantide-design.it</a> All rights reserved.<br>
 <br>
-Binaries download available on <a href="http://www.atlantide-design.it/copyman"><img src="images/80x80_1col_alt.svg" height="14" /> Copyman</a> website. <br>
+Binaries download available on <a href="http://www.atlantide-design.it/copyman"><img src="images/logotype_indigo_alt.svg" alt="Copyman" title="Copyman" height="14"/></a> website <br>
 Source code available on <a href="https://github.com/atlantidezign/copyman"><i class="bi bi-github"></i> GitHub</a>`;
     let aboutDocs = `
-    <h3>Copyman</h3>
+    <img src="images/logotype_white.svg" alt="Copyman" class="img-fluid" title="Copyman" width="300"/><br>
+    v${version}
+    <br>
+    <br>
     <p>Select and copy files from one folder to multiple destinations while preserving the folder structure.</p>
     `;
 
@@ -330,11 +333,13 @@ function initializeComponents() {
 
 //User Options Defaults
 let fileOverwriteDefault = true;
+let copyVerboseDefault = false;
 let propagateSelectionsDefault = true;
 let relationshipORDefault = true;
 //User Options
-let propagateSelections = propagateSelectionsDefault;
 let fileOverwrite = fileOverwriteDefault;
+let copyVerbose = copyVerboseDefault;
+let propagateSelections = propagateSelectionsDefault;
 let relationshipOR = relationshipORDefault;
 function initializeOptions() {
     const savedOptions = localStorage.getItem('options');
@@ -342,11 +347,13 @@ function initializeOptions() {
         const options = JSON.parse(savedOptions);
         propagateSelections = options.propagateSelections;
         fileOverwrite = options.fileOverwrite;
+        copyVerbose = options.copyVerbose;
         relationshipOR = options.relationshipOR;
     } else {
         const saveOptions = {
             propagateSelections: propagateSelections,
             fileOverwrite: fileOverwrite,
+            copyVerbose: copyVerbose,
             relationshipOR: relationshipOR,
         };
         localStorage.setItem('options', JSON.stringify(saveOptions));
@@ -357,6 +364,7 @@ function saveOptions() {
     const saveOptions = {
         propagateSelections: propagateSelections,
         fileOverwrite: fileOverwrite,
+        copyVerbose: copyVerbose,
         relationshipOR: relationshipOR,
     };
     localStorage.setItem('options', JSON.stringify(saveOptions));
@@ -364,6 +372,7 @@ function saveOptions() {
 function resetOptions() {
     propagateSelections = propagateSelectionsDefault;
     fileOverwrite = fileOverwriteDefault;
+    copyVerbose = copyVerboseDefault;
     relationshipOR = relationshipORDefault;
     saveOptions();
     updateOptionsUI();
@@ -371,6 +380,7 @@ function resetOptions() {
 }
 function updateOptionsUI() {
     document.getElementById("overwriteChecked").checked = fileOverwrite;
+    document.getElementById("verboseChecked").checked = copyVerbose;
     document.getElementById("propagateChecked").checked = propagateSelections;
     document.getElementById("relationshipORChecked").checked = relationshipOR;
 }
@@ -384,6 +394,12 @@ initalizeModals();
 let clicksActive = true; //system: to disactivate clicks while copying
 let fileTreeData = []; // system: tree data
 let messageLife = 3000; //system: message life in ms before clean
+let copyingReport = [];
+let itemsCopied = 0;
+let itemsSkipped = 0;
+let itemsFailed = 0;
+let itemsTotal = 0;
+let itemsProcessed = 0;
 
 //User folders
 let sourceFolder = ''; // user choose: source folder
@@ -460,6 +476,7 @@ function saveSnapshot() {
         destinationFolders: destinationFolders,
         //user settings (overwrite, propagate + nuovi)
         fileOverwrite: fileOverwrite,
+        copyVerbose: copyVerbose,
         propagateSelections: propagateSelections,
         relationshipOR: relationshipOR,
         //filters (name + nuovi)
@@ -471,7 +488,7 @@ function saveSnapshot() {
         filtersSizeMinus: filtersSizeMinus,
     }
     useSettings.push(newSettings);
-    // Serializzazione dell'oggetto settings in formato JSON e salvataggio nel localStorage
+    // serialize and save in localStorage
     localStorage.setItem('snapshots', JSON.stringify(useSettings));
     listSnapshots();
     writeMessage('Snapshot saved.');
@@ -483,7 +500,7 @@ function loadSnapshot() {
         showAlert('Please enter a name for Snapshot to load.');
         return;
     }
-    // Recupera le impostazioni salvate dal localStorage
+    // get from localStorage
     let useSettings = [];
     const settingsStr = localStorage.getItem('snapshots');
     if (settingsStr) {
@@ -553,6 +570,7 @@ async function exportSnapshot() {
         destinationFolders: destinationFolders,
         //user settings (overwrite, propagate + nuovi)
         fileOverwrite: fileOverwrite,
+        copyVerbose: copyVerbose,
         propagateSelections: propagateSelections,
         relationshipOR: relationshipOR,
         //filters (name + nuovi)
@@ -617,12 +635,13 @@ function setFromSnapshot(settings) {
     try {
         removeAllFilters();
 
-        // Aggiornamento delle variabili globali dell'applicazione
+        // update global app vars
         sourceFolder = settings.sourceFolder || '';
         destinationFolders = settings.destinationFolders || [];
-        fileOverwrite = (typeof settings.fileOverwrite === 'boolean') ? settings.fileOverwrite : false;
-        propagateSelections = (typeof settings.propagateSelections === 'boolean') ? settings.propagateSelections : false;
-        relationshipOR = (typeof settings.relationshipOR === 'boolean') ? settings.relationshipOR : false;
+        fileOverwrite = (typeof settings.fileOverwrite === 'boolean') ? settings.fileOverwrite : fileOverwriteDefault;
+        copyVerbose = (typeof settings.copyVerbose === 'boolean') ? settings.copyVerbose : copyVerboseDefault;
+        propagateSelections = (typeof settings.propagateSelections === 'boolean') ? settings.propagateSelections : propagateSelectionsDefault;
+        relationshipOR = (typeof settings.relationshipOR === 'boolean') ? settings.relationshipOR : relationshipORDefault;
         filtersNamePlus = settings.filtersNamePlus || [];
         filtersNameMinus = settings.filtersNameMinus || [];
         filtersDatePlus = settings.filtersDatePlus || [];
@@ -637,7 +656,7 @@ function setFromSnapshot(settings) {
 
         updateDestinationList();
 
-        // Aggiorna eventualmente il campo del nome dello Snapshot
+        // update snaphot name
         document.getElementById('saveSnapshotInput').value = settings.name;
 
         applyAllFilters();
@@ -671,7 +690,7 @@ document.getElementById('selectSource').addEventListener('click', async () => {
             toggleSpinner();
             return;
         }
-        // Controlla che la cartella non sia una sottocartella di una qualsiasi delle cartelle già selezionate
+        // check folder is not a folder of something else already selected
         for (const destFolder of destinationFolders) {
             if (isSubFolder(folder, destFolder)) {
                 showAlert("The source folder cannot be a subfolder of an already selected destination folder.");
@@ -688,7 +707,7 @@ document.getElementById('selectSource').addEventListener('click', async () => {
         }
         sourceFolder = folder;
         document.getElementById('sourcePath').textContent = folder;
-        // Costruisce l'albero dei file
+        // build tree
         updateTree();
         writeMessage('Source Folder rendered.');
     } else {
@@ -727,7 +746,7 @@ document.getElementById('addDestination').addEventListener('click', addDestinati
 document.getElementById('clearAllDestinations').addEventListener('click', clearDestinations);
 function updateDestinationList() {
     const listContainer = document.getElementById('destinationList');
-    listContainer.innerHTML = ''; // Svuota la lista esistente
+    listContainer.innerHTML = ''; // empty list
     if (destinationFolders.length === 0) {
         listContainer.innerHTML = 'Add Destination Folder';
     } else {
@@ -738,7 +757,7 @@ function updateDestinationList() {
             listItem.textContent = getLastTwoElements(folder);
             const listItemInner = document.createElement('span');
             listItemInner.classList.add('position-absolute', 'start-100', 'translate-middle', 'badge', 'rounded-pill', 'bg-danger');
-            // Bottone per rimuovere l'elemento singolarmente
+            // remove single item
             const removeButton = document.createElement('a');
             removeButton.textContent = 'X';
             removeButton.addEventListener('click', () => {
@@ -767,7 +786,7 @@ async function addDestination() {
     toggleSpinner();
     const folder = await ipcRenderer.invoke('select-folder', 'Select destination folder', destinationFolders.length > 0 ? destinationFolders[destinationFolders.length - 1] : "");
     if (folder) {
-        // Controlla che la cartella non sia uguale a sourceFolder
+        // check folder is different from sourceFolder
         if (folder === sourceFolder) {
             showAlert("The destination folder cannot be the same as the source folder.");
             clicksActive = true;
@@ -782,7 +801,7 @@ async function addDestination() {
             return;
         }
 
-        // Controlla che la cartella non sia una sottocartella di sourceFolder
+        // chech folder is not inside sourceFolder
         if (sourceFolder && isSubFolder(folder, sourceFolder) && isSubFolder(sourceFolder, folder)) {
             showAlert("The destination folder cannot be a subfolder or a parent of source folder.");
             clicksActive = true;
@@ -790,7 +809,7 @@ async function addDestination() {
             return;
         }
 
-        // Controlla che la cartella non sia una sottocartella di una qualsiasi delle cartelle già selezionate
+        // check folder is not a folder of something else already selected
         for (const destFolder of destinationFolders) {
             if (isSubFolder(folder, destFolder)) {
                 showAlert("The destination folder cannot be a subfolder of an already selected destination folder.");
@@ -806,7 +825,7 @@ async function addDestination() {
             }
         }
 
-        // Aggiungi la cartella all'array e aggiorna la lista in UI
+        // adds folder to array and updates ui
         destinationFolders.push(folder);
         updateDestinationList();
         writeMessage('Destination folder added.');
@@ -847,7 +866,7 @@ function buildFileTree(dir, relativePath = '') {
                 sizeRaw: 0
             });
         } else {
-            // Calcola la dimensione formattata: in KB se < 1MB, altrimenti in MB
+            // check dimention for format: KB  if < 1MB, else MB
             let formattedSize = formatSizeForThree(stats.size);
 
             tree.push({
@@ -880,12 +899,12 @@ function renderFileTree(treeData) {
 function createTreeNode(node) {
     const li = document.createElement('li');
 
-    // Contenitore per il toggle e la label
+    // toggle and label container
     const labelContainer = document.createElement('span');
 
-    let childUl = null; // verrà creato se il nodo è directory
+    let childUl = null; // created if directory
 
-    // Creiamo il checkbox e lo aggiungiamo sempre, sia per file che per directory
+    // checkbox, for file or directory
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
     checkbox.dataset.filePath = node.path;
@@ -895,35 +914,35 @@ function createTreeNode(node) {
     checkbox.dataset.isDirectory = (node.type === 'directory') ? "1":"0";
     checkbox.classList.add('form-check-input');
 
-    // Aggiungiamo il listener per il cambio di stato
+    // listener for state change
     checkbox.addEventListener('change', (e) => {
         const isChecked = e.target.checked;
         const currentLi = e.target.closest("li");
-        // Se il nodo ha figli (ovvero è una directory) propaga il cambiamento verso il basso
+        // if node has childrens (is directory) propagate down
         if (currentLi.querySelector("ul")) {
             if (propagateSelections) propagateDown(currentLi, isChecked);
         }
-        // Se il checkbox è selezionato, aggiorna anche tutti i genitori
+        // if checkbox selected, update all parents too
         if (isChecked) {
             if (propagateSelections) propagateUp(currentLi);
         }
-        // Se viene deselezionato non facciamo propagazione verso l'alto
+        // if unchecked, no on-parents propagation
 
         updateListContent();
     });
 
     if (node.type === 'directory') {
-        // Creiamo l'icona di toggle (inizialmente collassato)
+        // icon toggle (collapsed)
         const toggleIcon = document.createElement('span');
         toggleIcon.textContent = '▷';
         toggleIcon.style.cursor = 'pointer';
         toggleIcon.style.marginRight = '5px';
         labelContainer.appendChild(toggleIcon);
 
-        // Aggiungiamo il checkbox alla label
+        // add checkbox
         labelContainer.appendChild(checkbox);
 
-        // Etichetta
+        // label
         const label = document.createElement('span');
         label.textContent = ' ' + node.name;
         const labelExtrasDate = document.createElement('span');
@@ -938,7 +957,7 @@ function createTreeNode(node) {
 
         li.appendChild(labelContainer);
 
-        // Creazione della lista dei figli (inizialmente collassata)
+        // children list (collapsed)
         childUl = document.createElement('ul');
         childUl.style.display = 'none';
 
@@ -950,7 +969,7 @@ function createTreeNode(node) {
         }
         li.appendChild(childUl);
 
-        // Listener per il toggle: al click espande o collassa il ramo
+        // Listener for toggle: click to expand/collapse
         toggleIcon.addEventListener('click', (e) => {
             e.stopPropagation();
             if (childUl.style.display === 'none') {
@@ -962,15 +981,15 @@ function createTreeNode(node) {
             }
         });
     } else {
-        // Nodo file: aggiungiamo un piccolo spacer per l'allineamento
+        // Node is file: spacer for align
         const spacer = document.createElement('span');
         spacer.textContent = '    ';
         labelContainer.appendChild(spacer);
 
-        // Aggiungiamo il checkbox del file
+        // checkbox for file
         labelContainer.appendChild(checkbox);
 
-        // Etichetta
+        // label
         const label = document.createElement('span');
         label.textContent = ' ' + node.name;
         const labelExtrasDate = document.createElement('span');
@@ -997,14 +1016,14 @@ function updateTree() {
 }
 //Tree selections
 function propagateDown(li, isChecked) {
-    // Seleziona tutti i checkbox dei nodi figli (ricorsivamente)
+    // recursively select all checkbox of children
     const childCheckboxes = li.querySelectorAll("ul input[type='checkbox']");
     childCheckboxes.forEach(cb => {
         cb.checked = isChecked;
     });
 }
 function propagateUp(li) {
-    // Trova il genitore più vicino che sia un <li> (ovvero la directory padre)
+    // find <li> parent
     const parentLi = li.parentElement.closest('li');
     if (parentLi) {
         const parentCheckbox = parentLi.querySelector("input[type='checkbox']");
@@ -1019,7 +1038,7 @@ function expandAncestors(element) {
     while (parent && parent.id !== 'file-tree') {
         if (parent.tagName.toLowerCase() === 'ul') {
             parent.style.display = 'block';
-            // Se l'UL è figlio di un LI con toggle, cambia il toggle in "▼"
+            // if UL is son of a LI with toggle, switch toggle to "▼"
             const li = parent.parentElement;
             if (li) {
                 const toggleIcon = li.querySelector('span');
@@ -1038,7 +1057,7 @@ function removeAllFilters() {
     resetDateFilterUI();
     resetSizeFilterUI();
 
-    // Itera su tutti i checkbox dell'albero
+    // iterate all tree checkboxes
     filtersNamePlus = [];
     filtersNameMinus = [];
     filtersDatePlus = [];
@@ -1061,13 +1080,13 @@ function applyAllFilters() {
     removeAllSelection();
 
     for (const filterValue of filtersNamePlus) {
-        // Itera su tutti i checkbox dell'albero
+        // iterate all tree checkboxes
         const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
         checkboxes.forEach(checkbox => {
             const nodeName = checkbox.dataset.nodeName.toLowerCase();
             if (filterValue !== '' && nodeName.includes(filterValue.toLowerCase())) {
                 checkbox.checked = true;
-                // Espande i rami per rendere visibile il nodo selezionato
+                // expand to selected child node
                 expandAncestors(checkbox);
             }
         });
@@ -1082,25 +1101,25 @@ function applyAllFilters() {
         });
     }
     
-    //devo applicare i filtri per Date e Size, tenendo conto di relationshipOR true o false (AND)
+    //apply filters for Date and Size, evalueting also relationshipOR true or false (AND)
 
     for (const filterValue of filtersDatePlus) {
-        // Itera su tutti i checkbox dell'albero
+        // iterate all tree checkboxes
         const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
         checkboxes.forEach(checkbox => {
             const nodeDate = checkbox.dataset.nodeModified;
             if (dateSingleInsideARange(nodeDate, filterValue)) {
                 if (relationshipOR) {
                     checkbox.checked = true;
-                    // Espande i rami per rendere visibile il nodo selezionato
+                    // expand to selected node
                     expandAncestors(checkbox);
                 } else {
                     if (filtersNameMinus.length === 0 && filtersNamePlus.length === 0) {
                         checkbox.checked = true;
-                        // Espande i rami per rendere visibile il nodo selezionato
+                        // expand to selected node
                         expandAncestors(checkbox);
                     }
-                    //accende se non esistevano i set di condizioni precedenti (nomi per date)
+                    //on if no previous condition present (Name and Date)
                 }
             } else {
                 if (!relationshipOR) checkbox.checked = false;
@@ -1118,22 +1137,22 @@ function applyAllFilters() {
     }
 
     for (const filterValue of filtersSizePlus) {
-        // Itera su tutti i checkbox dell'albero
+        // iterate all tree checkboxes
         const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
         checkboxes.forEach(checkbox => {
             const nodeSize = checkbox.dataset.nodeSize;
             if (sizeSingleInsideARange(nodeSize, filterValue)) {
                 if (relationshipOR) {
                     checkbox.checked = true;
-                    // Espande i rami per rendere visibile il nodo selezionato
+                    // expand to selected
                     expandAncestors(checkbox);
                 } else {
                     if (filtersNameMinus.length === 0 && filtersNamePlus.length === 0 && filterDateMinus.length === 0 && filtersDatePlus.length === 0 ) {
                         checkbox.checked = true;
-                        // Espande i rami per rendere visibile il nodo selezionato
+                        // expand to selected
                         expandAncestors(checkbox);
                     }
-                    //accende se non esistevano i set di condizioni precedenti (nomi e date per size)
+                    //on if no previous condition exists (Name and Date for Size)
                 }
             } else {
                 if (!relationshipOR) checkbox.checked = false;
@@ -1224,7 +1243,7 @@ document.getElementById('clearNameFilter').addEventListener('click', () => {
 });
 function removeNameFilters() {
     resetNameFilterUI();
-    // Itera su tutti i checkbox dell'albero
+    // iterate all tree checkboxes
     filtersNamePlus = [];
     filtersNameMinus = [];
     renderNameFiltersList();
@@ -1246,7 +1265,7 @@ function removeSingleNameFilter(index, kind) {
 }
 function renderNameFiltersList() {
     const listContainer = document.getElementById('nameFilterList');
-    listContainer.innerHTML = ''; // Svuota la lista esistente
+    listContainer.innerHTML = '';
     drawFiltersFor(filtersNamePlus, "+");
     drawFiltersFor(filtersNameMinus, "-");
     if (listContainer.innerHTML == '') listContainer.innerHTML = 'Name Filters list'
@@ -1260,7 +1279,7 @@ function renderNameFiltersList() {
             listItem.textContent = filterKind + filter;
             const listItemInner = document.createElement('span');
             listItemInner.classList.add('position-absolute', 'start-100', 'translate-middle', 'badge', 'rounded-pill', 'bg-danger');
-            // Bottone per rimuovere l'elemento singolarmente
+            // remove single
             const removeButton = document.createElement('a');
             removeButton.textContent = 'X';
             removeButton.addEventListener('click', () => {
@@ -1363,7 +1382,7 @@ function dateRangeInsideAnotherArrayOfRanges(rangeToCheck, rangeOrigin) {
         const originStart = rangePresent[0] ? rangePresent[0].getTime() : Number.NEGATIVE_INFINITY;
         const originEnd = rangePresent[1] ? rangePresent[1].getTime() : Number.POSITIVE_INFINITY;
 
-        // Verifica se l'intervallo da controllare è compreso nell'intervallo corrente
+        // verify if interval to check is inside current interval
         if (originStart <= pickerStart && pickerEnd <= originEnd) {
             isInside = true;
         }
@@ -1388,7 +1407,7 @@ function dateSingleInsideARange(dateToCheck, rangePresent) {
     const originStart = rangePresent[0] ? rangePresent[0].getTime() : Number.NEGATIVE_INFINITY;
     const originEnd = rangePresent[1] ? rangePresent[1].getTime() : Number.POSITIVE_INFINITY;
 
-    // Verifica se l'intervallo da controllare è compreso nell'intervallo corrente
+    // verify if interval to check is inside current interval
     if (originStart <= pickerPoint && pickerPoint <= originEnd) {
         isInside = true;
     }
@@ -1397,7 +1416,7 @@ function dateSingleInsideARange(dateToCheck, rangePresent) {
 }
 function removeDateFilters() {
     resetDateFilterUI();
-    // Itera su tutti i checkbox dell'albero
+    // iterate on all tree checkboxes
     filtersDatePlus = [];
     filtersDateMinus = [];
     renderDateFiltersList();
@@ -1422,7 +1441,7 @@ function renderSingleDateFilter(filter) {
 }
 function renderDateFiltersList() {
     const listContainer = document.getElementById('dateFilterList');
-    listContainer.innerHTML = ''; // Svuota la lista esistente
+    listContainer.innerHTML = '';
     drawFiltersFor(filtersDatePlus, "+");
     drawFiltersFor(filtersDateMinus, "-");
     if (listContainer.innerHTML == '') listContainer.innerHTML = 'Date Filters list'
@@ -1436,7 +1455,7 @@ function renderDateFiltersList() {
             listItem.textContent = filterKind + renderSingleDateFilter(filter);
             const listItemInner = document.createElement('span');
             listItemInner.classList.add('position-absolute', 'start-100', 'translate-middle', 'badge', 'rounded-pill', 'bg-danger');
-            // Bottone per rimuovere l'elemento singolarmente
+            // remove single item
             const removeButton = document.createElement('a');
             removeButton.textContent = 'X';
             removeButton.addEventListener('click', () => {
@@ -1530,7 +1549,6 @@ function sizeRangeInsideAnotherArrayOfRanges(rangeToCheck, rangeOrigin) {
         if (!isNaN(convertedSize)) {
             sliderStart = convertedSize;
         } else {
-            // Gestisci il caso in cui la conversione non riesca, ad esempio impostando un valore di default
             sliderStart = limitRangeSliderValues[0];
         }
     }
@@ -1539,12 +1557,10 @@ function sizeRangeInsideAnotherArrayOfRanges(rangeToCheck, rangeOrigin) {
         if (!isNaN(convertedSize)) {
             sliderEnd = convertedSize;
         } else {
-            // Gestisci il caso in cui la conversione non riesca, ad esempio impostando un valore di default
             sliderEnd = limitRangeSliderValues[1];
         }
     }
     rangeOrigin.forEach(function (rangePresent) {
-        // Imposta gli estremi dell'intervallo dell'origine:
         let originStart = (rangePresent[0] !== null && rangePresent[0] !== undefined)
             ? rangePresent[0]
             : limitRangeSliderValues[0];
@@ -1556,7 +1572,6 @@ function sizeRangeInsideAnotherArrayOfRanges(rangeToCheck, rangeOrigin) {
             if (!isNaN(convertedSize)) {
                 originStart = convertedSize;
             } else {
-                // Gestisci il caso in cui la conversione non riesca, ad esempio impostando un valore di default
                 originStart = limitRangeSliderValues[0];
             }
         }
@@ -1565,11 +1580,9 @@ function sizeRangeInsideAnotherArrayOfRanges(rangeToCheck, rangeOrigin) {
             if (!isNaN(convertedSize)) {
                 originEnd = convertedSize;
             } else {
-                // Gestisci il caso in cui la conversione non riesca, ad esempio impostando un valore di default
                 originEnd = limitRangeSliderValues[1];
             }
         }
-        // Controllo se l'intervallo dello slider è contenuto nell'intervallo corrente
         if (originStart <= sliderStart && sliderEnd <= originEnd) {
             isInside = true;
         }
@@ -1589,11 +1602,9 @@ function sizeSingleInsideARange(sizeToCheck, rangePresent) {
         if (!isNaN(convertedSize)) {
             sliderPoint = convertedSize;
         } else {
-            // Gestisci il caso in cui la conversione non riesca, ad esempio impostando un valore di default
             sliderPoint = limitRangeSliderValues[0];
         }
     }
-    // Imposta gli estremi dell'intervallo dell'origine:
     let originStart = (rangePresent[0] !== null && rangePresent[0] !== undefined)
         ? rangePresent[0]
         : limitRangeSliderValues[0];
@@ -1605,7 +1616,6 @@ function sizeSingleInsideARange(sizeToCheck, rangePresent) {
         if (!isNaN(convertedSize)) {
             originStart = convertedSize;
         } else {
-            // Gestisci il caso in cui la conversione non riesca, ad esempio impostando un valore di default
             originStart = limitRangeSliderValues[0];
         }
     }
@@ -1614,12 +1624,11 @@ function sizeSingleInsideARange(sizeToCheck, rangePresent) {
         if (!isNaN(convertedSize)) {
             originEnd = convertedSize;
         } else {
-            // Gestisci il caso in cui la conversione non riesca, ad esempio impostando un valore di default
             originEnd = limitRangeSliderValues[1];
         }
     }
 
-    // Controllo se l'intervallo dello slider è contenuto nell'intervallo corrente
+    // checl if slider interval is inside current
     if (originStart <= sliderPoint && sliderPoint <= originEnd) {
         isInside = true;
     }
@@ -1627,7 +1636,7 @@ function sizeSingleInsideARange(sizeToCheck, rangePresent) {
 }
 function removeSizeFilters() {
     resetSizeFilterUI();
-    // Itera su tutti i checkbox dell'albero
+    // iterate on all tree checkboxes
     filtersSizePlus = [];
     filtersSizeMinus = [];
     renderSizeFiltersList();
@@ -1666,7 +1675,7 @@ function renderSizeFiltersList() {
             listItem.textContent = filterKind + renderSingleSizeFilter(filter);
             const listItemInner = document.createElement('span');
             listItemInner.classList.add('position-absolute', 'start-100', 'translate-middle', 'badge', 'rounded-pill', 'bg-danger');
-            // Bottone per rimuovere l'elemento singolarmente
+            // remove single item
             const removeButton = document.createElement('a');
             removeButton.textContent = 'X';
             removeButton.addEventListener('click', () => {
@@ -1715,24 +1724,22 @@ document.getElementById('expandAll').addEventListener('click', () => {
         return;
     }
 
-    // Funzione per espandere tutti i nodi dell'albero e aggiornare correttamente l'icona a "▼"
+    // expand all tree nodes and update icon to "▼"
     function expandAllFileTree() {
-        // Seleziona il contenitore principale dell'albero
         const treeContainer = document.getElementById('file-tree');
         if (!treeContainer) return;
 
-        // Seleziona tutti gli elementi UL annidati all'interno dell'albero
         const nestedLists = treeContainer.querySelectorAll('ul');
 
         nestedLists.forEach(ul => {
-            // Espande il nodo
+            // expands node
             ul.style.display = 'block';
 
-            // Se l'UL è figlio di un LI che contiene l'icona di toggle, aggiorna l'icona
+            //  if UL is son of a LI with toggle icon, update icon
             const parentLi = ul.parentElement;
             if (parentLi && parentLi.firstElementChild && parentLi.firstElementChild.firstElementChild) {
                 const toggleIcon = parentLi.firstElementChild.firstElementChild;
-                // Se il contenuto dell'icona è "▷" o "▼", lo impostiamo a "▼" per indicare stato espanso
+                // if icon is "▷" or "▼", set to "▼" because expanded
                 if (toggleIcon.textContent.trim() === '▷' || toggleIcon.textContent.trim() === '▼') {
                     toggleIcon.textContent = '▼';
                 }
@@ -1748,21 +1755,20 @@ document.getElementById('collapseAll').addEventListener('click', () => {
 
         return;
     }
-    // Funzione per collassare tutti i nodi dell'albero (eccetto il contenitore principale)
-// e aggiornare correttamente l'icona a "▷"
+    // collapse all tree nodes and update icons to "▷"
     function collapseAllFileTree() {
         const treeContainer = document.getElementById('file-tree');
         if (!treeContainer) return;
 
-        // Seleziona tutti gli elementi UL all'interno dell'albero
+        // select all UL in tree
         const allULs = treeContainer.querySelectorAll('ul');
 
-        // Si assume che il primo UL sia il contenitore principale e lo lasciamo visibile
+        // root UL stay visible
         allULs.forEach(ul => {
             if (ul.parentElement !== treeContainer) {
                 ul.style.display = 'none';
 
-                // Se il nodo UL ha un LI padre con toggle, aggiorniamo l'icona a "▷"
+                // if UL has a parent LI with toggle, update icon to "▷"
                 const parentLi = ul.parentElement;
                 if (parentLi && parentLi.firstElementChild && parentLi.firstElementChild.firstElementChild) {
                     const toggleIcon = parentLi.firstElementChild.firstElementChild;
@@ -1782,6 +1788,11 @@ document.getElementById("overwriteChecked").addEventListener("change", function 
     fileOverwrite = this.checked;
     saveOptions();
     writeMessage('Overwrite Existing setting is now ' + fileOverwrite);
+});
+document.getElementById("verboseChecked").addEventListener("change", function () {
+    copyVerbose = this.checked;
+    saveOptions();
+    writeMessage('Verbose Copying setting is now ' + copyVerbose);
 });
 document.getElementById("propagateChecked").addEventListener("change", function () {
     propagateSelections = this.checked;
@@ -1804,7 +1815,7 @@ document.getElementById("resetOptions").addEventListener("click", function () {
 
 //Copying
 document.getElementById('copySelected').addEventListener('click', async () => {
-    // Controlla che sia stata selezionata almeno la cartella di destinazione
+    // check if at least a destination folder is selected, and if source folder selected
     writeMessage('Checking for Copy...');
     if (destinationFolders.length === 0) {
         showAlert('Please select at least a Destination Folder!');
@@ -1838,28 +1849,42 @@ document.getElementById('copySelected').addEventListener('click', async () => {
     showConfirm('Are you sure you want to copy ' + selectedPaths.length + ' items\nfrom ' + sourceFolder + '\nto ' + destinations + '?', copyCallback);
 
     async function copyCallback() {
+        copyingReport = [];
+        itemsCopied = 0;
+        itemsSkipped = 0;
+        itemsFailed = 0;
+        itemsProcessed = 0;
+        itemsTotal = selectedPaths.length;
         writeMessage('Copy Started...');
+        openProgressModal();
+
         clicksActive = false;
         toggleSpinner();
-        // Copia per ogni elemento selezionato
+        // copy every selected item
         let indx = 1;
+        itemsProcessed = 1;
         for (const relPath of selectedPaths) {
             const sourceFullPath = path.join(sourceFolder, relPath);
             for (const destFolder of destinationFolders) {
                 const destinationFullPath = path.join(destFolder, relPath);
-                writeMessage('Copying [' + indx + '/' + selectedPaths.length + '] ' + sourceFullPath + ' to ' + destinationFullPath);
+                writeMessage('[' + indx + '/' + selectedPaths.length + '] Copying ' + sourceFullPath + ' to ' + destinationFullPath);
+                updateCopyingProgress('[' + indx + '/' + selectedPaths.length + '] Copying ' + sourceFullPath + ' to ' + destinationFullPath, true)
                 try {
                     await copyRecursive(sourceFullPath, destinationFullPath);
                 } catch (err) {
                     console.error('Error copying ', sourceFullPath, destinationFullPath, err);
                     writeMessage('Error copying ' + sourceFullPath + ' in ' + destinationFullPath);
+                    itemsFailed++;
+                    updateCopyingProgress('Error copying ' + sourceFullPath + ' in ' + destinationFullPath, false);
                 }
             }
+            itemsProcessed = indx;
             indx++;
         }
         clicksActive = true;
         toggleSpinner();
         writeMessage('Copy Completed!');
+        openReportModal();
     }
 });
 async function copyRecursive(src, dest) {
@@ -1867,21 +1892,82 @@ async function copyRecursive(src, dest) {
     if (stats.isDirectory()) {
         if (!fs.existsSync(dest)) {
             fs.mkdirSync(dest, {recursive: true});
+
         }
-        const items = fs.readdirSync(src);
-        //for (const item of items) {
-        //    await copyRecursive(path.join(src, item), path.join(dest, item));
-        //}
+        if (!fileOverwrite && fs.existsSync(dest)) {
+            updateCopyingProgress('Folder ' + dest + ' already exists. Skipping...', false);
+            writeMessage('Folder ' + dest + ' already exists. Skipping...');
+            itemsSkipped++;
+        } else {
+            updateCopyingProgress('Folder ' + dest + ' copied.', false);
+            writeMessage('Folder ' + dest + ' copied.');
+            itemsCopied++;
+        }
+        //no! const items = fs.readdirSync(src);
+        //no! for (const item of items) {
+        //no!    await copyRecursive(path.join(src, item), path.join(dest, item));
+        //no! }
     } else {
         const destDir = path.dirname(dest);
         if (!fs.existsSync(destDir)) {
             fs.mkdirSync(destDir, {recursive: true});
         }
         if (!fileOverwrite) {
-            if (!fs.existsSync(dest)) fs.copyFileSync(src, dest);
+            if (!fs.existsSync(dest)) {
+                fs.copyFileSync(src, dest);
+                updateCopyingProgress('File ' + dest + ' copied.', false);
+                writeMessage('File ' + dest + ' copied.');
+                itemsCopied++;
+            } else {
+                updateCopyingProgress('File ' + dest + ' already exists. Skipping...', false);
+                writeMessage('File ' + dest + ' already exists. Skipping...');
+                itemsSkipped++;
+            }
         } else {
             fs.copyFileSync(src, dest);
+            updateCopyingProgress('File ' + dest + ' copied.', false);
+            writeMessage('File ' + dest + ' copied.');
+            itemsCopied++;
         }
+    }
+}
+
+//Progress and Report
+function openProgressModal() {
+    if (copyVerbose) {
+        document.getElementById('verboseProgress').classList.remove('hidden');
+        document.getElementById('verboseReport').classList.add('hidden');
+        document.querySelectorAll('.verboseClose').forEach( (el) => el.classList.add('hidden') );
+        document.getElementById('verboseProgressMD').innerHTML = "";
+        document.getElementById('modalVerboseTrigger').click();
+    }
+}
+function openReportModal() {
+    if (copyVerbose) {
+        document.getElementById('verboseProgress').classList.add('hidden');
+        document.getElementById('verboseReport').classList.remove('hidden');
+        document.querySelectorAll('.verboseClose').forEach( (el) => el.classList.remove('hidden') );
+        document.getElementById('verboseReportMD').innerHTML = '<h6>Report</h6>' + copyingReport.join("\n") + `<hr>
+        Processed <b>${itemsProcessed }</b> of <b>${itemsTotal}</b> Total.<br>
+        Copied: <b>${itemsCopied}</b>; Skipped: <b>${itemsSkipped}</b>; Failed: <b>${itemsFailed}</b>.
+        `;
+        setTimeout(function () {
+            const modalBody = document.querySelector('#verboseModal .modal-body');
+            modalBody.scrollTop = modalBody.scrollHeight;
+        }, 100)
+
+        document.getElementById('modalVerboseTrigger').click();
+    }
+}
+function updateCopyingProgress(message, sep = false) {
+    if (copyVerbose) {
+        let useClass = '';
+        if (sep) useClass = ' class="verboseSep"';
+        let useMessage = "<div"+useClass+">" + message + +"</div>";
+        document.getElementById('verboseProgressMD').innerHTML = useMessage + document.getElementById('verboseProgressMD').innerHTML ;
+        const modalBody = document.querySelector('#verboseModal .modal-body');
+        modalBody.scrollTop = 0;
+        copyingReport.push(useMessage);
     }
 }
 
@@ -1899,13 +1985,13 @@ function updateListContent() {
     document.getElementById('listFooterTotal').innerHTML = 'Selected: ' + selectedItems.length;
 }
 function getListOfSelectedItems() {
-    // Seleziona il div #file-tree
+    // select div #file-tree
     const fileTree = document.getElementById('file-tree');
 
-// All'interno di questo div, seleziona tutti i checkbox che sono selezionati
+// select al checked checkboxes inside
     const checkedCheckboxes = fileTree.querySelectorAll('input[type="checkbox"]:checked');
 
-// Mappa ogni checkbox nelle informazioni associate
+// map every checkbox to associated info
     const files = Array.from(checkedCheckboxes).map(checkbox => ({
         path: checkbox.dataset.filePath,
         fullPath: path.join(sourceFolder, checkbox.dataset.filePath),
@@ -1963,7 +2049,7 @@ function writeMessage(message) {
 // Utils: check if 'child' is a subfolder of 'parent'
 function isSubFolder(child, parent) {
     const relative = path.relative(parent, child);
-    // Se relative è una stringa vuota oppure inizia con ".." o è una path assoluta, child non è una sottocartella di parent
+    // if relative is ampty or starts with ".." or is absolute path, child not son of parent
     return relative && !relative.startsWith('..') && !path.isAbsolute(relative);
 }
 
@@ -1990,12 +2076,11 @@ function formatSize(size) {
         if (!isNaN(convertedSize)) {
             size = convertedSize;
         } else {
-            // Gestisci il caso in cui la conversione non riesca, ad esempio impostando un valore di default
             size = 0;
         }
     }
     if (size == undefined || size == null) return "???";
-    let formattedSize; //attenzione qui è espresso già in kb
+    let formattedSize; //is yet in kb
     if (size < 1024) {
         formattedSize = (size).toFixed(2) + " Kb";
     } else {
@@ -2016,15 +2101,15 @@ function formatSizeForThree(size) {
 function formatDate(date) {
     if (date == undefined || date == null || (date.toString() === "Invalid Date")) return "???";
     if (!(date instanceof Date)) {
-        // Tenta di convertire ad una data
+        // try to convert to date
         date = new Date(date);
     }
-    // Estrae giorno, mese e anno dalla data
+    // extract day mont and year from date
     const dd = String(date.getDate()).padStart(2, '0');
-    const mm = String(date.getMonth() + 1).padStart(2, '0'); // getMonth() restituisce il mese da 0 a 11
+    const mm = String(date.getMonth() + 1).padStart(2, '0'); // getMonth() return 0 - 11 month
     const yyyy = date.getFullYear();
 
-    // Sostituisce i placeholder nel formato fornito
+    // replaces placeholders as for dateFormat
     return dateFormat.replace('dd', dd).replace('mm', mm).replace('yyyy', yyyy);
 }
 

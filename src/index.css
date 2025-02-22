@@ -12,26 +12,26 @@ body {
     flex-direction: column;
     margin: 0;
     padding: 0;
-    height: 100vh; /* Occupa l'altezza completa della finestra */
-    max-height: 100vh; /* Occupa l'altezza completa della finestra */
+    height: 100vh; /* full window height */
+    max-height: 100vh; /* full window height */
     background: url(./images/bg.png) no-repeat center center fixed;
     background-size: cover;
     min-width: 850px;
     min-height: 500px;
-    position: relative; /* necessario per il posizionamento assoluto dei figli */
+    position: relative; /* needed for children absolute positioning */
 }
 
 .folder-selection {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 .text-right {
     text-align: right;
 }
 body > div {
-    flex-shrink: 0; /* Per non farli ridurre */
+    flex-shrink: 0; /* to not shrink */
     margin: 0;
     padding: 10px;
     min-height: 40px;
@@ -247,11 +247,11 @@ li {
     border-radius: 0;
 }
 
+/* Modals */
 #modalSnapshotTrigger, #modalOptionsTrigger {
     margin-left: 10px;
 }
 
-/* Modal */
 body > div#div-modals {
     flex-shrink: unset;
     padding: unset;
@@ -269,7 +269,12 @@ body > div#div-modals {
 }
 
 .modal-title {
-    font-size: 1.4em;
+    font-size: 1.2em;
+}
+.modal-title img {
+    height: 19px;
+    border-right: 1px solid #DEE2E6;
+    padding-right: 7px;
 }
 
 .modal h6 {
@@ -330,7 +335,18 @@ body > div#div-modals {
     font-size: 0.85em;
 }
 
-/* Overlay che copre tutta la pagina */
+#verboseReportIcon  {
+    font-size: 4.5em;
+    color: #ffffff;
+}
+#verboseReportMD, #verboseProgressMD {
+    font-size: 0.75em;
+}
+.verboseSep {
+    padding-top: 5px;
+}
+
+/* Overlay full screen */
 body > div#spinner-overlay {
     flex-shrink: unset;
     height: unset;
@@ -343,16 +359,17 @@ body > div#spinner-overlay {
     left: 0;
     width: 100%;
     height: 100% !important;
-    background: rgba(0, 0, 0, 0.5); /* sfondo nero trasparente */
-    display: none; /* nascosto per default */
+    background: rgba(0, 0, 0, 0.5); /* black transparent bg */
+    display: none; /* hidden by default */
     justify-content: center;
     text-align: center;
     align-items: center;
-    z-index: 10000;
+    z-index: 999;
 }
 
-/* Spinner animato */
-#spinner {
+/* Animated Spinner items*/
+#spinner,
+#spinner2  {
     background-image: url(./images/80x80_2cols.svg);
     width: 80px;
     height: 80px;
