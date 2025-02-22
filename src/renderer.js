@@ -395,9 +395,9 @@ let clicksActive = true; //system: to disactivate clicks while copying
 let fileTreeData = []; // system: tree data
 let messageLife = 3000; //system: message life in ms before clean
 let copyingReport = [];
-let itemsCopied = 0;
-let itemsSkipped = 0;
-let itemsFailed = 0;
+let itemsCopied = [];
+let itemsSkipped =[];
+let itemsFailed = [];
 let itemsTotal = 0;
 let itemsProcessed = 0;
 
@@ -1851,9 +1851,14 @@ document.getElementById('copySelected').addEventListener('click', async () => {
 
     async function copyCallback() {
         copyingReport = [];
-        itemsCopied = 0;
-        itemsSkipped = 0;
-        itemsFailed = 0;
+        itemsCopied = [];
+        itemsSkipped =[];
+        itemsFailed = [];
+        for (let i = 0; i < destinationFolders.length; i++) {
+            itemsCopied.push(0);
+            itemsSkipped.push(0);
+            itemsFailed.push(0);
+        }
         itemsProcessed = 0;
         itemsTotal = selectedPaths.length;
         writeMessage('Copy Started...');
@@ -1865,32 +1870,31 @@ document.getElementById('copySelected').addEventListener('click', async () => {
         toggleSpinner();
 
         // copy every selected item
-        let indx = 1;
-        itemsProcessed = 1;
+        let fileIndex = 1;
         for (const relPath of selectedPaths) {
             const sourceFullPath = path.join(sourceFolder, relPath);
-            let firstDest = true;
+            let destIndex = 0;
             for (const destFolder of destinationFolders) {
                 const destinationFullPath = path.join(destFolder, relPath);
-                writeMessage('[' + indx + '/' + selectedPaths.length + '] Copying ' + sourceFullPath + ' to ' + destinationFullPath);
-                updateCopyingProgress('[' + indx + '/' + selectedPaths.length + '] Copying ' + sourceFullPath + ' to ' + destinationFullPath, true)
+                writeMessage('[' + fileIndex + '/' + selectedPaths.length + '] Copying ' + sourceFullPath + ' to ' + destinationFullPath);
+                updateCopyingProgress('[' + fileIndex + '/' + selectedPaths.length + '] Copying ' + sourceFullPath + ' to ' + destinationFullPath, true)
                 try {
-                    await copyRecursive(sourceFullPath, destinationFullPath, firstDest);
+                    await copyRecursive(sourceFullPath, destinationFullPath, destIndex);
                 } catch (err) {
                     console.error('Error copying ', sourceFullPath, destinationFullPath, err);
                     writeMessage('Error copying ' + sourceFullPath + ' in ' + destinationFullPath);
-                    if (firstDest) itemsFailed++;  //TODO handle multiple dest case
+                    itemsFailed[destIndex]++;
                     updateCopyingProgress('Error copying ' + sourceFullPath + ' in ' + destinationFullPath, false);
                 }
-                firstDest = false;
+                destIndex++;
             }
 
             //TODO remove
             //const zzTime = Date.now() + 5;
-            //while (Date.now() < zzTime) { console.log(indx, 'waiting...', (zzTime - Date.now())); };
+            //while (Date.now() < zzTime) { console.log(fileIndex, 'waiting...', (zzTime - Date.now())); };
 
-            itemsProcessed = indx;
-            indx++;
+            itemsProcessed = fileIndex;
+            fileIndex++;
         }
         clicksActive = true;
         toggleSpinner();
@@ -1902,7 +1906,7 @@ document.getElementById('copySelected').addEventListener('click', async () => {
         openReportModal();
     }
 });
-async function copyRecursive(src, dest, firstDest) {
+async function copyRecursive(src, dest, destIndex) {
     const stats = fs.statSync(src);
     if (stats.isDirectory()) {
         if (!fs.existsSync(dest)) {
@@ -1912,11 +1916,11 @@ async function copyRecursive(src, dest, firstDest) {
         if (!fileOverwrite && fs.existsSync(dest)) {
             updateCopyingProgress('Folder ' + dest + ' already exists. Skipping...', false);
             writeMessage('Folder ' + dest + ' already exists. Skipping...');
-            if (firstDest) itemsSkipped++;  //TODO handle multiple dest case
+            itemsSkipped[destIndex]++;
         } else {
             updateCopyingProgress('Folder ' + dest + ' copied.', false);
             writeMessage('Folder ' + dest + ' copied.');
-            if (firstDest) itemsCopied++;  //TODO handle multiple dest case
+            itemsCopied[destIndex]++;
         }
         //no! const items = fs.readdirSync(src);
         //no! for (const item of items) {
@@ -1932,17 +1936,17 @@ async function copyRecursive(src, dest, firstDest) {
                 fs.copyFileSync(src, dest);
                 updateCopyingProgress('File ' + dest + ' copied.', false);
                 writeMessage('File ' + dest + ' copied.');
-                if (firstDest) itemsCopied++; //TODO handle multiple dest case
+                itemsCopied[destIndex]++;
             } else {
                 updateCopyingProgress('File ' + dest + ' already exists. Skipping...', false);
                 writeMessage('File ' + dest + ' already exists. Skipping...');
-                if (firstDest) itemsSkipped++; //TODO handle multiple dest case
+                itemsSkipped[destIndex]++;
             }
         } else {
             fs.copyFileSync(src, dest);
             updateCopyingProgress('File ' + dest + ' copied.', false);
             writeMessage('File ' + dest + ' copied.');
-            if (firstDest) itemsCopied++; //TODO handle multiple dest case
+            itemsCopied[destIndex]++;
         }
     }
 }
@@ -1963,8 +1967,8 @@ function openReportModal() {
         document.getElementById('verboseReport').classList.remove('hidden');
         document.querySelectorAll('.verboseClose').forEach( (el) => el.classList.remove('hidden') );
         document.getElementById('verboseReportMD').innerHTML = '<h6>Report</h6>' + copyingReport.join("\n") + `<hr>
-        Processed <b>${itemsProcessed }</b> of <b>${itemsTotal}</b> Total.<br>
-        Copied: <b>${itemsCopied}</b>; Skipped: <b>${itemsSkipped}</b>; Failed: <b>${itemsFailed}</b>.
+        Processed <b>${itemsProcessed}</b> of <b>${itemsTotal}</b> items, into <b>${destinationFolders.length}</b> Destination folders.<br>
+        Copied: <b>${itemsCopied.toString()}</b>; Skipped: <b>${itemsSkipped.toString()}</b>; Failed: <b>${itemsFailed.toString()}</b>.
         `;
         setTimeout(function () {
             const modalBody = document.querySelector('#verboseModal .modal-body');
