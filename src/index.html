@@ -142,7 +142,7 @@
     <div class="footer">
         <span id="status"></span>
         <div>
-            <button id="copySelected" class="btn btn-primary btn-sm"><i class="bi bi-copy"></i> Copy Selected Items
+            <button id="copySelected" class="btn btn-primary btn-sm" title="Copy Selected Items"><i class="bi bi-copy"></i> Copy Selected Items
             </button>
         </div>
     </div>
@@ -173,7 +173,7 @@
                             title="Export Selection List to JSON"><i class="bi bi-filetype-json"></i> Export JSON
                     </button>
                     <button type="button" id="listModalButtonSaveCsv" class="btn btn-primary btn-sm"
-                            title="Export Selection List to JSON"><i class="bi bi-filetype-csv"></i> Export CSV
+                            title="Export Selection List to CSV"><i class="bi bi-filetype-csv"></i> Export CSV
                     </button>
                     <button type="button" class="btn btn-primary btn-sm" data-bs-dismiss="modal"><i
                             class="bi bi-x-lg"></i>
@@ -240,7 +240,7 @@
                             <h6>Copying</h6>
                             <div class="form-check form-switch"
                                  title="Overwrite files and folders, during copying, if they already exist">
-                                <input class="form-check-input" type="checkbox" role="switch" id="overwriteChecked"
+                                <input class="form-check-input" type="checkbox" role="switch" id="overwriteChecked" title="Overwrite files, during copying, if existing"
                                        checked/>
                                 <label class="form-check-label" for="overwriteChecked">Overwrite Existing</label>
                             </div>
@@ -249,7 +249,7 @@
                             <h6>Selecting</h6>
                             <div class="form-check form-switch"
                                  title="Propagate selection of an item to parent and childen elements">
-                                <input class="form-check-input" type="checkbox" role="switch" id="propagateChecked"
+                                <input class="form-check-input" type="checkbox" role="switch" id="propagateChecked" title="Propagate Selection to child items"
                                        checked/>
                                 <label class="form-check-label" for="propagateChecked">Propagate Selection</label>
                             </div>
@@ -258,7 +258,7 @@
                             <h6>Filtering</h6>
                             <div class="form-check form-switch "
                                  title="Relationship between filter groups is OR, otherwise it's AND">
-                                <input class="form-check-input" type="checkbox" role="switch" id="relationshipORChecked"
+                                <input class="form-check-input" type="checkbox" role="switch" id="relationshipORChecked" title="Aggregation condition between Filters is NOT (at least one matched) or AND (all togheter must match)"
                                        checked/>
                                 <label class="form-check-label" for="relationshipORChecked">Relationship OR</label>
                             </div>
@@ -287,30 +287,30 @@
                 </div>
                 <div class="modal-body">
                     <div class="container-fluid">
-                        <div>A <b>Snapshots</b> includes: Folders, Filters and Options.</div>
+                        <div><b>Snapshot</b> includes: Folders, Filters and Options.</div>
                         <br>
                         <div class="input-group">
-                            <input type="text" class="form-control" id="saveSnapshotInput"
+                            <input type="text" class="form-control" id="saveSnapshotInput" title="Name of the Snapshot to save"
                                    placeholder="Name of Snapshot"/>
                             <button id="saveSnapshot" type="button" class="btn btn-primary btn-sm snapshot-buttons"><i
-                                    class="bi bi-box-arrow-down"></i>
+                                    class="bi bi-box-arrow-down" title="Save Shapshot"></i>
                                 Save
                             </button>
                             <button id="exportSnapshot" type="button" class="btn btn-primary btn-sm snapshot-buttons"><i
-                                    class="bi bi-box-arrow-in-down"></i>
+                                    class="bi bi-box-arrow-in-down" title="Export Shapshot to file"></i>
                                 Export
                             </button>
                         </div>
                         <div class="input-group">
-                            <select class="form-select form-select-sm" aria-label="Choose a Snapshot"
+                            <select class="form-select form-select-sm" aria-label="Choose a Snapshot to load" title="Choose a Snapshot to load"
                                     id="loadSnapshotInput">
                             </select>
                             <button id="loadSnapshot" type="button" class="btn btn-primary btn-sm snapshot-buttons"><i
-                                    class="bi bi-box-arrow-up"></i>
+                                    class="bi bi-box-arrow-up" title="Load Saved Shapshot"></i>
                                 Load
                             </button>
                             <button id="cleanSnapshot" type="button" class="btn btn-primary btn-sm snapshot-buttons"><i
-                                    class="bi bi-trash"></i>
+                                    class="bi bi-trash" title="Remove Saved Snapshot"></i>
                                 Clear
                             </button>
                         </div>
@@ -318,12 +318,12 @@
                 </div>
                 <div class="modal-footer">
                     <button id="importSnapshot" type="button" class="btn btn-primary btn-sm snapshot-buttons"><i
-                            class="bi bi-box-arrow-in-up"></i>
+                            class="bi bi-box-arrow-in-up" title="Import Shapshot from file"></i>
                         Import
                     </button>
                     <button id="cleanAllSnapshots" type="button"
                             class="btn btn-primary btn-sm snapshot-buttons"><i
-                            class="bi bi-trash"></i>
+                            class="bi bi-trash" title="Clear All saved Snapshots"></i>
                         Clear All
                     </button>
                     <button type="button" class="btn btn-primary btn-sm" data-bs-dismiss="modal"><i
