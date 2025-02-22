@@ -127,7 +127,7 @@ Source code available on <a href="https://github.com/atlantidezign/copyman"><i c
     v${version}
     <br>
     <br>
-    <p>Select and copy files from one folder to multiple destinations while preserving the folder structure.</p>
+    <p>Select and copy, at lightning speed, items from one folder to multiple destinations while preserving the folder structure.</p>
     `;
 
     document.getElementById('helpContentMD').innerHTML = marked.parse(markdown) + underDocs;
@@ -1014,6 +1014,7 @@ function updateTree() {
     clicksActive = true;
     toggleSpinner();
 }
+
 //Tree selections
 function propagateDown(li, isChecked) {
     // recursively select all checkbox of children
@@ -1857,37 +1858,51 @@ document.getElementById('copySelected').addEventListener('click', async () => {
         itemsTotal = selectedPaths.length;
         writeMessage('Copy Started...');
         openProgressModal();
-
+        let now1 = new Date();
+        let startTime = now1.getTime();
+        updateCopyingProgress('Copy started at: ' + now1.toLocaleTimeString(), true);
         clicksActive = false;
         toggleSpinner();
+
         // copy every selected item
         let indx = 1;
         itemsProcessed = 1;
         for (const relPath of selectedPaths) {
             const sourceFullPath = path.join(sourceFolder, relPath);
+            let firstDest = true;
             for (const destFolder of destinationFolders) {
                 const destinationFullPath = path.join(destFolder, relPath);
                 writeMessage('[' + indx + '/' + selectedPaths.length + '] Copying ' + sourceFullPath + ' to ' + destinationFullPath);
                 updateCopyingProgress('[' + indx + '/' + selectedPaths.length + '] Copying ' + sourceFullPath + ' to ' + destinationFullPath, true)
                 try {
-                    await copyRecursive(sourceFullPath, destinationFullPath);
+                    await copyRecursive(sourceFullPath, destinationFullPath, firstDest);
                 } catch (err) {
                     console.error('Error copying ', sourceFullPath, destinationFullPath, err);
                     writeMessage('Error copying ' + sourceFullPath + ' in ' + destinationFullPath);
-                    itemsFailed++;
+                    if (firstDest) itemsFailed++;  //TODO handle multiple dest case
                     updateCopyingProgress('Error copying ' + sourceFullPath + ' in ' + destinationFullPath, false);
                 }
+                firstDest = false;
             }
+
+            //TODO remove
+            //const zzTime = Date.now() + 5;
+            //while (Date.now() < zzTime) { console.log(indx, 'waiting...', (zzTime - Date.now())); };
+
             itemsProcessed = indx;
             indx++;
         }
         clicksActive = true;
         toggleSpinner();
+        let now2 = new Date();
+        let endTime = now2.getTime();
+        let elapsedTime = (endTime - startTime);
+        updateCopyingProgress('Copy finished at: ' + now2.toLocaleTimeString() +'. Elapsed: ' + elapsedTime +'ms' , true);
         writeMessage('Copy Completed!');
         openReportModal();
     }
 });
-async function copyRecursive(src, dest) {
+async function copyRecursive(src, dest, firstDest) {
     const stats = fs.statSync(src);
     if (stats.isDirectory()) {
         if (!fs.existsSync(dest)) {
@@ -1897,11 +1912,11 @@ async function copyRecursive(src, dest) {
         if (!fileOverwrite && fs.existsSync(dest)) {
             updateCopyingProgress('Folder ' + dest + ' already exists. Skipping...', false);
             writeMessage('Folder ' + dest + ' already exists. Skipping...');
-            itemsSkipped++;
+            if (firstDest) itemsSkipped++;  //TODO handle multiple dest case
         } else {
             updateCopyingProgress('Folder ' + dest + ' copied.', false);
             writeMessage('Folder ' + dest + ' copied.');
-            itemsCopied++;
+            if (firstDest) itemsCopied++;  //TODO handle multiple dest case
         }
         //no! const items = fs.readdirSync(src);
         //no! for (const item of items) {
@@ -1917,17 +1932,17 @@ async function copyRecursive(src, dest) {
                 fs.copyFileSync(src, dest);
                 updateCopyingProgress('File ' + dest + ' copied.', false);
                 writeMessage('File ' + dest + ' copied.');
-                itemsCopied++;
+                if (firstDest) itemsCopied++; //TODO handle multiple dest case
             } else {
                 updateCopyingProgress('File ' + dest + ' already exists. Skipping...', false);
                 writeMessage('File ' + dest + ' already exists. Skipping...');
-                itemsSkipped++;
+                if (firstDest) itemsSkipped++; //TODO handle multiple dest case
             }
         } else {
             fs.copyFileSync(src, dest);
             updateCopyingProgress('File ' + dest + ' copied.', false);
             writeMessage('File ' + dest + ' copied.');
-            itemsCopied++;
+            if (firstDest) itemsCopied++; //TODO handle multiple dest case
         }
     }
 }
@@ -1963,8 +1978,9 @@ function updateCopyingProgress(message, sep = false) {
     if (copyVerbose) {
         let useClass = '';
         if (sep) useClass = ' class="verboseSep"';
-        let useMessage = "<div"+useClass+">" + message + +"</div>";
-        document.getElementById('verboseProgressMD').innerHTML = useMessage + document.getElementById('verboseProgressMD').innerHTML ;
+        let useMessage = "<div"+useClass+">" + message +"</div>";
+        if (sep) document.getElementById('verboseProgressMD').innerHTML = useMessage
+        else document.getElementById('verboseProgressMD').innerHTML = useMessage + document.getElementById('verboseProgressMD').innerHTML ;
         const modalBody = document.querySelector('#verboseModal .modal-body');
         modalBody.scrollTop = 0;
         copyingReport.push(useMessage);

@@ -54,7 +54,7 @@ There is a panel with action buttons:
 - **Help** Open Help panel.
 
 ### Options
-The **options** panel affects copying and selecting behaviours.
+The **Options** panel affects copying and selecting behaviours.
 Has an autosave behaviour, and can be **Reset** to defaults. 
 
 #### Copying
@@ -68,7 +68,7 @@ Has an autosave behaviour, and can be **Reset** to defaults.
 - **Relationship OR** to choose the kind of relationship between filter groups, OR (checked) or AND (unchecked).
 
 ### Snapshots
-The **snapshot** panel manages snapshot (current configuration of folders, filters, and options) save/load/clear/export;
+The **Snapshot** panel manages snapshot (current configuration of folders, filters, and options) save/load/clear/export;
 - **Save Shapshot** to save current snapshot, with a name.
 - **Export Shapshot** to export current snapshot to a json file, with a name.
 - **Load Shapshot** to load saved snapshot by selected name.
@@ -89,5 +89,5 @@ For example, if a folder is selected but only some of the files inside it are se
 
 ### Menus
 Trough the **contextual menu** (right click) you have shortcuts to the main features of the application.
-The **main menu** contains generic actions, and the help.
-There is also the **tray** icon and its minimal menu.
+The **main menu** contains generic actions, the **About** panel and the **Usage** panel with instructions.
+There is also the **tray** icon and its minimal menu, with **Quit** button.

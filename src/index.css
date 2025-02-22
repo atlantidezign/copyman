@@ -27,9 +27,11 @@ body {
 .hidden {
     display: none !important;
 }
+
 .text-right {
     text-align: right;
 }
+
 body > div {
     flex-shrink: 0; /* to not shrink */
     margin: 0;
@@ -157,6 +159,7 @@ li {
 #exportSnapshot {
     margin-left: 1px;
 }
+
 .snapshot-buttons {
     width: 90px;
 }
@@ -271,6 +274,7 @@ body > div#div-modals {
 .modal-title {
     font-size: 1.2em;
 }
+
 .modal-title img {
     height: 19px;
     border-right: 1px solid #DEE2E6;
@@ -289,9 +293,11 @@ body > div#div-modals {
 #snapshotModal .input-group {
     margin-bottom: 1.5rem;
 }
+
 #snapshotModal .modal-body {
     padding-bottom: 0;
 }
+
 #cleanSnapshot {
     margin-left: 1px
 }
@@ -335,14 +341,19 @@ body > div#div-modals {
     font-size: 0.85em;
 }
 
-#verboseReportIcon  {
+#verboseReportIcon {
     font-size: 4.5em;
     color: #ffffff;
 }
+
 #verboseReportMD, #verboseProgressMD {
     font-size: 0.75em;
 }
-.verboseSep {
+
+#verboseProgress .verboseSep {
+    padding-bottom: 5px;
+}
+#verboseReport .verboseSep {
     padding-top: 5px;
 }
 
@@ -369,7 +380,7 @@ body > div#spinner-overlay {
 
 /* Animated Spinner items*/
 #spinner,
-#spinner2  {
+#spinner2 {
     background-image: url(./images/80x80_2cols.svg);
     width: 80px;
     height: 80px;
