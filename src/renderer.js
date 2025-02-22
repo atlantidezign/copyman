@@ -633,8 +633,7 @@ function setFromSnapshot(settings) {
         updateOptionsUI();
 
         document.getElementById('sourcePath').textContent = sourceFolder;
-        fileTreeData = buildFileTree(sourceFolder);
-        renderFileTree(fileTreeData);
+        updateTree();
 
         updateDestinationList();
 
@@ -690,8 +689,7 @@ document.getElementById('selectSource').addEventListener('click', async () => {
         sourceFolder = folder;
         document.getElementById('sourcePath').textContent = folder;
         // Costruisce l'albero dei file
-        fileTreeData = buildFileTree(sourceFolder);
-        renderFileTree(fileTreeData);
+        updateTree();
         writeMessage('Source Folder rendered.');
     } else {
         writeMessage('No Source folder selected.');
@@ -718,8 +716,7 @@ function swapSourceAndDestination() {
     sourceFolder = destinationFolders[0];
     destinationFolders[0] = oldsource;
     document.getElementById('sourcePath').textContent = sourceFolder;
-    fileTreeData = buildFileTree(sourceFolder);
-    renderFileTree(fileTreeData);
+    updateTree();
     updateDestinationList();
     applyAllFilters();
     writeMessage('Source / Destination Folders swapped.');
@@ -990,7 +987,14 @@ function createTreeNode(node) {
     }
     return li;
 }
-
+function updateTree() {
+    clicksActive = false;
+    toggleSpinner(!clicksActive);
+    fileTreeData = buildFileTree(sourceFolder);
+    renderFileTree(fileTreeData);
+    clicksActive = true;
+    toggleSpinner(!clicksActive);
+}
 //Tree selections
 function propagateDown(li, isChecked) {
     // Seleziona tutti i checkbox dei nodi figli (ricorsivamente)
