@@ -566,7 +566,7 @@ async function exportSnapshot() {
 
     writeMessage('Choose Snapshot JSON file for Export.');
     clicksActive = false;
-    toggleSpinner(!clicksActive);
+    toggleSpinner();
     const saved = await ipcRenderer.invoke('select-export-snapshot-file', newSettings);
     if (saved) {
         writeMessage('Shapshot exported successfully.');
@@ -574,17 +574,17 @@ async function exportSnapshot() {
         writeMessage('Shapshot not exported.');
     }
     clicksActive = true;
-    toggleSpinner(!clicksActive);
+    toggleSpinner();
 }
 async function importSnapshot() {
     writeMessage('Choose Snapshot JSON file for Import.');
     clicksActive = false;
-    toggleSpinner(!clicksActive);
+    toggleSpinner();
     const filePath = await ipcRenderer.invoke('select-import-snapshot-file', 'Select Snapshot File to Import');
     if (!filePath) {
         showAlert('Nessun file selezionato per l\'import dello Snapshot.');
         clicksActive = true;
-        toggleSpinner(!clicksActive);
+        toggleSpinner();
         return;
     }
 
@@ -595,7 +595,7 @@ async function importSnapshot() {
         console.error(`Errore nella lettura del file: ${error.message}`);
         writeMessage(`Errore nella lettura del file JSON dello Snapshot.`);
         clicksActive = true;
-        toggleSpinner(!clicksActive);
+        toggleSpinner();
         return;
     }
 
@@ -604,12 +604,12 @@ async function importSnapshot() {
         settings = JSON.parse(fileContent);
         setFromSnapshot(settings);
         clicksActive = true;
-        toggleSpinner(!clicksActive);
+        toggleSpinner();
     } catch (error) {
         console.error(`Errore nel parsing del JSON: ${error.message}`);
         writeMessage(`Errore nel parsing del JSON dello Snapshot.`);
         clicksActive = true;
-        toggleSpinner(!clicksActive);
+        toggleSpinner();
         return;
     }
 }
@@ -661,14 +661,14 @@ document.addEventListener('click', function (event) {
 document.getElementById('selectSource').addEventListener('click', async () => {
     writeMessage('Choose Source folder.');
     clicksActive = false;
-    toggleSpinner(!clicksActive);
+    toggleSpinner();
     const folder = await ipcRenderer.invoke('select-folder', 'Select Source Folder', sourceFolder);
     if (folder) {
         writeMessage('Scanning Source folder...');
         if (destinationFolders.includes(folder)) {
             showAlert("This folder is in the destination list.");
             clicksActive = true;
-            toggleSpinner(!clicksActive);
+            toggleSpinner();
             return;
         }
         // Controlla che la cartella non sia una sottocartella di una qualsiasi delle cartelle già selezionate
@@ -676,13 +676,13 @@ document.getElementById('selectSource').addEventListener('click', async () => {
             if (isSubFolder(folder, destFolder)) {
                 showAlert("The source folder cannot be a subfolder of an already selected destination folder.");
                 clicksActive = true;
-                toggleSpinner(!clicksActive);
+                toggleSpinner();
                 return;
             }
             if (isSubFolder(destFolder, folder)) {
                 showAlert("The source folder cannot be a parent folder of an already selected destination folder.");
                 clicksActive = true;
-                toggleSpinner(!clicksActive);
+                toggleSpinner();
                 return;
             }
         }
@@ -695,7 +695,7 @@ document.getElementById('selectSource').addEventListener('click', async () => {
         writeMessage('No Source folder selected.');
     }
     clicksActive = true;
-    toggleSpinner(!clicksActive);
+    toggleSpinner();
 });
 document.getElementById('clearSource').addEventListener('click', async () => {
     sourceFolder = '';
@@ -764,21 +764,21 @@ function updateDestinationList() {
 async function addDestination() {
     writeMessage('Choose a Destination folder.');
     clicksActive = false;
-    toggleSpinner(!clicksActive);
+    toggleSpinner();
     const folder = await ipcRenderer.invoke('select-folder', 'Select destination folder', destinationFolders.length > 0 ? destinationFolders[destinationFolders.length - 1] : "");
     if (folder) {
         // Controlla che la cartella non sia uguale a sourceFolder
         if (folder === sourceFolder) {
             showAlert("The destination folder cannot be the same as the source folder.");
             clicksActive = true;
-            toggleSpinner(!clicksActive);
+            toggleSpinner();
             return;
         }
         // Check that the folder is not already present in the array
         if (destinationFolders.includes(folder)) {
             showAlert("This folder has already been added.");
             clicksActive = true;
-            toggleSpinner(!clicksActive);
+            toggleSpinner();
             return;
         }
 
@@ -786,7 +786,7 @@ async function addDestination() {
         if (sourceFolder && isSubFolder(folder, sourceFolder) && isSubFolder(sourceFolder, folder)) {
             showAlert("The destination folder cannot be a subfolder or a parent of source folder.");
             clicksActive = true;
-            toggleSpinner(!clicksActive);
+            toggleSpinner();
             return;
         }
 
@@ -795,13 +795,13 @@ async function addDestination() {
             if (isSubFolder(folder, destFolder)) {
                 showAlert("The destination folder cannot be a subfolder of an already selected destination folder.");
                 clicksActive = true;
-                toggleSpinner(!clicksActive);
+                toggleSpinner();
                 return;
             }
             if (isSubFolder(destFolder, folder)) {
                 showAlert("The destination folder cannot be a parent folder of an already selected destination folder.");
                 clicksActive = true;
-                toggleSpinner(!clicksActive);
+                toggleSpinner();
                 return;
             }
         }
@@ -814,7 +814,7 @@ async function addDestination() {
         writeMessage('No Destination folder selected.');
     }
     clicksActive = true;
-    toggleSpinner(!clicksActive);
+    toggleSpinner();
 }
 function removeDestination(index) {
     destinationFolders.splice(index, 1);
@@ -989,11 +989,11 @@ function createTreeNode(node) {
 }
 function updateTree() {
     clicksActive = false;
-    toggleSpinner(!clicksActive);
+    toggleSpinner();
     fileTreeData = buildFileTree(sourceFolder);
     renderFileTree(fileTreeData);
     clicksActive = true;
-    toggleSpinner(!clicksActive);
+    toggleSpinner();
 }
 //Tree selections
 function propagateDown(li, isChecked) {
@@ -1840,7 +1840,7 @@ document.getElementById('copySelected').addEventListener('click', async () => {
     async function copyCallback() {
         writeMessage('Copy Started...');
         clicksActive = false;
-        toggleSpinner(!clicksActive);
+        toggleSpinner();
         // Copia per ogni elemento selezionato
         let indx = 1;
         for (const relPath of selectedPaths) {
@@ -1858,7 +1858,7 @@ document.getElementById('copySelected').addEventListener('click', async () => {
             indx++;
         }
         clicksActive = true;
-        toggleSpinner(!clicksActive);
+        toggleSpinner();
         writeMessage('Copy Completed!');
     }
 });
@@ -1939,7 +1939,7 @@ function saveListOfSelectedItemsToCsv() {
 async function saveListOfSelectedItems(kind, dataToExport) {
     writeMessage('Choose '+kind.toUpperCase()+' Export file.');
     clicksActive = false;
-    toggleSpinner(!clicksActive);
+    toggleSpinner();
     const saved = await ipcRenderer.invoke('select-export-selection-file', dataToExport, kind);
     if (saved) {
         writeMessage('Selection List '+kind.toUpperCase()+' exported successfully.');
@@ -1947,7 +1947,7 @@ async function saveListOfSelectedItems(kind, dataToExport) {
         writeMessage('Selection List '+kind.toUpperCase()+' not exported.');
     }
     clicksActive = true;
-    toggleSpinner(!clicksActive);
+    toggleSpinner();
 }
 
 // Utils: messages
@@ -1968,9 +1968,10 @@ function isSubFolder(child, parent) {
 }
 
 // Utils: spinner
-function toggleSpinner(active) {
+function toggleSpinner() {
+    let spinnerActive = !clicksActive;
     const spinnerOverlay = document.getElementById('spinner-overlay');
-    spinnerOverlay.style.display = active ? 'flex' : 'none';
+    spinnerOverlay.style.display = spinnerActive ? 'flex' : 'none';
 }
 
 //Utils: alert and confirm wrapped on native dialogs trough ipcRender
