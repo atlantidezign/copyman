@@ -29,7 +29,8 @@
       "!*",
       "!**/*",
       "./src/**/*",
-      "./docs/**/*"
+      "./docs/**/*",
+      "./package.json"
     ],
     "directories": {
       "buildResources": "build"
