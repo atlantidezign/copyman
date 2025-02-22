@@ -67,10 +67,12 @@ Has an autosave behaviour, and can be **Reset** to defaults.
 - **Relationship OR** to choose the kind of relationship between filter groups, OR (checked) or AND (unchecked).
 
 ### Snapshots
-The **snapshot** panel manages snapshot (current configuration of folders, filters, and options) save/load/clear;
+The **snapshot** panel manages snapshot (current configuration of folders, filters, and options) save/load/clear/export;
 - **Save Shapshot** to save current snapshot, with a name.
-- **Load Saved Shapshot** to load saved snapshot by selected name.
-- **Clear Saved Shapshot** to remove saved snapshot by selected name.
+- **Export Shapshot** to export current snapshot to a json file, with a name.
+- **Load Shapshot** to load saved snapshot by selected name.
+- **Clear Shapshot** to remove saved snapshot by selected name.
+- **Import Shapshot** to import snapshot from json file.
 - **Clear All Shapshots** to remove all saved snapshots.
 
 ### Selection List

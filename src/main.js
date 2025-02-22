@@ -264,7 +264,7 @@ app.whenReady().then(() => {
     const mainMenu = Menu.buildFromTemplate(mainTemplate)
     Menu.setApplicationMenu(mainMenu);
 
-    // Business: Gestione chiamate per selezionare una cartella (sia per la sorgente che per la destinazione)
+    // Business: dialog for selecting source/destination folder.
     ipcMain.handle('select-folder', async (event, title, lastPath) => {
         const result = await dialog.showOpenDialog({
             title: title,
@@ -277,7 +277,8 @@ app.whenReady().then(() => {
         return null;
     });
 
-    ipcMain.handle('select-export-file', async (event, dataToExport, kind) => {
+    // Business: dialog for load/save files
+    ipcMain.handle('select-export-selection-file', async (event, dataToExport, kind) => {
         const pad = (number) => (number < 10 ? '0' + number : number);
         const now = new Date();
         const defaultFileName = `copyman_selection_export-${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}-${pad(now.getHours())}-${pad(now.getMinutes())}-${pad(now.getSeconds())}.${kind}`;
@@ -307,8 +308,42 @@ app.whenReady().then(() => {
         }
         return false;
     });
+    ipcMain.handle('select-import-snapshot-file', async (event, title, lastPath) => {
+        const result = await dialog.showOpenDialog({
+            title: title,
+            defaultPath: lastPath,
+            properties: ['openFile'],
+            filters: [{ name: 'JSON', extensions: ['json'] }]
+        });
+        if (result.canceled === false && result.filePaths.length > 0) {
+            return result.filePaths[0];
+        }
+        return null;
+    });
+    ipcMain.handle('select-export-snapshot-file', async (event, dataToExport) => {
+        const pad = (number) => (number < 10 ? '0' + number : number);
+        const now = new Date();
+        const defaultFileName = `copyman_snapshot_export-${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}-${pad(now.getHours())}-${pad(now.getMinutes())}-${pad(now.getSeconds())}.json`;
+        const options = {
+            title: 'Export Snapshot as JSON file',
+            defaultPath: defaultFileName,
+            buttonLabel: 'Export',
+            filters : [{ name: 'JSON', extensions: ['json'] }]
+        };
+        let useText = JSON.stringify(dataToExport, null, 2);
+        const result = await dialog.showSaveDialog(options);
+        if (!result.canceled && result.filePath) {
+            try {
+                fs.writeFileSync(result.filePath, useText);
+            } catch (err) {
+                return false
+            }
+            return true;
+        }
+        return false;
+    });
 
-    //Business: gestione chiamate alert e confirm
+    //Business: alert e confirm
     ipcMain.handle("show-alert", (e, message) => {
         dialog.showMessageBox(win, { title: "Copyman | Alert", message: message });
     });

@@ -27,7 +27,9 @@ body {
 .hidden {
     display: none;
 }
-
+.text-right {
+    text-align: right;
+}
 body > div {
     flex-shrink: 0; /* Per non farli ridurre */
     margin: 0;
@@ -151,8 +153,16 @@ li {
 }
 
 #addNamePlusFilter, #addNameMinusFilter, #addDatePlusFilter, #addDateMinusFilter,
-#addSizePlusFilter, #addSizeMinusFilter, #deselectAll, #collapseAll {
+#addSizePlusFilter, #addSizeMinusFilter, #deselectAll, #collapseAll,
+#exportSnapshot, #cleanAllSnapshots {
     margin-left: 1px;
+}
+.snapshot-buttons {
+    width: 90px;
+}
+.snapshot-last-buttons {
+    width: 181px;
+    float: right;
 }
 
 .span-actions {
@@ -278,7 +288,9 @@ body > div#div-modals {
 #snapshotModal .input-group {
     margin-bottom: 1.5rem;
 }
-
+#snapshotModal .modal-body {
+    padding-bottom: 0;
+}
 #cleanSnapshot {
     margin-left: 1px
 }

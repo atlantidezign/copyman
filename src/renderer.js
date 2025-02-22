@@ -105,6 +105,7 @@ function initalizeHelpModal() {
         markdown = fs.readFileSync(usageFilePath, 'utf8');
     } catch (error) {
         console.error('Error reading USAGE.md:', error);
+        writeMessage('Error reading USAGE.md.');
     }
 
     let underDocs = `
@@ -401,6 +402,8 @@ document.getElementById('saveSnapshot').addEventListener('click', saveSnapshot);
 document.getElementById('loadSnapshot').addEventListener('click', loadSnapshot);
 document.getElementById('cleanSnapshot').addEventListener('click', cleanSnapshot);
 document.getElementById('cleanAllSnapshots').addEventListener('click', cleanAllSnapshots);
+document.getElementById('exportSnapshot').addEventListener('click', exportSnapshot);
+document.getElementById('importSnapshot').addEventListener('click', importSnapshot);
 function listSnapshots() {
     let selectEl = document.getElementById('loadSnapshotInput');
     selectEl.innerHTML = '';
@@ -491,50 +494,7 @@ function loadSnapshot() {
         writeMessage('No saved Snapshot found with name "' + useName + '"');
         return;
     }
-    try {
-        removeAllFilters();
-        // Aggiorna le variabili globali dell'applicazione
-        sourceFolder = settings.sourceFolder || '';
-        destinationFolders = settings.destinationFolders || [];
-        fileOverwrite = (typeof settings.fileOverwrite === 'boolean') ? settings.fileOverwrite : false;
-        propagateSelections = (typeof settings.propagateSelections === 'boolean') ? settings.propagateSelections : false;
-        relationshipOR = (typeof settings.relationshipOR === 'boolean') ? settings.relationshipOR : false;
-        filtersNamePlus = settings.filtersNamePlus || [];
-        filtersNameMinus = settings.filtersNameMinus || [];
-        filtersDatePlus = settings.filtersDatePlus || [];
-        filtersDateMinus = settings.filtersDateMinus || [];
-        filtersSizePlus = settings.filtersSizePlus || [];
-        filtersSizeMinus = settings.filtersSizeMinus || [];
-
-        // Aggiorna la UI
-        const fileOverwriteCheckbox = document.getElementById('overwriteChecked');
-        if (fileOverwriteCheckbox) {
-            fileOverwriteCheckbox.checked = fileOverwrite;
-        }
-
-        const propagateSelectionsCheckbox = document.getElementById('propagateChecked');
-        if (propagateSelectionsCheckbox) {
-            propagateSelectionsCheckbox.checked = propagateSelections;
-        }
-
-        const relationshipORCheckbox = document.getElementById('relationshipORChecked');
-        if (relationshipORCheckbox) {
-            relationshipORCheckbox.checked = relationshipOR;
-        }
-
-        document.getElementById('sourcePath').textContent = sourceFolder;
-        fileTreeData = buildFileTree(sourceFolder);
-        renderFileTree(fileTreeData);
-
-        updateDestinationList();
-
-        applyAllFilters();
-
-        writeMessage('Snapshot loaded.');
-    } catch (error) {
-        console.error("Error during Snapshot loading:", error);
-        writeMessage('Error during Snapshot loading.');
-    }
+    setFromSnapshot(settings);
 }
 function cleanSnapshot() {
     let useName = document.getElementById('loadSnapshotInput').value.trim().toLowerCase();
@@ -572,11 +532,122 @@ function cleanAllSnapshots() {
         writeMessage('Snapshots cleaned.');
     }
 }
-function exportSnapshot() {
-    //TODO export to json file
+async function exportSnapshot() {
+    let useName = document.getElementById('saveSnapshotInput').value.trim().toLowerCase();
+    if (!useName) {
+        showAlert('Please enter a name for Snapshot to export.');
+        return;
+    }
+    document.getElementById('saveSnapshotInput').value = useName;
+
+    if (sourceFolder === '' && destinationFolders.length === 0 && filtersDateMinus.length == 0 && filtersDatePlus.length === 0 &&
+        filtersSizeMinus.length === 0 && filtersSizePlus.length === 0 && filtersNameMinus.length === 0 && filtersNamePlus.length === 0) {
+        showAlert('Please enter some Folder/Filter to save.');
+        return;
+    }
+
+    let newSettings = {
+        name: useName,
+        //source and destinations folders
+        sourceFolder: sourceFolder,
+        destinationFolders: destinationFolders,
+        //user settings (overwrite, propagate + nuovi)
+        fileOverwrite: fileOverwrite,
+        propagateSelections: propagateSelections,
+        relationshipOR: relationshipOR,
+        //filters (name + nuovi)
+        filtersNamePlus: filtersNamePlus,
+        filtersNameMinus: filtersNameMinus,
+        filtersDatePlus: filtersDatePlus,
+        filtersDateMinus: filtersDateMinus,
+        filtersSizePlus: filtersSizePlus,
+        filtersSizeMinus: filtersSizeMinus,
+    }
+
+    writeMessage('Choose Snapshot JSON file for Export.');
+    clicksActive = false;
+    toggleSpinner(!clicksActive);
+    const saved = await ipcRenderer.invoke('select-export-snapshot-file', newSettings);
+    if (saved) {
+        writeMessage('Shapshot exported successfully.');
+    } else {
+        writeMessage('Shapshot not exported.');
+    }
+    clicksActive = true;
+    toggleSpinner(!clicksActive);
 }
-function importSnapshot() {
-    //TODO load from json file
+async function importSnapshot() {
+    writeMessage('Choose Snapshot JSON file for Import.');
+    clicksActive = false;
+    toggleSpinner(!clicksActive);
+    const filePath = await ipcRenderer.invoke('select-import-snapshot-file', 'Select Snapshot File to Import');
+    if (!filePath) {
+        showAlert('Nessun file selezionato per l\'import dello Snapshot.');
+        clicksActive = true;
+        toggleSpinner(!clicksActive);
+        return;
+    }
+
+    let fileContent = '';
+    try {
+        fileContent = fs.readFileSync(filePath, 'utf8');
+    } catch (error) {
+        console.error(`Errore nella lettura del file: ${error.message}`);
+        writeMessage(`Errore nella lettura del file JSON dello Snapshot.`);
+        clicksActive = true;
+        toggleSpinner(!clicksActive);
+        return;
+    }
+
+    let settings;
+    try {
+        settings = JSON.parse(fileContent);
+        setFromSnapshot(settings);
+        clicksActive = true;
+        toggleSpinner(!clicksActive);
+    } catch (error) {
+        console.error(`Errore nel parsing del JSON: ${error.message}`);
+        writeMessage(`Errore nel parsing del JSON dello Snapshot.`);
+        clicksActive = true;
+        toggleSpinner(!clicksActive);
+        return;
+    }
+}
+function setFromSnapshot(settings) {
+    try {
+        removeAllFilters();
+
+        // Aggiornamento delle variabili globali dell'applicazione
+        sourceFolder = settings.sourceFolder || '';
+        destinationFolders = settings.destinationFolders || [];
+        fileOverwrite = (typeof settings.fileOverwrite === 'boolean') ? settings.fileOverwrite : false;
+        propagateSelections = (typeof settings.propagateSelections === 'boolean') ? settings.propagateSelections : false;
+        relationshipOR = (typeof settings.relationshipOR === 'boolean') ? settings.relationshipOR : false;
+        filtersNamePlus = settings.filtersNamePlus || [];
+        filtersNameMinus = settings.filtersNameMinus || [];
+        filtersDatePlus = settings.filtersDatePlus || [];
+        filtersDateMinus = settings.filtersDateMinus || [];
+        filtersSizePlus = settings.filtersSizePlus || [];
+        filtersSizeMinus = settings.filtersSizeMinus || [];
+
+        updateOptionsUI();
+
+        document.getElementById('sourcePath').textContent = sourceFolder;
+        fileTreeData = buildFileTree(sourceFolder);
+        renderFileTree(fileTreeData);
+
+        updateDestinationList();
+
+        // Aggiorna eventualmente il campo del nome dello Snapshot
+        document.getElementById('saveSnapshotInput').value = settings.name;
+
+        applyAllFilters();
+
+        writeMessage('Snapshot loaded.');
+    } catch (error) {
+        console.error("Error during Snapshot loading:", error);
+        writeMessage('Error during Snapshot loading.');
+    }
 }
 
 //General click
@@ -639,6 +710,10 @@ document.getElementById('clearSource').addEventListener('click', async () => {
 });
 document.getElementById('buttonSwap').addEventListener('click', swapSourceAndDestination);
 function swapSourceAndDestination() {
+    if (!sourceFolder || destinationFolders.length == 0 ) {
+        showAlert("Please select the Source Folder and a Destination Folder before swap.")
+        return;
+    }
     let oldsource = sourceFolder;
     sourceFolder = destinationFolders[0];
     destinationFolders[0] = oldsource;
@@ -1861,7 +1936,7 @@ async function saveListOfSelectedItems(kind, dataToExport) {
     writeMessage('Choose '+kind.toUpperCase()+' Export file.');
     clicksActive = false;
     toggleSpinner(!clicksActive);
-    const saved = await ipcRenderer.invoke('select-export-file', dataToExport, kind);
+    const saved = await ipcRenderer.invoke('select-export-selection-file', dataToExport, kind);
     if (saved) {
         writeMessage('Selection List '+kind.toUpperCase()+' exported successfully.');
     } else {

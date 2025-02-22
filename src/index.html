@@ -36,7 +36,7 @@
 <div id="div-filters1">
     <div class="input-group">
         <a class="btn btn-secondary btn-sm a-filter" title="Filters for Name"><i class="bi bi-funnel"></i></a>
-        <input type="text" class="form-control" id="filterNameInput" placeholder="Filter for Name" title="Filter for Name">
+        <input type="text" class="form-control" id="filterNameInput" placeholder="Filter for Name" title="Filter for Name"/>
         <a id="setNameFilter" class="btn btn-primary btn-sm" type="button" title="Set Name Filter"><i
                 class="bi bi-check-square"></i></a>
         <a id="addNamePlusFilter" class="btn btn-primary btn-sm" type="button" title="Add Addictive Name Filter"><i
@@ -52,9 +52,9 @@
     <div class="input-group">
         <a class="btn btn-secondary btn-sm a-filter" title="Filters for Date"><i class="bi bi-calendar-range"></i></a>
         <div class="input-group date input-daterange" id="filterDateInput">
-            <input type="text" id="range-start" name="range-start" class="form-control" placeholder="Start Date" title="Start Date">
+            <input type="text" id="range-start" name="range-start" class="form-control" placeholder="Start Date" title="Start Date"/>
             <span class="input-group-text">to</span>
-            <input type="text" id="range-end" name="range-end" class="form-control" placeholder="End Date" title="End Date">
+            <input type="text" id="range-end" name="range-end" class="form-control" placeholder="End Date" title="End Date"/>
         </div>
         <a id="setDateFilter" class="btn btn-primary btn-sm" type="button" title="Set Date Filter"><i
                 class="bi bi-check-square"></i></a>
@@ -97,30 +97,30 @@
                     class="bi bi-arrows-collapse"></i></a>
         </div>
         <span class="span-actions">
-            <button type="button" id="buttonSwap" class="btn btn-primary btn-sm"
+            <a type="button" id="buttonSwap" class="btn btn-primary btn-sm"
                     title="Swap Source and (First) Destination Folder"><i class="bi bi-arrow-down-up"></i>
-            </button>
-             <button type="button" id="modalListTrigger" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                     title="Open Selection List"
+            </a>
+             <a type="button" id="modalListTrigger" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                     title="Open Selection List panel"
                      data-bs-target="#listModal"><i class="bi bi-list-check"></i>
-            </button>
+            </a>
 
-            <button type="button" id="modalSnapshotTrigger" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                    title="Open Snapshots"
+            <a type="button" id="modalSnapshotTrigger" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                    title="Open Snapshots panel"
                     data-bs-target="#snapshotModal"><i class="bi bi-floppy"></i>
-            </button>
-            <button type="button" id="modalOptionsTrigger" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                    title="Open Options"
+            </a>
+            <a type="button" id="modalOptionsTrigger" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                    title="Open Options panel"
                     data-bs-target="#optionsModal"><i class="bi bi-gear"></i>
-            </button>
-            <button type="button" id="modalHelpTrigger" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                    title="Open Help"
+            </a>
+            <a type="button" id="modalHelpTrigger" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                    title="Open Help panel"
                     data-bs-target="#helpModal"><i class="bi bi-question-lg"></i>
-            </button>
-            <button type="button" id="modalAboutTrigger" class="btn btn-primary btn-sm hidden" data-bs-toggle="modal"
-                    title="Open About"
+            </a>
+            <a type="button" id="modalAboutTrigger" class="btn btn-primary btn-sm hidden" data-bs-toggle="modal"
+                    title="Open About panel"
                     data-bs-target="#aboutModal"><i class="bi bi-info"></i>
-            </button>
+            </a>
         </span>
         <div class="btn-group">
             <a id="selectAll" class="btn btn-primary btn-sm" type="button" title="Select All">
@@ -235,8 +235,7 @@
                             <h6>Copying</h6>
                             <div class="form-check form-switch"
                                  title="Overwrite files and folders, during copying, if they already exist">
-                                <input class="form-check-input" type="checkbox" role="switch" id="overwriteChecked"
-                                       checked>
+                                <input class="form-check-input" type="checkbox" role="switch" id="overwriteChecked" checked/>
                                 <label class="form-check-label" for="overwriteChecked">Overwrite Existing</label>
                             </div>
                         </div>
@@ -244,16 +243,14 @@
                             <h6>Selecting</h6>
                             <div class="form-check form-switch"
                                  title="Propagate selection of an item to parent and childen elements">
-                                <input class="form-check-input" type="checkbox" role="switch" id="propagateChecked"
-                                       checked>
+                                <input class="form-check-input" type="checkbox" role="switch" id="propagateChecked" checked/>
                                 <label class="form-check-label" for="propagateChecked">Propagate Selection</label>
                             </div></div>
                         <div>
                             <h6>Filtering</h6>
                             <div class="form-check form-switch "
                                  title="Relationship between filter groups is OR, otherwise it's AND">
-                                <input class="form-check-input" type="checkbox" role="switch" id="relationshipORChecked"
-                                       checked>
+                                <input class="form-check-input" type="checkbox" role="switch" id="relationshipORChecked" checked/>
                                 <label class="form-check-label" for="relationshipORChecked">Relationship OR</label>
                             </div>
                         </div>
@@ -281,31 +278,43 @@
                 </div>
                 <div class="modal-body">
                     <div class="container-fluid">
+                        <div>A <b>Snapshots</b> includes: Folders, Filters and Options.</div>
+                        <br>
                         <div class="input-group">
                             <input type="text" class="form-control" id="saveSnapshotInput"
-                                   placeholder="Name of Snapshot">
-                            <button id="saveSnapshot" type="button" class="btn btn-primary btn-sm"><i
+                                   placeholder="Name of Snapshot"/>
+                            <button id="saveSnapshot" type="button" class="btn btn-primary btn-sm snapshot-buttons"><i
                                     class="bi bi-box-arrow-down"></i>
                                 Save
+                            </button>
+                            <button id="exportSnapshot" type="button" class="btn btn-primary btn-sm snapshot-buttons"><i
+                                    class="bi bi-box-arrow-in-down"></i>
+                                Export
                             </button>
                         </div>
                         <div class="input-group">
                             <select class="form-select form-select-sm" aria-label="Choose a Snapshot"
                                     id="loadSnapshotInput">
                             </select>
-                            <button id="loadSnapshot" type="button" class="btn btn-primary btn-sm"><i
+                            <button id="loadSnapshot" type="button" class="btn btn-primary btn-sm snapshot-buttons"><i
                                     class="bi bi-box-arrow-up"></i>
                                 Load
                             </button>
-                            <button id="cleanSnapshot" type="button" class="btn btn-primary btn-sm"><i
+                            <button id="cleanSnapshot" type="button" class="btn btn-primary btn-sm snapshot-buttons"><i
                                     class="bi bi-trash"></i>
                                 Clear
                             </button>
                         </div>
-                        <button id="cleanAllSnapshots" type="button" class="btn btn-primary btn-sm"><i
-                                class="bi bi-trash"></i>
-                            Clear All
-                        </button>
+                        <div class="input-group snapshot-last-buttons">
+                            <button id="importSnapshot" type="button" class="btn btn-primary btn-sm snapshot-buttons"><i
+                                    class="bi bi-box-arrow-up"></i>
+                                Import
+                            </button>
+                            <button id="cleanAllSnapshots" type="button" class="btn btn-primary btn-sm snapshot-buttons"><i
+                                    class="bi bi-trash"></i>
+                                Clear All
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
