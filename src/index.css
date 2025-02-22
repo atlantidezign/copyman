@@ -154,15 +154,11 @@ li {
 
 #addNamePlusFilter, #addNameMinusFilter, #addDatePlusFilter, #addDateMinusFilter,
 #addSizePlusFilter, #addSizeMinusFilter, #deselectAll, #collapseAll,
-#exportSnapshot, #cleanAllSnapshots {
+#exportSnapshot {
     margin-left: 1px;
 }
 .snapshot-buttons {
     width: 90px;
-}
-.snapshot-last-buttons {
-    width: 181px;
-    float: right;
 }
 
 .span-actions {
