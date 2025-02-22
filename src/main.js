@@ -16,7 +16,7 @@ function createWindow() {
         webPreferences: {
             nodeIntegration: true,
             enableRemoteModule: true,
-            contextIsolation: false // Per semplicità in questo esempio; in produzione va gestito in modo più sicuro.
+            contextIsolation: false // in production have to be more secure.
         },
         icon: appIcon
     });
@@ -343,7 +343,7 @@ app.whenReady().then(() => {
         return false;
     });
 
-    //Business: alert e confirm
+    //Business: alert and confirm
     ipcMain.handle("show-alert", (e, message) => {
         dialog.showMessageBox(win, { title: "Copyman | Alert", message: message });
     });

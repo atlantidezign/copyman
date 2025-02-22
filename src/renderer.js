@@ -187,20 +187,17 @@ function initializeComponents() {
     //date
     var dateFrom = document.getElementById('range-start');
     var dateTo = document.getElementById('range-end');
-    // Mantieni il descrittore originale per la proprietà "value"
-    // Flag per evitare ricorsioni
+    // Flag to avoid recursions
     let updating1 = false;
     let updating2 = false;
 
-// Mantieni il descrittore originale per la proprietà "value"
     const originalDescriptor = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value');
-
     Object.defineProperty(dateFrom, 'value', {
         get() {
             return originalDescriptor.get.call(this);
         },
         set(newValue) {
-            // Se siamo già in aggiornamento, aggiorna semplicemente il valore senza dispatchare l'evento
+            // if updating, update with no dispatch
             if (updating1) {
                 originalDescriptor.set.call(this, newValue);
                 return;
@@ -217,7 +214,7 @@ function initializeComponents() {
             return originalDescriptor.get.call(this);
         },
         set(newValue) {
-            // Se siamo già in aggiornamento, aggiorna semplicemente il valore senza dispatchare l'evento
+            // if updating, update with no dispatch
             if (updating2) {
                 originalDescriptor.set.call(this, newValue);
                 return;
@@ -264,16 +261,16 @@ function initializeComponents() {
         rangeSlider.noUiSlider.set([null, rawValue]);
     });
     function correctDateInput(inputValue, dateFormat) {
-        // Estrae giorno, mese e anno dalla stringa in formato numerico
+        // extracts day month and year from string, as numbers
         const regex = /^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/;
         const match = inputValue.match(regex);
 
         if (!match) {
-            // Se il formato non corrisponde, restituisco il valore originale oppure gestisci l'errore come preferisci.
+            // if format not corrispoindig, returns original.
             return inputValue;
         }
 
-        // In base al dateFormat indico quale gruppo rappresenta giorno e mese.
+        // According to dateFormat detects month and day.
         let day, month, year;
         if (dateFormat === 'dd/mm/yyyy') {
             day   = parseInt(match[1], 10);
@@ -282,18 +279,16 @@ function initializeComponents() {
             month = parseInt(match[1], 10);
             day   = parseInt(match[2], 10);
         } else {
-            // Se il formato non è riconosciuto, restituisco il valore originale.
+            // if not recognized returns original format.
             return inputValue;
         }
         const cleanYearStr = match[3].replace(/^0+/, '');
-// Converte la stringa pulita in numero
         year = parseInt(cleanYearStr, 10);
-        // Se l'anno è scritto con 2 cifre, assumiamo il secolo 2000+
+        // normalize year length
         if (cleanYearStr.length < (dateFormat.match(/y/g) || []).length) {
             year += 2000;
         }
 
-        // Corregge il mese se necessario: deve essere tra 1 e 12
         if (month < 1) {
             month = 1;
         }
@@ -301,7 +296,7 @@ function initializeComponents() {
             month = 12;
         }
 
-        // Determina il numero massimo di giorni per il mese e l'anno specificati
+        // computes max number of days for month and year
         const maxDays = new Date(year, month, 0).getDate();
         if (day < 1) {
             day = 1;
@@ -310,11 +305,11 @@ function initializeComponents() {
             day = maxDays;
         }
 
-        // Formatta giorno e mese con due cifre
+        // day and month in 2 digits
         const dayFormatted = day < 10 ? '0' + day : day.toString();
         const monthFormatted = month < 10 ? '0' + month : month.toString();
 
-        // Ricompone la stringa di output basata sul formato originale
+        // recompose output string, as original format
         let outputString;
         if (dateFormat === 'dd/mm/yyyy') {
             outputString = `${dayFormatted}/${monthFormatted}/${year}`;
@@ -382,12 +377,12 @@ initalizeModals();
 
 //Business vars
 let clicksActive = true; //system: to disactivate clicks while copying
-let fileTreeData = []; // system: Struttura dati per l'albero
-let messageLife = 3000; //system: Vita messaggi prima della pulizia
+let fileTreeData = []; // system: tree data
+let messageLife = 3000; //system: message life in ms before clean
 
 //User folders
-let sourceFolder = ''; // user choose: directory sorgente
-let destinationFolders = []; // user choose: Inizializzazione dell'array per le directory di destinazione
+let sourceFolder = ''; // user choose: source folder
+let destinationFolders = []; // user choose: destinations folder
 
 //User filters
 let filtersNamePlus = []; //Array<string>
@@ -415,7 +410,7 @@ function listSnapshots() {
     if (useSettings.length > 0) {
         useSettings.reverse();
         useSettings.forEach((element, index) => {
-            //carica tutti nomi, fa elenco e lo append in selectEl e seleziona il primo
+            //load all names, append to selectEl and select frist one
             let name = element.name;
             let opt = document.createElement("option");
             opt.value = element.name;
