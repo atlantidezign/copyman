@@ -593,7 +593,7 @@ async function exportSnapshot() {
 
     writeMessage('Choose Snapshot JSON file for Export.');
     clicksActive = false;
-    toggleSpinner();
+    toggleSpinner(!clicksActive);
     const saved = await ipcRenderer.invoke('select-export-snapshot-file', newSettings);
     if (saved) {
         writeMessage('Shapshot exported successfully.');
@@ -601,17 +601,17 @@ async function exportSnapshot() {
         writeMessage('Shapshot not exported.');
     }
     clicksActive = true;
-    toggleSpinner();
+    toggleSpinner(!clicksActive);
 }
 async function importSnapshot() {
     writeMessage('Choose Snapshot JSON file for Import.');
     clicksActive = false;
-    toggleSpinner();
+    toggleSpinner(!clicksActive);
     const filePath = await ipcRenderer.invoke('select-import-snapshot-file', 'Select Snapshot File to Import');
     if (!filePath) {
         showAlert('Nessun file selezionato per l\'import dello Snapshot.');
         clicksActive = true;
-        toggleSpinner();
+        toggleSpinner(!clicksActive);
         return;
     }
 
@@ -622,7 +622,7 @@ async function importSnapshot() {
         console.error(`Errore nella lettura del file: ${error.message}`);
         writeMessage(`Errore nella lettura del file JSON dello Snapshot.`);
         clicksActive = true;
-        toggleSpinner();
+        toggleSpinner(!clicksActive);
         return;
     }
 
@@ -631,12 +631,12 @@ async function importSnapshot() {
         settings = JSON.parse(fileContent);
         setFromSnapshot(settings);
         clicksActive = true;
-        toggleSpinner();
+        toggleSpinner(!clicksActive);
     } catch (error) {
         console.error(`Errore nel parsing del JSON: ${error.message}`);
         writeMessage(`Errore nel parsing del JSON dello Snapshot.`);
         clicksActive = true;
-        toggleSpinner();
+        toggleSpinner(!clicksActive);
         return;
     }
 }
@@ -690,14 +690,14 @@ document.addEventListener('click', function (event) {
 document.getElementById('selectSource').addEventListener('click', async () => {
     writeMessage('Choose Source folder.');
     clicksActive = false;
-    toggleSpinner();
+    toggleSpinner(!clicksActive);
     const folder = await ipcRenderer.invoke('select-folder', 'Select Source Folder', sourceFolder);
     if (folder) {
         writeMessage('Scanning Source folder...');
         if (destinationFolders.includes(folder)) {
             showAlert("This folder is in the destination list.");
             clicksActive = true;
-            toggleSpinner();
+            toggleSpinner(!clicksActive);
             return;
         }
         // check folder is not a folder of something else already selected
@@ -705,13 +705,13 @@ document.getElementById('selectSource').addEventListener('click', async () => {
             if (isSubFolder(folder, destFolder)) {
                 showAlert("The source folder cannot be a subfolder of an already selected destination folder.");
                 clicksActive = true;
-                toggleSpinner();
+                toggleSpinner(!clicksActive);
                 return;
             }
             if (isSubFolder(destFolder, folder)) {
                 showAlert("The source folder cannot be a parent folder of an already selected destination folder.");
                 clicksActive = true;
-                toggleSpinner();
+                toggleSpinner(!clicksActive);
                 return;
             }
         }
@@ -724,7 +724,7 @@ document.getElementById('selectSource').addEventListener('click', async () => {
         writeMessage('No Source folder selected.');
     }
     clicksActive = true;
-    toggleSpinner();
+    toggleSpinner(!clicksActive);
 });
 document.getElementById('clearSource').addEventListener('click', async () => {
     sourceFolder = '';
@@ -793,21 +793,21 @@ function updateDestinationList() {
 async function addDestination() {
     writeMessage('Choose a Destination folder.');
     clicksActive = false;
-    toggleSpinner();
+    toggleSpinner(!clicksActive);
     const folder = await ipcRenderer.invoke('select-folder', 'Select destination folder', destinationFolders.length > 0 ? destinationFolders[destinationFolders.length - 1] : "");
     if (folder) {
         // check folder is different from sourceFolder
         if (folder === sourceFolder) {
             showAlert("The destination folder cannot be the same as the source folder.");
             clicksActive = true;
-            toggleSpinner();
+            toggleSpinner(!clicksActive);
             return;
         }
         // Check that the folder is not already present in the array
         if (destinationFolders.includes(folder)) {
             showAlert("This folder has already been added.");
             clicksActive = true;
-            toggleSpinner();
+            toggleSpinner(!clicksActive);
             return;
         }
 
@@ -815,7 +815,7 @@ async function addDestination() {
         if (sourceFolder && isSubFolder(folder, sourceFolder) && isSubFolder(sourceFolder, folder)) {
             showAlert("The destination folder cannot be a subfolder or a parent of source folder.");
             clicksActive = true;
-            toggleSpinner();
+            toggleSpinner(!clicksActive);
             return;
         }
 
@@ -824,13 +824,13 @@ async function addDestination() {
             if (isSubFolder(folder, destFolder)) {
                 showAlert("The destination folder cannot be a subfolder of an already selected destination folder.");
                 clicksActive = true;
-                toggleSpinner();
+                toggleSpinner(!clicksActive);
                 return;
             }
             if (isSubFolder(destFolder, folder)) {
                 showAlert("The destination folder cannot be a parent folder of an already selected destination folder.");
                 clicksActive = true;
-                toggleSpinner();
+                toggleSpinner(!clicksActive);
                 return;
             }
         }
@@ -843,7 +843,7 @@ async function addDestination() {
         writeMessage('No Destination folder selected.');
     }
     clicksActive = true;
-    toggleSpinner();
+    toggleSpinner(!clicksActive);
 }
 function removeDestination(index) {
     destinationFolders.splice(index, 1);
@@ -1018,11 +1018,11 @@ function createTreeNode(node) {
 }
 function updateTree() {
     clicksActive = false;
-    toggleSpinner();
+    toggleSpinner(!clicksActive);
     fileTreeData = buildFileTree(sourceFolder);
     renderFileTree(fileTreeData);
     clicksActive = true;
-    toggleSpinner();
+    toggleSpinner(!clicksActive);
 }
 
 //Tree selections
@@ -1863,7 +1863,7 @@ document.getElementById('copySelected').addEventListener('click', async () => {
     let destinations = destinationFolders.join(", ");
     writeMessage('Asking for copying confirmation...');
     clicksActive = false;
-    toggleSpinner();
+    toggleSpinner(!clicksActive);
     let confimResult = await showConfirmWithReturn('Are you sure you want to copy ' + selectedPaths.length + ' items\nfrom ' + sourceFolder + '\nto ' + destinations + '?');
     if (confimResult) {
         writeMessage('Copying Started...');
@@ -1873,7 +1873,7 @@ document.getElementById('copySelected').addEventListener('click', async () => {
     else {
         writeMessage('Copying Aborted.');
         clicksActive = true;
-        toggleSpinner();
+        toggleSpinner(!clicksActive);
     }
     async function copyYesCallbackPost() {
         copyingReport = [];
@@ -1890,7 +1890,7 @@ document.getElementById('copySelected').addEventListener('click', async () => {
         openProgressModal();
         await executeCopy(selectedPaths);
         clicksActive = true;
-        toggleSpinner();
+        toggleSpinner(!clicksActive);
         openReportModal();
     }
 });
@@ -2072,7 +2072,7 @@ function saveListOfSelectedItemsToCsv() {
 async function saveListOfSelectedItems(kind, dataToExport) {
     writeMessage('Choose '+kind.toUpperCase()+' Export file.');
     clicksActive = false;
-    toggleSpinner();
+    toggleSpinner(!clicksActive);
     const saved = await ipcRenderer.invoke('select-export-selection-file', dataToExport, kind);
     if (saved) {
         writeMessage('Selection List '+kind.toUpperCase()+' exported successfully.');
@@ -2080,7 +2080,7 @@ async function saveListOfSelectedItems(kind, dataToExport) {
         writeMessage('Selection List '+kind.toUpperCase()+' not exported.');
     }
     clicksActive = true;
-    toggleSpinner();
+    toggleSpinner(!clicksActive);
 }
 
 // Utils: messages
@@ -2101,8 +2101,7 @@ function isSubFolder(child, parent) {
 }
 
 // Utils: spinner
-function toggleSpinner() {
-    let spinnerActive = !clicksActive;
+function toggleSpinner(spinnerActive) {
     const spinnerOverlay = document.getElementById('spinner-overlay');
     spinnerOverlay.style.display = spinnerActive ? 'flex' : 'none';
 }

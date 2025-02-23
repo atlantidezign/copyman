@@ -52,3 +52,7 @@ http://www.atlantide-design.it/copyman
 
 For more details on usage, please refer to [docs/USAGE.md](docs/USAGE.md).
 
+## To Do
+
+For more details on planned to-do list, please refer to [TODO.md](TODO.md).
+
