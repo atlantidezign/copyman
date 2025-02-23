@@ -407,6 +407,7 @@ let itemsSkipped =[];
 let itemsFailed = [];
 let itemsTotal = 0;
 let itemsProcessed = 0;
+let selectedNodes = [];
 
 //User folders
 let sourceFolder = ''; // user choose: source folder
@@ -1403,17 +1404,15 @@ function dateRangeInsideAnotherArrayOfRanges(rangeToCheck, rangeOrigin) {
 }
 function dateSingleInsideARange(dateToCheck, rangePresent) {
     let isInside = false;
-    if (!dateToCheck || (dateToCheck.toString() === "Invalid Date")) return false;
-    if (!(dateToCheck instanceof Date)) {
-        dateToCheck = new Date(dateToCheck);
-    }
+    
+    const pickerPoint = dateToGetTime(dateToCheck);
+    
     if (rangePresent[0] !== null && rangePresent[0] !== undefined  && rangePresent[0] !== "undefined"  && (!(rangePresent[0] instanceof Date) || rangePresent[0].toString() === "Invalid Date")) {
         rangePresent[0] = new Date(rangePresent[0]);
     }
     if (rangePresent[1] !== null && rangePresent[1] !== undefined && rangePresent[1] !== "undefined" && (!(rangePresent[1] instanceof Date) || rangePresent[1].toString() === "Invalid Date")) {
         rangePresent[1] = new Date(rangePresent[1]);
     }
-    const pickerPoint = dateToCheck ? dateToCheck.getTime() : 0;
 
     const originStart = rangePresent[0] ? rangePresent[0].getTime() : Number.NEGATIVE_INFINITY;
     const originEnd = rangePresent[1] ? rangePresent[1].getTime() : Number.POSITIVE_INFINITY;
@@ -1668,7 +1667,7 @@ function removeSingleSizeFilter(index, kind) {
     applyAllFilters();
 }
 function renderSingleSizeFilter(filter) {
-    return formatSize(filter[0]) + "-" + formatSize(filter[1]);
+    return formatSizeForFilters(filter[0]) + "-" + formatSize(filter[1]);
 }
 function renderSizeFiltersList() {
     const listContainer = document.getElementById('sizeFilterList');
@@ -1832,7 +1831,7 @@ document.getElementById("resetOptions").addEventListener("click", function () {
 //Copying
 document.getElementById('copySelected').addEventListener('click', async () => {
     // check if at least a destination folder is selected, and if source folder selected
-    writeMessage('Checking for Copy...');
+    writeMessage('Preparing for Copy...');
     if (destinationFolders.length === 0) {
         showAlert('Please select at least a Destination Folder!');
         writeMessage('Unable to start copying.');
@@ -1845,9 +1844,20 @@ document.getElementById('copySelected').addEventListener('click', async () => {
     }
     const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
     const selectedPaths = [];
+    let selectedNodes = [];
+    let selectedSize = 0;
     checkboxes.forEach(checkbox => {
         if (checkbox.checked) {
             selectedPaths.push(checkbox.dataset.filePath);
+            selectedSize += Number(checkbox.dataset.nodeSize);
+
+            selectedNodes.push({
+                path: checkbox.dataset.filePath,
+                name: checkbox.dataset.nodeName,
+                sizeBits: Number(checkbox.dataset.nodeSize),
+                getTime: dateToGetTime(checkbox.dataset.nodeModified),
+                isDir: (checkbox.dataset.isDirectory === '1')
+            });
         }
     });
     if (selectedPaths.length === 0) {
@@ -1864,36 +1874,36 @@ document.getElementById('copySelected').addEventListener('click', async () => {
     writeMessage('Asking for copying confirmation...');
     clicksActive = false;
     toggleSpinner(!clicksActive);
-    let confimResult = await showConfirmWithReturn('Are you sure you want to copy ' + selectedPaths.length + ' items\nfrom ' + sourceFolder + '\nto ' + destinations + '?');
+    let confimResult = await showConfirmWithReturn('Are you sure you want to copy ' + selectedPaths.length + ' items (' +  formatSizeForThree(selectedSize)+ ')\nfrom ' + sourceFolder + '\nto ' + destinations + '?');
     if (confimResult) {
         writeMessage('Copying Started...');
-        setTimeout( ()=> {copyYesCallbackPost()}, 100);
-        //copyYesCallbackPost();
+        setTimeout( ()=> {startCopying(selectedPaths)}, 100);
     }
     else {
         writeMessage('Copying Aborted.');
         clicksActive = true;
         toggleSpinner(!clicksActive);
     }
-    async function copyYesCallbackPost() {
-        copyingReport = [];
-        itemsCopied = [];
-        itemsSkipped =[];
-        itemsFailed = [];
-        for (let i = 0; i < destinationFolders.length; i++) {
-            itemsCopied.push(0);
-            itemsSkipped.push(0);
-            itemsFailed.push(0);
-        }
-        itemsProcessed = 0;
-        itemsTotal = selectedPaths.length;
-        openProgressModal();
-        await executeCopy(selectedPaths);
-        clicksActive = true;
-        toggleSpinner(!clicksActive);
-        openReportModal();
-    }
+
 });
+async function startCopying(selectedPaths) {
+    copyingReport = [];
+    itemsCopied = [];
+    itemsSkipped =[];
+    itemsFailed = [];
+    for (let i = 0; i < destinationFolders.length; i++) {
+        itemsCopied.push(0);
+        itemsSkipped.push(0);
+        itemsFailed.push(0);
+    }
+    itemsProcessed = 0;
+    itemsTotal = selectedPaths.length;
+    openProgressModal();
+    await executeCopy(selectedPaths);
+    clicksActive = true;
+    toggleSpinner(!clicksActive);
+    openReportModal();
+}
 async function executeCopy(selectedPaths) {
     let now1 = new Date();
     let startTime = now1.getTime();
@@ -2129,7 +2139,7 @@ async function showConfirmWithReturn(message) {
 }
 
 //Utils: date and size formatting
-function formatSize(size) {
+function formatSizeForFilters(size) {
     if (typeof size !== 'number') {
         const convertedSize = Number(size);
         if (!isNaN(convertedSize)) {
@@ -2152,9 +2162,12 @@ function formatSizeForThree(size) {
     let formattedSize;
     if (size < 1024 * 1024) {
         formattedSize = (size / 1024).toFixed(2) + " Kb";
-    } else {
+    } else if (size < 1024 * 1024 * 1024) {
         formattedSize = (size / (1024 * 1024)).toFixed(2) + " Mb";
+    } else {
+        formattedSize = (size / (1024 * 1024 * 1024)).toFixed(2) + " Gb";
     }
+
     return formattedSize;
 }
 function formatDate(date) {
@@ -2171,4 +2184,12 @@ function formatDate(date) {
     // replaces placeholders as for dateFormat
     return dateFormat.replace('dd', dd).replace('mm', mm).replace('yyyy', yyyy);
 }
-
+function dateToGetTime(dateToCheck) {
+    //from dataset
+    if (!dateToCheck || (dateToCheck.toString() === "Invalid Date")) return false;
+    if (!(dateToCheck instanceof Date)) {
+        dateToCheck = new Date(dateToCheck);
+    }
+    const datePoint = dateToCheck ? dateToCheck.getTime() : 0;
+    return datePoint;
+}
