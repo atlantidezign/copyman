@@ -127,7 +127,7 @@ Source code available on <a href="https://github.com/atlantidezign/copyman"><i c
     v${version}
     <br>
     <br>
-    <p>Select and copy, at lightning speed, items from one folder to multiple destinations while preserving the folder structure.</p>
+    <p>Select and copy items, at lightning speed, from one folder to multiple destinations while preserving the folder structure.</p>
     `;
 
     document.getElementById('helpContentMD').innerHTML = marked.parse(markdown) + underDocs;
@@ -1847,9 +1847,16 @@ document.getElementById('copySelected').addEventListener('click', async () => {
     }
     let destinations = destinationFolders.join(", ");
     writeMessage('Asking for confirmation...');
-    showConfirm('Are you sure you want to copy ' + selectedPaths.length + ' items\nfrom ' + sourceFolder + '\nto ' + destinations + '?', copyCallback);
-
-    async function copyCallback() {
+    clicksActive = false;
+    toggleSpinner();
+    showConfirm('Are you sure you want to copy ' + selectedPaths.length + ' items\nfrom ' + sourceFolder + '\nto ' + destinations + '?', copyYesCallback, copyNotCallback, 'Copy confirmed.');
+    function copyNotCallback() {
+        writeMessage('Copy Aborted.');
+        clicksActive = true;
+        toggleSpinner();
+    }
+    async function copyYesCallback() {
+        writeMessage('Copy Started...');
         copyingReport = [];
         itemsCopied = [];
         itemsSkipped =[];
@@ -1861,51 +1868,45 @@ document.getElementById('copySelected').addEventListener('click', async () => {
         }
         itemsProcessed = 0;
         itemsTotal = selectedPaths.length;
-        writeMessage('Copy Started...');
         openProgressModal();
-        let now1 = new Date();
-        let startTime = now1.getTime();
-        updateCopyingProgress('Copy started at: ' + now1.toLocaleTimeString(), true);
-        clicksActive = false;
-        toggleSpinner();
-
-        // copy every selected item
-        let fileIndex = 1;
-        for (const relPath of selectedPaths) {
-            const sourceFullPath = path.join(sourceFolder, relPath);
-            let destIndex = 0;
-            for (const destFolder of destinationFolders) {
-                const destinationFullPath = path.join(destFolder, relPath);
-                writeMessage('[' + fileIndex + '/' + selectedPaths.length + '] Copying ' + sourceFullPath + ' to ' + destinationFullPath);
-                updateCopyingProgress('[' + fileIndex + '/' + selectedPaths.length + '] Copying ' + sourceFullPath + ' to ' + destinationFullPath, true)
-                try {
-                    await copyRecursive(sourceFullPath, destinationFullPath, destIndex);
-                } catch (err) {
-                    console.error('Error copying ', sourceFullPath, destinationFullPath, err);
-                    writeMessage('Error copying ' + sourceFullPath + ' in ' + destinationFullPath);
-                    itemsFailed[destIndex]++;
-                    updateCopyingProgress('Error copying ' + sourceFullPath + ' in ' + destinationFullPath, false);
-                }
-                destIndex++;
-            }
-
-            //TODO remove
-            //const zzTime = Date.now() + 5;
-            //while (Date.now() < zzTime) { console.log(fileIndex, 'waiting...', (zzTime - Date.now())); };
-
-            itemsProcessed = fileIndex;
-            fileIndex++;
-        }
+        await executeCopy(selectedPaths);
         clicksActive = true;
         toggleSpinner();
-        let now2 = new Date();
-        let endTime = now2.getTime();
-        let elapsedTime = (endTime - startTime);
-        updateCopyingProgress('Copy finished at: ' + now2.toLocaleTimeString() +'. Elapsed: ' + elapsedTime +'ms' , true);
-        writeMessage('Copy Completed!');
         openReportModal();
     }
 });
+async function executeCopy(selectedPaths) {
+    let now1 = new Date();
+    let startTime = now1.getTime();
+    updateCopyingProgress('▷ ' + 'Copy started at: ' + now1.toLocaleTimeString(), true);
+    // copy every selected item
+    let fileIndex = 1;
+    for (const relPath of selectedPaths) {
+        const sourceFullPath = path.join(sourceFolder, relPath);
+        let destIndex = 0;
+        for (const destFolder of destinationFolders) {
+            const destinationFullPath = path.join(destFolder, relPath);
+            writeMessage('[' + fileIndex + '/' + selectedPaths.length + '] Copying ' + sourceFullPath + ' to ' + destinationFullPath);
+            updateCopyingProgress('[' + fileIndex + '/' + selectedPaths.length + '] Copying ' + sourceFullPath + ' to ' + destinationFullPath, true)
+            try {
+                await copyRecursive(sourceFullPath, destinationFullPath, destIndex);
+            } catch (err) {
+                console.error('Error copying ', sourceFullPath, destinationFullPath, err);
+                writeMessage('Error copying ' + sourceFullPath + ' in ' + destinationFullPath);
+                itemsFailed[destIndex]++;
+                updateCopyingProgress('Error copying ' + sourceFullPath + ' in ' + destinationFullPath, false);
+            }
+            destIndex++;
+        }
+        itemsProcessed = fileIndex;
+        fileIndex++;
+    }
+    let now2 = new Date();
+    let endTime = now2.getTime();
+    let elapsedTime = (endTime - startTime);
+    updateCopyingProgress('▷ ' + 'Copy finished at: ' + now2.toLocaleTimeString() +'.<br>Elapsed: ' + elapsedTime +'ms' , true);
+    writeMessage('Copy Completed!');
+}
 async function copyRecursive(src, dest, destIndex) {
     const stats = fs.statSync(src);
     if (stats.isDirectory()) {
@@ -1958,7 +1959,8 @@ function openProgressModal() {
         document.getElementById('verboseReport').classList.add('hidden');
         document.querySelectorAll('.verboseClose').forEach( (el) => el.classList.add('hidden') );
         document.getElementById('verboseProgressMD').innerHTML = "";
-        document.getElementById('modalVerboseTrigger').click();
+        const modal = bootstrap.Modal.getOrCreateInstance('#verboseModal');
+        modal.show();
     }
 }
 function openReportModal() {
@@ -1974,8 +1976,8 @@ function openReportModal() {
             const modalBody = document.querySelector('#verboseModal .modal-body');
             modalBody.scrollTop = modalBody.scrollHeight;
         }, 100)
-
-        document.getElementById('modalVerboseTrigger').click();
+        const modal = bootstrap.Modal.getOrCreateInstance('#verboseModal');
+        modal.show();
     }
 }
 function updateCopyingProgress(message, sep = false) {
@@ -2084,9 +2086,16 @@ function toggleSpinner() {
 function showAlert(message) {
     ipcRenderer.invoke("show-alert", message);
 }
-async function showConfirm(message, callback) {
+async function showConfirm(message, yesCallback, notCallback, messageYes, messageNo) {
     const confirmation = await ipcRenderer.invoke('show-confirm', message);
-    if (confirmation) callback();
+    if (confirmation) {
+        if (messageYes) writeMessage(messageYes);
+        if (yesCallback) yesCallback();
+    }
+    else {
+        if (messageNo) writeMessage(messageNo);
+        if (notCallback) notCallback();
+    }
 }
 
 //Utils: date and size formatting
@@ -2133,4 +2142,8 @@ function formatDate(date) {
     return dateFormat.replace('dd', dd).replace('mm', mm).replace('yyyy', yyyy);
 }
 
-
+//Utils: wait //TODO to remove
+function waitFor(index, time) {
+    const zzTime = Date.now() + time;
+    while (Date.now() < zzTime) { console.log(index, 'waiting...', (zzTime - Date.now())); };
+}

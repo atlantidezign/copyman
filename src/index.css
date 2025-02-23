@@ -341,7 +341,7 @@ body > div#div-modals {
     font-size: 0.85em;
 }
 
-#verboseReportIcon {
+.verboseIcon {
     font-size: 4.5em;
     color: #ffffff;
 }
@@ -395,7 +395,11 @@ body > div#spinner-overlay {
         transform: rotate(360deg);
     }
 }
-
+#spinnerNot {
+    background-image: url(./images/80x80_2cols.svg);
+    width: 80px;
+    height: 80px;
+}
 /*NoUiSlider*/
 #slider-range {
     height: 31px;

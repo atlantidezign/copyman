@@ -126,10 +126,6 @@
                title="Open About panel"
                data-bs-target="#aboutModal"><i class="bi bi-info"></i>
             </a>
-            <a type="button" id="modalVerboseTrigger" class="btn btn-primary btn-sm hidden" data-bs-toggle="modal"
-               title="Open Verbose panel"
-               data-bs-target="#verboseModal"><i class="bi bi-chat-left-text"></i>
-            </a>
         </span>
         <div class="btn-group">
             <a id="selectAll" class="btn btn-primary btn-sm" type="button" title="Select All">
@@ -158,7 +154,7 @@
 
 <!-- Modal -->
 <div id="div-modals">
-    <div class="modal fade" id="verboseModal" tabindex="-1" aria-labelledby="verboseModalLabel" aria-hidden="true">
+    <div class="modal" id="verboseModal" tabindex="-1" aria-labelledby="verboseModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -172,7 +168,7 @@
                             <div class="p-2 flex-grow-1" id="verboseProgressMD"> </div>
                         </div>
                         <div id="verboseReport" class="d-flex hidden">
-                            <div class="p-2 flex-shrink-0"><i class="bi bi-eye-fill" id="verboseReportIcon"></i></div>
+                            <div class="p-2 flex-shrink-0"><div id="spinnerNot"></div></div>
                             <div class="p-2 flex-grow-1" id="verboseReportMD"> </div>
                         </div>
                     </div>
