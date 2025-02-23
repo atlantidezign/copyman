@@ -453,7 +453,7 @@ function listSnapshots() {
         });
     }
 }
-function saveSnapshot() {
+async function saveSnapshot() {
     let useName = document.getElementById('saveSnapshotInput').value.trim().toLowerCase();
     if (!useName) {
         showAlert('Please enter a name for Snapshot to save.');
@@ -475,8 +475,14 @@ function saveSnapshot() {
 
     const index = useSettings.findIndex(setting => setting.name === useName);
     if (index !== -1) {
-        useSettings.splice(index, 1);
-        writeMessage(`Old Snapshot named "${useName}" removed.`);
+        let confimResult = await showConfirmWithReturn('A Snaphstot with name "' + useName + '" already exists. Do you want to overwrite it?');
+        if (confimResult) {
+            useSettings.splice(index, 1);
+            writeMessage(`Old Snapshot named "${useName}" removed.`);
+        } else {
+            writeMessage('Snapshot "'+useName+'" not saved.');
+            return;
+        }
     }
 
     let newSettings = {
@@ -1879,8 +1885,7 @@ document.getElementById('copySelected').addEventListener('click', async () => {
     if (confimResult) {
         writeMessage('Copying Started...');
         setTimeout( ()=> {startCopying()}, 100);
-    }
-    else {
+    } else {
         writeMessage('Copying Aborted.');
         clicksActive = true;
         toggleSpinner(!clicksActive);
@@ -1904,6 +1909,9 @@ async function startCopying() {
         await new Promise(resolve => setTimeout(resolve, 10));
     }
     await executeCopy();
+    if (copyVerbose) {
+        await new Promise(resolve => setTimeout(resolve, 10));
+    }
     clicksActive = true;
     toggleSpinner(!clicksActive);
     openReportModal();

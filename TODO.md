@@ -1,8 +1,6 @@
 # TODO
 
 ## NOW
-ui: confirm on saving snapshot if it already exists?
-
 copy: overwrite option splitted to 3 cases: alyays / if newer / never
 
 ## NEXT
@@ -10,7 +8,8 @@ ui: more compact
 ui: in floating windows
 ui: button to abort copy (clicks remain active; be careful if clicking elsewhere, be careful with toggleSpinner)
 
-sys: progress during copy is slow due to empty promises (to update ui), refactor various awaits
+sys: progress during copy is slow due to empty promises (to update ui), refactor various awaits to keep ui updated smoothly
+
 copy: in verbose mode, using selectedNodes, include info on file sizes, and time?, for each file
 
 tree: setting sort => alphabetical order, date, size, file type (tree view)  (add to snapshots)
@@ -26,19 +25,19 @@ electron: notifications? (possibly also for update checking via my URL)
 
 settings: support localization for other languages (optional choice) and a datepicker (language and format) also in snapshots
 
-ui: better tree view, with multiple columns (like mac) and/or even show the destinations?
-ui: create a tree for the various destinations as well, in split screen with tabs; 
-    when you open a source branch, open the same branch in the destination automatically
+ui: better tree view, with multiple columns for source (like mac) and/or even show the destinations?
+    if show destinations: create a tree for the various destinations as well, in split screen with tabs; 
+    then, when you open a source branch, open the same branch in the destination/s automatically.
 
 sys: redo in TypeScript
 
-copy: before starting, using selectedNodes and scans of destinations, perform various checks on what will actually perform copy/overwrite/skip, etc. and use a window instead of confirm.
+copy: before starting, using selectedNodes and scans of destinations, perform various checks on what will actually perform copy/overwrite/skip, etc. and use a window instead of confirm to show it to the user.
 
 ext: on the website, add the exe files for other platforms to download
 ext: better Google Copyman account and GitHub profile
 
-## NEVER!
+## NEVER?
 electron: signed build (requires a paid certificate)
 electron: check update (requires the above and third-party services)
 
-sys: delete and move selected files (too complicated if folders are empty/contain other items, etc)
+sys: also delete and move selected files (too complicated if folders are empty/contain other items/partial selections, etc.)
