@@ -154,12 +154,12 @@
 
 <!-- Modal -->
 <div id="div-modals">
-    <div class="modal" id="verboseModal" tabindex="-1" aria-labelledby="verboseModalLabel" aria-hidden="true">
+    <div class="modal" id="copyingModal" tabindex="-1" aria-labelledby="copyingModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title" id="verboseModalLabel"><img src="images/logotype_indigo_alt.svg" alt="Copyman" title="Copyman"/> Copying</h1>
-                    <button type="button" class="btn-close verboseClose" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h1 class="modal-title" id="copyingModalLabel"><img src="images/logotype_indigo_alt.svg" alt="Copyman" title="Copyman"/> Copying</h1>
+                    <button type="button" class="btn-close copyingClose" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="container-fluid">
@@ -167,14 +167,14 @@
                             <div class="p-2 flex-shrink-0"><div id="spinner2"></div></div>
                             <div class="p-2 flex-grow-1" id="verboseProgressMD"> </div>
                         </div>
-                        <div id="verboseReport" class="d-flex hidden">
+                        <div id="copyingReport" class="d-flex hidden">
                             <div class="p-2 flex-shrink-0"><div id="spinnerNot"></div></div>
-                            <div class="p-2 flex-grow-1" id="verboseReportMD"> </div>
+                            <div class="p-2 flex-grow-1" id="copyingReportMD"> </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary btn-sm verboseClose" data-bs-dismiss="modal"><i
+                    <button type="button" class="btn btn-primary btn-sm copyingClose" data-bs-dismiss="modal"><i
                             class="bi bi-x-lg"></i>
                         Close
                     </button>
@@ -266,18 +266,25 @@
                     <div class="container-fluid">
                         <div>
                             <h6>Copying</h6>
+
                             <div class="form-check form-switch"
-                                 title="Overwrite files and folders, during copying, if they already exist">
-                                <input class="form-check-input" type="checkbox" role="switch" id="overwriteChecked" title="Overwrite files, during copying, if existing"
+                                 title="Verborse progress during copying phase">
+                                <input class="form-check-input" type="checkbox" role="switch" id="verboseChecked" title="Verborse progress during copying phase"
                                        checked/>
-                                <label class="form-check-label" for="overwriteChecked">Overwrite Existing</label>
+                                <label class="form-check-label" for="verboseChecked">Verbose Progress</label>
                             </div>
                             <div class="form-check form-switch"
-                                 title="Verborse progress and report during copying phase">
-                                <input class="form-check-input" type="checkbox" role="switch" id="verboseChecked" title="Verborse progress and report during copying phase"
+                                 title="Report at the end of the copying phase">
+                                <input class="form-check-input" type="checkbox" role="switch" id="reportChecked" title="Report at the end of the copying phase"
                                        checked/>
-                                <label class="form-check-label" for="verboseChecked">Verbose Copying</label>
+                                <label class="form-check-label" for="reportChecked">Copying Report</label>
                             </div>
+                            <div class="form-check form-switch"
+                                        title="Overwrite files and folders, during copying, if they already exist">
+                            <input class="form-check-input" type="checkbox" role="switch" id="overwriteChecked" title="Overwrite files, during copying, if existing"
+                                   checked/>
+                            <label class="form-check-label" for="overwriteChecked">Overwrite Existing</label>
+                        </div>
                         </div>
                         <div>
                             <h6>Selecting</h6>

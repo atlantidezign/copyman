@@ -334,11 +334,13 @@ function initializeComponents() {
 //User Options Defaults
 let fileOverwriteDefault = true;
 let copyVerboseDefault = false;
+let copyReportDefault = true;
 let propagateSelectionsDefault = true;
 let relationshipORDefault = true;
 //User Options
 let fileOverwrite = fileOverwriteDefault;
 let copyVerbose = copyVerboseDefault;
+let copyReport = copyReportDefault;
 let propagateSelections = propagateSelectionsDefault;
 let relationshipOR = relationshipORDefault;
 function initializeOptions() {
@@ -348,12 +350,14 @@ function initializeOptions() {
         propagateSelections = options.propagateSelections;
         fileOverwrite = options.fileOverwrite;
         copyVerbose = options.copyVerbose;
+        copyReport = options.copyReport;
         relationshipOR = options.relationshipOR;
     } else {
         const saveOptions = {
             propagateSelections: propagateSelections,
             fileOverwrite: fileOverwrite,
             copyVerbose: copyVerbose,
+            copyReport: copyReport,
             relationshipOR: relationshipOR,
         };
         localStorage.setItem('options', JSON.stringify(saveOptions));
@@ -365,6 +369,7 @@ function saveOptions() {
         propagateSelections: propagateSelections,
         fileOverwrite: fileOverwrite,
         copyVerbose: copyVerbose,
+        copyReport: copyReport,
         relationshipOR: relationshipOR,
     };
     localStorage.setItem('options', JSON.stringify(saveOptions));
@@ -373,6 +378,7 @@ function resetOptions() {
     propagateSelections = propagateSelectionsDefault;
     fileOverwrite = fileOverwriteDefault;
     copyVerbose = copyVerboseDefault;
+    copyReport = copyReportDefault;
     relationshipOR = relationshipORDefault;
     saveOptions();
     updateOptionsUI();
@@ -381,6 +387,7 @@ function resetOptions() {
 function updateOptionsUI() {
     document.getElementById("overwriteChecked").checked = fileOverwrite;
     document.getElementById("verboseChecked").checked = copyVerbose;
+    document.getElementById("reportChecked").checked = copyReport;
     document.getElementById("propagateChecked").checked = propagateSelections;
     document.getElementById("relationshipORChecked").checked = relationshipOR;
 }
@@ -477,6 +484,7 @@ function saveSnapshot() {
         //user settings (overwrite, propagate + nuovi)
         fileOverwrite: fileOverwrite,
         copyVerbose: copyVerbose,
+        copyReport: copyReport,
         propagateSelections: propagateSelections,
         relationshipOR: relationshipOR,
         //filters (name + nuovi)
@@ -528,7 +536,7 @@ function cleanSnapshot() {
 
     const index = useSettings.findIndex(setting => setting.name === useName);
     if (index !== -1) {
-        showConfirm('Are you sure you want to remove Saved Snapshot named ' + useName + '?', cleanCallback);
+        showConfirmWithCallbacks('Are you sure you want to remove Saved Snapshot named ' + useName + '?', cleanCallback);
     } else {
         writeMessage(`No Snapshot with name "${useName}".`);
     }
@@ -541,7 +549,7 @@ function cleanSnapshot() {
     }
 }
 function cleanAllSnapshots() {
-    showConfirm('Are you sure you want to Clean all saved Snapshots?', cleanCallback);
+    showConfirmWithCallbacks('Are you sure you want to Clean all saved Snapshots?', cleanCallback);
 
     function cleanCallback() {
         localStorage.removeItem('snapshots');
@@ -571,6 +579,7 @@ async function exportSnapshot() {
         //user settings (overwrite, propagate + nuovi)
         fileOverwrite: fileOverwrite,
         copyVerbose: copyVerbose,
+        copyReport: copyReport,
         propagateSelections: propagateSelections,
         relationshipOR: relationshipOR,
         //filters (name + nuovi)
@@ -640,6 +649,7 @@ function setFromSnapshot(settings) {
         destinationFolders = settings.destinationFolders || [];
         fileOverwrite = (typeof settings.fileOverwrite === 'boolean') ? settings.fileOverwrite : fileOverwriteDefault;
         copyVerbose = (typeof settings.copyVerbose === 'boolean') ? settings.copyVerbose : copyVerboseDefault;
+        copyReport = (typeof settings.copyReport === 'boolean') ? settings.copyReport : copyReportDefault;
         propagateSelections = (typeof settings.propagateSelections === 'boolean') ? settings.propagateSelections : propagateSelectionsDefault;
         relationshipOR = (typeof settings.relationshipOR === 'boolean') ? settings.relationshipOR : relationshipORDefault;
         filtersNamePlus = settings.filtersNamePlus || [];
@@ -1793,7 +1803,12 @@ document.getElementById("overwriteChecked").addEventListener("change", function 
 document.getElementById("verboseChecked").addEventListener("change", function () {
     copyVerbose = this.checked;
     saveOptions();
-    writeMessage('Verbose Copying setting is now ' + copyVerbose);
+    writeMessage('Verbose Progress setting is now ' + copyVerbose);
+});
+document.getElementById("reportChecked").addEventListener("change", function () {
+    copyReport = this.checked;
+    saveOptions();
+    writeMessage('Copying Report setting is now ' + copyReport);
 });
 document.getElementById("propagateChecked").addEventListener("change", function () {
     propagateSelections = this.checked;
@@ -1807,7 +1822,7 @@ document.getElementById("relationshipORChecked").addEventListener("change", func
     applyAllFilters();
 });
 document.getElementById("resetOptions").addEventListener("click", function () {
-    showConfirm('Are you sure you want to reset Options to defaults?', resetCallback);
+    showConfirmWithCallbacks('Are you sure you want to reset Options to defaults?', resetCallback);
     function resetCallback() {
         resetOptions();
         writeMessage('Options have been reset to defaults.');
@@ -1846,17 +1861,21 @@ document.getElementById('copySelected').addEventListener('click', async () => {
         return;
     }
     let destinations = destinationFolders.join(", ");
-    writeMessage('Asking for confirmation...');
+    writeMessage('Asking for copying confirmation...');
     clicksActive = false;
     toggleSpinner();
-    showConfirm('Are you sure you want to copy ' + selectedPaths.length + ' items\nfrom ' + sourceFolder + '\nto ' + destinations + '?', copyYesCallback, copyNotCallback, 'Copy confirmed.');
-    function copyNotCallback() {
-        writeMessage('Copy Aborted.');
+    let confimResult = await showConfirmWithReturn('Are you sure you want to copy ' + selectedPaths.length + ' items\nfrom ' + sourceFolder + '\nto ' + destinations + '?');
+    if (confimResult) {
+        writeMessage('Copying Started...');
+        setTimeout( ()=> {copyYesCallbackPost()}, 100);
+        //copyYesCallbackPost();
+    }
+    else {
+        writeMessage('Copying Aborted.');
         clicksActive = true;
         toggleSpinner();
     }
-    async function copyYesCallback() {
-        writeMessage('Copy Started...');
+    async function copyYesCallbackPost() {
         copyingReport = [];
         itemsCopied = [];
         itemsSkipped =[];
@@ -1896,6 +1915,9 @@ async function executeCopy(selectedPaths) {
                 itemsFailed[destIndex]++;
                 updateCopyingProgress('Error copying ' + sourceFullPath + ' in ' + destinationFullPath, false);
             }
+            if (copyVerbose) {
+                await new Promise(resolve => setTimeout(resolve, 10));
+            }
             destIndex++;
         }
         itemsProcessed = fileIndex;
@@ -1903,8 +1925,9 @@ async function executeCopy(selectedPaths) {
     }
     let now2 = new Date();
     let endTime = now2.getTime();
-    let elapsedTime = (endTime - startTime);
-    updateCopyingProgress('▷ ' + 'Copy finished at: ' + now2.toLocaleTimeString() +'.<br>Elapsed: ' + elapsedTime +'ms' , true);
+    let elapsedTimeMS = (endTime - startTime);
+    let elapsedTimeS = (elapsedTimeMS/1000).toFixed(2);
+    updateCopyingProgress('▷ ' + 'Copy finished at: ' + now2.toLocaleTimeString() +'.<hr>Elapsed: ' + elapsedTimeS +'s (' + elapsedTimeMS +'ms)' , true);
     writeMessage('Copy Completed!');
 }
 async function copyRecursive(src, dest, destIndex) {
@@ -1956,39 +1979,41 @@ async function copyRecursive(src, dest, destIndex) {
 function openProgressModal() {
     if (copyVerbose) {
         document.getElementById('verboseProgress').classList.remove('hidden');
-        document.getElementById('verboseReport').classList.add('hidden');
-        document.querySelectorAll('.verboseClose').forEach( (el) => el.classList.add('hidden') );
+        document.getElementById('copyingReport').classList.add('hidden');
+        document.querySelectorAll('.copyingClose').forEach( (el) => el.classList.add('hidden') );
         document.getElementById('verboseProgressMD').innerHTML = "";
-        const modal = bootstrap.Modal.getOrCreateInstance('#verboseModal');
+        const modal = bootstrap.Modal.getOrCreateInstance('#copyingModal');
         modal.show();
     }
 }
 function openReportModal() {
-    if (copyVerbose) {
+    if (copyReport) {
         document.getElementById('verboseProgress').classList.add('hidden');
-        document.getElementById('verboseReport').classList.remove('hidden');
-        document.querySelectorAll('.verboseClose').forEach( (el) => el.classList.remove('hidden') );
-        document.getElementById('verboseReportMD').innerHTML = '<h6>Report</h6>' + copyingReport.join("\n") + `<hr>
+        document.getElementById('copyingReport').classList.remove('hidden');
+        document.querySelectorAll('.copyingClose').forEach( (el) => el.classList.remove('hidden') );
+        document.getElementById('copyingReportMD').innerHTML = '<h6>Report</h6>' + copyingReport.join("\n") + `<hr>
         Processed <b>${itemsProcessed}</b> of <b>${itemsTotal}</b> items, into <b>${destinationFolders.length}</b> Destination folders.<br>
         Copied: <b>${itemsCopied.toString()}</b>; Skipped: <b>${itemsSkipped.toString()}</b>; Failed: <b>${itemsFailed.toString()}</b>.
         `;
         setTimeout(function () {
-            const modalBody = document.querySelector('#verboseModal .modal-body');
+            const modalBody = document.querySelector('#copyingModal .modal-body');
             modalBody.scrollTop = modalBody.scrollHeight;
         }, 100)
-        const modal = bootstrap.Modal.getOrCreateInstance('#verboseModal');
+        const modal = bootstrap.Modal.getOrCreateInstance('#copyingModal');
         modal.show();
     }
 }
 function updateCopyingProgress(message, sep = false) {
-    if (copyVerbose) {
+    if (copyVerbose || copyReport) {
         let useClass = '';
         if (sep) useClass = ' class="verboseSep"';
         let useMessage = "<div"+useClass+">" + message +"</div>";
-        if (sep) document.getElementById('verboseProgressMD').innerHTML = useMessage
-        else document.getElementById('verboseProgressMD').innerHTML = useMessage + document.getElementById('verboseProgressMD').innerHTML ;
-        const modalBody = document.querySelector('#verboseModal .modal-body');
-        modalBody.scrollTop = 0;
+        if (copyVerbose) {
+            if (sep) document.getElementById('verboseProgressMD').innerHTML = useMessage
+            else document.getElementById('verboseProgressMD').innerHTML = useMessage + document.getElementById('verboseProgressMD').innerHTML ;
+            const modalBody = document.querySelector('#copyingModal .modal-body');
+            modalBody.scrollTop = 0;
+        }
         copyingReport.push(useMessage);
     }
 }
@@ -2086,16 +2111,22 @@ function toggleSpinner() {
 function showAlert(message) {
     ipcRenderer.invoke("show-alert", message);
 }
-async function showConfirm(message, yesCallback, notCallback, messageYes, messageNo) {
+async function showConfirmWithCallbacks(message, yesCallback, notCallback, messageYes, messageNo) {
     const confirmation = await ipcRenderer.invoke('show-confirm', message);
-    if (confirmation) {
-        if (messageYes) writeMessage(messageYes);
-        if (yesCallback) yesCallback();
-    }
-    else {
-        if (messageNo) writeMessage(messageNo);
-        if (notCallback) notCallback();
-    }
+    setTimeout(() => {
+        if (confirmation) {
+            if (messageYes) writeMessage(messageYes);
+            if (yesCallback) yesCallback();
+        }
+        else {
+            if (messageNo) writeMessage(messageNo);
+            if (notCallback) notCallback();
+        }
+    }, 0);
+}
+async function showConfirmWithReturn(message) {
+    const confirmation = await ipcRenderer.invoke('show-confirm', message);
+    return confirmation;
 }
 
 //Utils: date and size formatting
@@ -2142,8 +2173,3 @@ function formatDate(date) {
     return dateFormat.replace('dd', dd).replace('mm', mm).replace('yyyy', yyyy);
 }
 
-//Utils: wait //TODO to remove
-function waitFor(index, time) {
-    const zzTime = Date.now() + time;
-    while (Date.now() < zzTime) { console.log(index, 'waiting...', (zzTime - Date.now())); };
-}

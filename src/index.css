@@ -346,14 +346,14 @@ body > div#div-modals {
     color: #ffffff;
 }
 
-#verboseReportMD, #verboseProgressMD {
+#copyingReportMD, #verboseProgressMD {
     font-size: 0.75em;
 }
 
 #verboseProgress .verboseSep {
     padding-bottom: 5px;
 }
-#verboseReport .verboseSep {
+#copyingReport .verboseSep {
     padding-top: 5px;
 }
 

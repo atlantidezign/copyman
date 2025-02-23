@@ -58,8 +58,9 @@ The **Options** panel affects copying and selecting behaviours.
 Has an autosave behaviour, and can be **Reset** to defaults. 
 
 #### Copying
+- **Verbose Progress** to choose if have a window with verborse progress during copying phase.
+- **Copying Report** to choose if have a window with report at the end of the copying phase.
 - **Overwrite Existing** to choose if overwrite (checked) or not (unchecked) files that already exist.
-- **Verbose Copying** to choose if have a window with verborse progress and report during copying phase.
 
 #### Selecting
 - **Propagate Selection** to choose if propagate (checked) or not (unchecked) the selection/deselection click of an item to parent and childen elements.
