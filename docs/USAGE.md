@@ -58,15 +58,15 @@ The **Options** panel affects copying and selecting behaviours.
 Has an autosave behaviour, and can be **Reset** to defaults. 
 
 #### Copying
-- **Verbose Progress** to choose if have a window with verborse progress during copying phase.
-- **Copying Report** to choose if have a window with report at the end of the copying phase.
-- **Overwrite Existing** to choose if overwrite (checked) or not (unchecked) files that already exist.
+- **Verbose Progress** to choose if have a window with verborse progress during copying phase. Default false.
+- **Copying Report** to choose if have a window with report at the end of the copying phase. Default true.
+- **Overwrite Existing** to choose if overwrite (checked) or not (unchecked) files that already exist. Default true.
 
 #### Selecting
-- **Propagate Selection** to choose if propagate (checked) or not (unchecked) the selection/deselection click of an item to parent and childen elements.
+- **Propagate Selection** to choose if propagate (checked) or not (unchecked) the selection/deselection click of an item to parent and childen elements. Default true.
 
 #### Filtering
-- **Relationship OR** to choose the kind of relationship between filter groups, OR (checked) or AND (unchecked).
+- **Relationship OR** to choose the kind of relationship between filter groups, OR (checked) or AND (unchecked). Default true (OR).
 
 ### Snapshots
 The **Snapshot** panel manages snapshot (current configuration of folders, filters, and options) save/load/clear/export;
