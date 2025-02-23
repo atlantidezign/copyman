@@ -407,6 +407,8 @@ let itemsSkipped =[];
 let itemsFailed = [];
 let itemsTotal = 0;
 let itemsProcessed = 0;
+let sizeTotal = 0;
+let sizeProcessed = 0;
 let selectedNodes = [];
 
 //User folders
@@ -500,7 +502,7 @@ function saveSnapshot() {
     // serialize and save in localStorage
     localStorage.setItem('snapshots', JSON.stringify(useSettings));
     listSnapshots();
-    writeMessage('Snapshot saved.');
+    writeMessage('Snapshot "'+useName+'" saved.');
 }
 function loadSnapshot() {
     writeMessage('Loading Snapshot...');
@@ -1843,13 +1845,12 @@ document.getElementById('copySelected').addEventListener('click', async () => {
         return;
     }
     const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
-    const selectedPaths = [];
-    let selectedNodes = [];
-    let selectedSize = 0;
+    selectedNodes = [];
+    sizeTotal = 0;
+    sizeProcessed = 0;
     checkboxes.forEach(checkbox => {
         if (checkbox.checked) {
-            selectedPaths.push(checkbox.dataset.filePath);
-            selectedSize += Number(checkbox.dataset.nodeSize);
+            sizeTotal += Number(checkbox.dataset.nodeSize);
 
             selectedNodes.push({
                 path: checkbox.dataset.filePath,
@@ -1860,7 +1861,7 @@ document.getElementById('copySelected').addEventListener('click', async () => {
             });
         }
     });
-    if (selectedPaths.length === 0) {
+    if (selectedNodes.length === 0) {
         showAlert('No selected Items.\nPlease select at least one item.');
         writeMessage('Unable to start copying.');
         return;
@@ -1874,10 +1875,10 @@ document.getElementById('copySelected').addEventListener('click', async () => {
     writeMessage('Asking for copying confirmation...');
     clicksActive = false;
     toggleSpinner(!clicksActive);
-    let confimResult = await showConfirmWithReturn('Are you sure you want to copy ' + selectedPaths.length + ' items (' +  formatSizeForThree(selectedSize)+ ')\nfrom ' + sourceFolder + '\nto ' + destinations + '?');
+    let confimResult = await showConfirmWithReturn('Are you sure you want to copy ' + selectedNodes.length + ' items (' +  formatSizeForThree(sizeTotal)+ ')\nfrom ' + sourceFolder + '\nto ' + destinations + '?');
     if (confimResult) {
         writeMessage('Copying Started...');
-        setTimeout( ()=> {startCopying(selectedPaths)}, 100);
+        setTimeout( ()=> {startCopying()}, 100);
     }
     else {
         writeMessage('Copying Aborted.');
@@ -1886,7 +1887,7 @@ document.getElementById('copySelected').addEventListener('click', async () => {
     }
 
 });
-async function startCopying(selectedPaths) {
+async function startCopying() {
     copyingReport = [];
     itemsCopied = [];
     itemsSkipped =[];
@@ -1897,26 +1898,30 @@ async function startCopying(selectedPaths) {
         itemsFailed.push(0);
     }
     itemsProcessed = 0;
-    itemsTotal = selectedPaths.length;
+    itemsTotal = selectedNodes.length;
     openProgressModal();
-    await executeCopy(selectedPaths);
+    if (copyVerbose) {
+        await new Promise(resolve => setTimeout(resolve, 10));
+    }
+    await executeCopy();
     clicksActive = true;
     toggleSpinner(!clicksActive);
     openReportModal();
 }
-async function executeCopy(selectedPaths) {
+async function executeCopy() {
     let now1 = new Date();
     let startTime = now1.getTime();
     updateCopyingProgress('▷ ' + 'Copy started at: ' + now1.toLocaleTimeString(), true);
     // copy every selected item
     let fileIndex = 1;
-    for (const relPath of selectedPaths) {
+    for (const node of selectedNodes) {
+        let relPath = node.path;
         const sourceFullPath = path.join(sourceFolder, relPath);
         let destIndex = 0;
         for (const destFolder of destinationFolders) {
             const destinationFullPath = path.join(destFolder, relPath);
-            writeMessage('[' + fileIndex + '/' + selectedPaths.length + '] Copying ' + sourceFullPath + ' to ' + destinationFullPath);
-            updateCopyingProgress('[' + fileIndex + '/' + selectedPaths.length + '] Copying ' + sourceFullPath + ' to ' + destinationFullPath, true)
+            writeMessage('[' + fileIndex + '/' + selectedNodes.length + '] Copying ' + sourceFullPath + ' to ' + destinationFullPath);
+            updateCopyingProgress('[' + fileIndex + '/' + selectedNodes.length + '] Copying ' + sourceFullPath + ' to ' + destinationFullPath, true)
             try {
                 await copyRecursive(sourceFullPath, destinationFullPath, destIndex);
             } catch (err) {
@@ -1931,6 +1936,7 @@ async function executeCopy(selectedPaths) {
             destIndex++;
         }
         itemsProcessed = fileIndex;
+        sizeProcessed += node.sizeBits;
         fileIndex++;
     }
     let now2 = new Date();
@@ -1939,6 +1945,9 @@ async function executeCopy(selectedPaths) {
     let elapsedTimeS = (elapsedTimeMS/1000).toFixed(2);
     updateCopyingProgress('▷ ' + 'Copy finished at: ' + now2.toLocaleTimeString() +'.<hr>Elapsed: ' + elapsedTimeS +'s (' + elapsedTimeMS +'ms)' , true);
     writeMessage('Copy Completed!');
+    if (copyVerbose) {
+        await new Promise(resolve => setTimeout(resolve, 10));
+    }
 }
 async function copyRecursive(src, dest, destIndex) {
     const stats = fs.statSync(src);
@@ -1992,6 +2001,10 @@ function openProgressModal() {
         document.getElementById('copyingReport').classList.add('hidden');
         document.querySelectorAll('.copyingClose').forEach( (el) => el.classList.add('hidden') );
         document.getElementById('verboseProgressMD').innerHTML = "";
+        document.getElementById('progressBarItems').style.width = "0%";
+        document.getElementById('progressBarItems').textContent = itemsProcessed + "/" + itemsTotal;
+        document.getElementById('progressBarSize').style.width = "0%";
+        document.getElementById('progressBarSize').textContent = "0%";
         const modal = bootstrap.Modal.getOrCreateInstance('#copyingModal');
         modal.show();
     }
@@ -2021,6 +2034,12 @@ function updateCopyingProgress(message, sep = false) {
         if (copyVerbose) {
             if (sep) document.getElementById('verboseProgressMD').innerHTML = useMessage
             else document.getElementById('verboseProgressMD').innerHTML = useMessage + document.getElementById('verboseProgressMD').innerHTML ;
+            let percI = ( (itemsProcessed *100)/ itemsTotal ).toFixed(0);
+            let percS = ( (sizeProcessed *100)/ sizeTotal ).toFixed(0);
+            document.getElementById('progressBarItems').style.width = percI + "%";
+            document.getElementById('progressBarItems').textContent = itemsProcessed + "/" + itemsTotal;
+            document.getElementById('progressBarSize').style.width = percS + "%";
+            document.getElementById('progressBarSize').textContent = percS + "%";
             const modalBody = document.querySelector('#copyingModal .modal-body');
             modalBody.scrollTop = 0;
         }

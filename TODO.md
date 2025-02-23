@@ -1,9 +1,8 @@
 # TODO
 
 ## NOW
-ui: confirm on saving snapshot with a check if it already exists
+ui: confirm on saving snapshot if it already exists?
 
-copy: in verbose mode, using selectedNodes, include on the left: percentage of done in size, and i/tot progress
 copy: overwrite option splitted to 3 cases: alyays / if newer / never
 
 ## NEXT

@@ -5,8 +5,16 @@
 :root, [data-bs-theme=dark] {
     color-scheme: dark;
     --bs-primary: #6610f2 !important;
+    --bs-primary-rgb: 102, 16, 242;
 }
-
+.bg-copyman {
+    --bs-bg-opacity: 1;
+    background-color: rgba(102, 16, 242, var(--bs-bg-opacity)) !important;
+}
+.bg-copyman-alt {
+    --bs-bg-opacity: 1;
+    background-color: rgba(46,16,242, var(--bs-bg-opacity)) !important;
+}
 body {
     display: flex;
     flex-direction: column;
@@ -349,9 +357,14 @@ body > div#div-modals {
 #copyingReportMD, #verboseProgressMD {
     font-size: 0.75em;
 }
-
+#copyingReportMD h6 {
+    margin-top: 0;
+}
 #verboseProgress .verboseSep {
     padding-bottom: 5px;
+}
+#verboseProgress .progress {
+    margin-top: 5px
 }
 #copyingReport .verboseSep {
     padding-top: 5px;
@@ -383,7 +396,12 @@ body > div#spinner-overlay {
 }
 
 /* Animated Spinner items*/
-#spinner,
+#spinner {
+    background-image: url(./images/80x80_2cols.svg);
+    width: 80px;
+    height: 80px;
+    animation: spin 1.5s linear infinite;
+}
 #spinner2 {
     background-image: url(./images/80x80_2cols.svg);
     width: 80px;
@@ -401,8 +419,8 @@ body > div#spinner-overlay {
 }
 #spinnerNot {
     background-image: url(./images/80x80_2cols.svg);
-    width: 80px;
-    height: 80px;
+    width: 50px;
+    height: 50px;
 }
 /*NoUiSlider*/
 #slider-range {

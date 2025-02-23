@@ -164,7 +164,15 @@
                 <div class="modal-body">
                     <div class="container-fluid">
                         <div id="verboseProgress" class="d-flex hidden">
-                            <div class="p-2 flex-shrink-0"><div id="spinner2"></div></div>
+                            <div class="p-2 flex-shrink-0">
+                                <div id="spinner2"></div>
+                                <div class="progress mt-2" role="progressbar" aria-label="Copy progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                    <div id="progressBarItems" class="progress-bar overflow-visible  bg-copyman" style="width: 0%"></div>
+                                </div>
+                                <div class="progress" role="progressbar" aria-label="Copy progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                    <div id="progressBarSize" class="progress-bar overflow-visible  bg-copyman-alt" style="width: 0%"></div>
+                                </div>
+                            </div>
                             <div class="p-2 flex-grow-1" id="verboseProgressMD"> </div>
                         </div>
                         <div id="copyingReport" class="d-flex hidden">
