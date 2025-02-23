@@ -2,6 +2,8 @@
 You need to choose a **Source** folder and at least one **Destination** folder.  
 Use the **Clear** buttons to remove the folder selections.
 
+---
+
 ### Selection
 Within the **tree view**, you can **select** the items to copy (whether files or folders) using checkboxes.
 
@@ -9,6 +11,8 @@ You can navigate within the tree by **expanding** or **collapsing** branches.
 You can also use the two buttons for **Expand or Collapse All**.
 
 To select/unselect all items you can use the two buttons **Select All** and **Deselect All**.
+
+---
 
 ### Filters
 To assist with **selection**, you can use the **Filters**.
@@ -45,6 +49,8 @@ Accepts one or two numbers (expressed in Kb) as input, as file/folder size conta
 - In the **Size Filters List** you can see all Size filters applyed and remove individual filters.
 - Using the **Clear Size Filters** button, it removes the Size filters.
 
+---
+
 ### Actions
 There is a panel with action buttons:
 - **Swap** swaps Source and (first) Destination folders.
@@ -52,6 +58,8 @@ There is a panel with action buttons:
 - **Snapshots** Open Snapshots panel.
 - **Options** Open Options panel.
 - **Help** Open Help panel.
+
+---
 
 ### Options
 The **Options** panel affects copying and selecting behaviours.
@@ -68,6 +76,8 @@ Has an autosave behaviour, and can be **Reset** to defaults.
 #### Filtering
 - **Relationship OR** to choose the kind of relationship between filter groups, OR (checked) or AND (unchecked). Default true (OR).
 
+---
+
 ### Snapshots
 The **Snapshot** panel manages snapshot (current configuration of folders, filters, and options) save/load/clear/export;
 - **Save Shapshot** to save current snapshot, with a name.
@@ -77,9 +87,13 @@ The **Snapshot** panel manages snapshot (current configuration of folders, filte
 - **Import Shapshot** to import snapshot from json file.
 - **Clear All Shapshots** to remove all saved snapshots.
 
+---
+
 ### Selection List
 In the **Selection List** panel you'll find a table list of the selected items.
 Trough **Export JSON** or **Export CSV** button you can export the list in your preferred format.
+
+---
 
 ### Copying
 With the **Copy Selected Items** button, the files are copied from the Source to the Destinations.
@@ -87,6 +101,8 @@ With the **Copy Selected Items** button, the files are copied from the Source to
 **Pay attention:** Copy mode is *strict* on selection:
 only and exclusively the selected items will be copied.
 For example, if a folder is selected but only some of the files inside it are selected, only those will be copied.
+
+---
 
 ### Menus
 Trough the **contextual menu** (right click) you have shortcuts to the main features of the application.
