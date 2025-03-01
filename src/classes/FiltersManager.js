@@ -221,8 +221,8 @@ class FiltersManager {
 
                 return;
             }
-            App.utils.writeMessage('All items deselected.');
             App.filtersManager.removeAllFilters();
+            App.utils.writeMessage('All items deselected.');
         });
     }
 

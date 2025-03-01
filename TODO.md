@@ -1,7 +1,7 @@
 # TODO
 
 ## NOW
-test new codebase;
+sys: test new codebase;
 
 ## NEXT
 copy: overwrite option splitted to 4 cases: alyays / if newer / if bigger / never
@@ -11,20 +11,21 @@ tree: setting sort => alphabetical order, date, size, file type (tree view)  (ad
 ui: button to abort copy (clicks remain active; be careful if clicking elsewhere, be careful with toggleSpinner)
 ui: more compact
 
+settings: support localization for other languages (in options), for labels and datepicker (language and format); and add to snapshots
+          check also all menu items (contextual, tray, main)
+
+test: thoroughly test, especially filters and progress with small files
+
 ## LATE
 copy: in verbose mode, using selectedNodes, include info on file sizes, and time?, for each file
 copy: before starting, using selectedNodes and scans of destinations, perform various checks on what will actually perform copy/overwrite/skip, etc. and use a window instead of confirm to show it to the user.
 with an option eg. showPreview
 
-electron: add more infos in package.json
+electron: add more properties for Electron in package.json
 electron: splash with logo?
-electron: improve menu items (contextual, tray, main)
 electron: leaner build, better integrated build parameters
 electron: notifications? (possibly also for update checking via my URL)
           create a dedicated modal for listing/reading and add a spinning icon
-
-settings: support localization for other languages (in options), for labels and datepicker (language and format); and add to snapshots
-test: thoroughly test, especially filters and progress with small files
 
 ui: in floating windows
 ui: better tree view, with multiple columns for source (like mac) and/or even show the destinations?
