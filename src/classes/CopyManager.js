@@ -357,7 +357,7 @@ class CopyManager {
     openProgressModal() {
         if (App.model.copyVerbose) {
             document.getElementById('verboseProgress').classList.remove('hidden');
-            document.getElementById('App.model.copyingReport').classList.add('hidden');
+            document.getElementById('copyingReport').classList.add('hidden');
             document.querySelectorAll('.copyingClose').forEach((el) => el.classList.add('hidden'));
             document.getElementById('verboseProgressMD').innerHTML = "";
             document.getElementById('progressBarItems').style.width = "0%";
@@ -372,14 +372,14 @@ class CopyManager {
     openReportModal() {
         if (App.model.copyReport) {
             document.getElementById('verboseProgress').classList.add('hidden');
-            document.getElementById('App.model.copyingReport').classList.remove('hidden');
+            document.getElementById('copyingReport').classList.remove('hidden');
             document.querySelectorAll('.copyingClose').forEach((el) => el.classList.remove('hidden'));
-            document.getElementById('App.model.copyingReportMD').innerHTML = '<h6>Report</h6>' + App.model.copyingReport.join("\n") + `<hr>
+            document.getElementById('copyingReportMD').innerHTML = '<h6>Report</h6>' + App.model.copyingReport.join("\n") + `<hr>
         Processed <b>${App.model.itemsProcessed}</b> of <b>${App.model.itemsTotal}</b> items, into <b>${App.model.destinationFolders.length}</b> Destination folders.<br>
         Copied: <b>${App.model.itemsCopied.toString()}</b>; Skipped: <b>${App.model.itemsSkipped.toString()}</b>; Failed: <b>${App.model.itemsFailed.toString()}</b>.<br>
         Size: ${App.utils.formatSizeForThree(App.model.sizeTotal)}
         `;
-            setTimeout(function () {
+            setTimeout( () => {
                 const modalBody = document.querySelector('#copyingModal .modal-body');
                 modalBody.scrollTop = modalBody.scrollHeight;
             }, 100)
