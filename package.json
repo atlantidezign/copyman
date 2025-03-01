@@ -1,50 +1,55 @@
 {
-  "name": "copyman",
-  "title": "Copyman",
-  "version": "0.2.5",
-  "description": "Electron application for fast copying files and folders to multiple destinations while preserving the path",
-  "author": "www.atlantide-design.it",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "  https://github.com/atlantidezign/copyman"
-  },
-  "main": "src/main.js",
-  "scripts": {
-    "start": "electron .",
-    "dev": "electron --inDebug . ",
-    "build:win": "electron-builder --win",
-    "build:mac": "electron-builder --mac",
-    "build:linux": "electron-builder --linux"
-  },
-  "devDependencies": {
-    "electron": "^34.2.0",
-    "electron-builder": "^25.1.8"
-  },
-  "icon": "./src/images/256x256.png",
-  "build": {
-    "appId": "it.atlantide-design.copyman",
-    "productName": "Copyman",
-    "files": [
-      "!*",
-      "!**/*",
-      "./src/**/*",
-      "./docs/**/*",
-      "./package.json"
-    ],
-    "directories": {
-      "buildResources": "build"
-    },
-    "win": {
-      "target": [
-        "portable"
-      ],
-      "icon": "./src/images/256x256.png"
-    },
-    "mac": {
-      "target": [
-        "dmg"
-      ]
-    }
-  }
+	"name": "copyman",
+	"title": "Copyman",
+	"version": "0.2.5",
+	"description": "Electron application for fast copying files and folders to multiple destinations while preserving the path",
+	"author": "www.atlantide-design.it <copymanapp@gmail.com> (http://www.atlantide-design.it/copyman)",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "  https://github.com/atlantidezign/copyman"
+	},
+	"main": "src/main.js",
+	"scripts": {
+		"start": "electron .",
+		"dev": "electron --inDebug . ",
+		"build:win": "electron-builder --win",
+		"build:mac": "electron-builder --mac",
+		"build:linux": "electron-builder --linux",
+		"build:winlinux": "electron-builder --linux --windows"
+	},
+	"devDependencies": {
+		"electron": "^34.2.0",
+		"electron-builder": "^25.1.8"
+	},
+	"icon": "./src/images/256x256.png",
+	"build": {
+		"appId": "it.atlantide-design.copyman",
+		"productName": "Copyman",
+		"files": [
+			"!*",
+			"!**/*",
+			"./src/**/*",
+			"./docs/**/*",
+			"./package.json"
+		],
+		"directories": {
+			"buildResources": "build"
+		},
+		"win": {
+			"target": [
+				"portable"
+			],
+			"icon": "./src/images/256x256.png"
+		},
+		"mac": {
+			"target": [
+				"dmg"
+			]
+		},
+		"linux": {
+			"target": "deb"
+		},
+		"deb": {}
+	}
 }

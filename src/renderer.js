@@ -530,7 +530,7 @@ function loadSnapshot() {
     }
     setFromSnapshot(settings);
 }
-function cleanSnapshot() {
+async function cleanSnapshot() {
     let useName = document.getElementById('loadSnapshotInput').value.trim().toLowerCase();
     if (!useName) {
         showAlert('Please enter a name for Snapshot to remove.');
@@ -545,7 +545,10 @@ function cleanSnapshot() {
 
     const index = useSettings.findIndex(setting => setting.name === useName);
     if (index !== -1) {
-        showConfirmWithCallbacks('Are you sure you want to remove Saved Snapshot named ' + useName + '?', cleanCallback);
+        let confirmation = await showConfirmWithReturn('Are you sure you want to remove Saved Snapshot named ' + useName + '?');
+        if (confirmation) {
+            cleanCallback()
+        }
     } else {
         writeMessage(`No Snapshot with name "${useName}".`);
     }
@@ -557,9 +560,11 @@ function cleanSnapshot() {
         writeMessage(`Snapshot named "${useName}" removed.`);
     }
 }
-function cleanAllSnapshots() {
-    showConfirmWithCallbacks('Are you sure you want to Clean all saved Snapshots?', cleanCallback);
-
+async function cleanAllSnapshots() {
+    let confirmation = await showConfirmWithReturn('Are you sure you want to Clean all saved Snapshots?');
+    if (confirmation) {
+        cleanCallback()
+    }
     function cleanCallback() {
         localStorage.removeItem('snapshots');
         listSnapshots();
@@ -1828,8 +1833,11 @@ document.getElementById("relationshipORChecked").addEventListener("change", func
     writeMessage('Relationship OR setting is now ' + relationshipOR);
     applyAllFilters();
 });
-document.getElementById("resetOptions").addEventListener("click", function () {
-    showConfirmWithCallbacks('Are you sure you want to reset Options to defaults?', resetCallback);
+document.getElementById("resetOptions").addEventListener("click", async function () {
+    let confirmation = await showConfirmWithReturn('Are you sure you want to reset Options to defaults?');
+    if (confirmation) {
+        resetCallback()
+    }
     function resetCallback() {
         resetOptions();
         writeMessage('Options have been reset to defaults.');
@@ -1975,7 +1983,7 @@ async function copyRecursive(src, dest, destIndex) {
         }
         //no! const items = fs.readdirSync(src);
         //no! for (const item of items) {
-        //no!    await copyRecursive(path.join(src, item), path.join(dest, item));
+        //no!   await copyRecursive(path.join(src, item), path.join(dest, item));
         //no! }
     } else {
         const destDir = path.dirname(dest);
@@ -2024,7 +2032,8 @@ function openReportModal() {
         document.querySelectorAll('.copyingClose').forEach( (el) => el.classList.remove('hidden') );
         document.getElementById('copyingReportMD').innerHTML = '<h6>Report</h6>' + copyingReport.join("\n") + `<hr>
         Processed <b>${itemsProcessed}</b> of <b>${itemsTotal}</b> items, into <b>${destinationFolders.length}</b> Destination folders.<br>
-        Copied: <b>${itemsCopied.toString()}</b>; Skipped: <b>${itemsSkipped.toString()}</b>; Failed: <b>${itemsFailed.toString()}</b>.
+        Copied: <b>${itemsCopied.toString()}</b>; Skipped: <b>${itemsSkipped.toString()}</b>; Failed: <b>${itemsFailed.toString()}</b>.<br>
+        Size: ${formatSizeForThree(sizeTotal)}
         `;
         setTimeout(function () {
             const modalBody = document.querySelector('#copyingModal .modal-body');
@@ -2147,19 +2156,7 @@ function toggleSpinner(spinnerActive) {
 function showAlert(message) {
     ipcRenderer.invoke("show-alert", message);
 }
-async function showConfirmWithCallbacks(message, yesCallback, notCallback, messageYes, messageNo) {
-    const confirmation = await ipcRenderer.invoke('show-confirm', message);
-    setTimeout(() => {
-        if (confirmation) {
-            if (messageYes) writeMessage(messageYes);
-            if (yesCallback) yesCallback();
-        }
-        else {
-            if (messageNo) writeMessage(messageNo);
-            if (notCallback) notCallback();
-        }
-    }, 0);
-}
+
 async function showConfirmWithReturn(message) {
     const confirmation = await ipcRenderer.invoke('show-confirm', message);
     return confirmation;
