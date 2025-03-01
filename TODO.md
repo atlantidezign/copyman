@@ -1,7 +1,7 @@
 # TODO
 
 ## NOW
-sys: rewrite all in TypeScript
+test new codebase;
 
 ## NEXT
 copy: overwrite option splitted to 4 cases: alyays / if newer / if bigger / never
@@ -33,6 +33,8 @@ ui: better tree view, with multiple columns for source (like mac) and/or even sh
 
 ext: add the exe files for other platforms to download, website and git
 ext: better Google Copyman account and GitHub profile
+
+sys: rewrite all in TypeScript
 
 ## NEVER?
 electron: signed build (requires a paid certificate)
