@@ -1914,11 +1914,11 @@ async function startCopying() {
     itemsTotal = selectedNodes.length;
     openProgressModal();
     if (copyVerbose) {
-        await new Promise(resolve => setTimeout(resolve, 10));
+        await waitForUiUpdate();
     }
     await executeCopy();
     if (copyVerbose) {
-        await new Promise(resolve => setTimeout(resolve, 10));
+        await waitForUiUpdate();
     }
     clicksActive = true;
     toggleSpinner(!clicksActive);
@@ -1947,7 +1947,7 @@ async function executeCopy() {
                 updateCopyingProgress('Error copying ' + sourceFullPath + ' in ' + destinationFullPath, false);
             }
             if (copyVerbose) {
-                await new Promise(resolve => setTimeout(resolve, 10));
+                await waitForUiUpdate();
             }
             destIndex++;
         }
@@ -1962,7 +1962,7 @@ async function executeCopy() {
     updateCopyingProgress('▷ ' + 'Copy finished at: ' + now2.toLocaleTimeString() +'.<hr>Elapsed: ' + elapsedTimeS +'s (' + elapsedTimeMS +'ms)' , true);
     writeMessage('Copy Completed!');
     if (copyVerbose) {
-        await new Promise(resolve => setTimeout(resolve, 10));
+        await waitForUiUpdate();
     }
 }
 async function copyRecursive(src, dest, destIndex) {
@@ -2216,4 +2216,9 @@ function dateToGetTime(dateToCheck) {
     }
     const datePoint = dateToCheck ? dateToCheck.getTime() : 0;
     return datePoint;
+}
+
+//utils: delay for ui update
+async function waitForUiUpdate(ms = 250) {
+    await new Promise(resolve => setTimeout(resolve, ms));
 }
