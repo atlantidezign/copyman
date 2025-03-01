@@ -16,6 +16,7 @@ copy: in verbose mode, using selectedNodes, include info on file sizes, and time
 copy: before starting, using selectedNodes and scans of destinations, perform various checks on what will actually perform copy/overwrite/skip, etc. and use a window instead of confirm to show it to the user.
 with an option eg. showPreview
 
+electron: add more infos in package.json
 electron: splash with logo?
 electron: improve menu items (contextual, tray, main)
 electron: leaner build, better integrated build parameters
