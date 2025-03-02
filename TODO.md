@@ -6,9 +6,7 @@ sys: test new refractored codebase, especially filters
 --- 
 
 ## NEXT
-ui: button to abort copy (clicks remain active; be careful if clicking elsewhere, be careful with toggleSpinner)
-
-snapshots: save full selection
+snapshots: save full files selection
 
 copy: in verbose mode, using selectedNodes, include info on file sizes/date, and elapsed, and progres?, for each single file
       and better verbose and progress in case of small files
@@ -16,6 +14,9 @@ copy: before starting, using selectedNodes and scans of destinations, perform va
       and use a window instead of confirm to show it to the user.
       with an option eg. showPreview. with check for free space on destinations
 copy: tasks queue
+
+ui: button to abort copy (clicks remain active; be careful if clicking elsewhere, be careful with toggleSpinner)
+ui: change order of destination folders
 
 ---
 
@@ -35,7 +36,6 @@ ui: in floating windows?
 ui: better tree view, with multiple columns for source (like mac) and/or even show the destinations?
     if show destinations: create a tree for the various destinations as well, in split screen with tabs; 
     then, when you open a source branch, open the same branch in the destination/s automatically.
-ui: change order of destination folders
 
 sys: rewrite all in TypeScript
 sys: extensive testing
