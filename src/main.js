@@ -163,13 +163,20 @@ app.whenReady().then(() => {
                 }
             },
             {type: 'separator'},
+            {role: 'reload'},
+            {type: 'separator'},
             {
                 label: 'Help',
                 click: () => {
                     event.sender.send('context-menu-command', 'menu-help')
                 }
             },
-            {role: 'reload'}
+            {
+                label: 'About',
+                click: () => {
+                    event.sender.send('context-menu-command', 'menu-about')
+                }
+            }
         ]
         const menu = Menu.buildFromTemplate(contextTemplate)
         menu.popup({window: BrowserWindow.fromWebContents(event.sender)})

@@ -661,7 +661,7 @@ class FiltersManager {
         listContainer.innerHTML = ''; // Svuota la lista esistente
         drawFiltersFor(App.model.filtersSizePlus, "+");
         drawFiltersFor(App.model.filtersSizeMinus, "-");
-        if (listContainer.innerHTML == '') listContainer.innerHTML = 'Size (Kb) Filters list'
+        if (listContainer.innerHTML == '') listContainer.innerHTML = 'Size Filters list'
 
         function drawFiltersFor(arrayList, filterKind) {
             arrayList.forEach((filter, index) => {
