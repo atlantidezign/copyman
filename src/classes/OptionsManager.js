@@ -54,6 +54,7 @@ class OptionsManager {
             model.copyVerbose = options.copyVerbose;
             model.copyReport = options.copyReport;
             model.relationshipOR = options.relationshipOR;
+            model.sortOrder = options.sortOrder;
         } else {
             const saveOptions = {
                 propagateSelections: model.propagateSelections,
@@ -61,6 +62,7 @@ class OptionsManager {
                 copyVerbose: model.copyVerbose,
                 copyReport: model.copyReport,
                 relationshipOR: model.relationshipOR,
+                sortOrder: model.sortOrder,
             };
             localStorage.setItem('options', JSON.stringify(saveOptions));
         }
@@ -74,6 +76,7 @@ class OptionsManager {
             copyVerbose: model.copyVerbose,
             copyReport: model.copyReport,
             relationshipOR: model.relationshipOR,
+            sortOrder: model.sortOrder,
         };
         localStorage.setItem('options', JSON.stringify(saveOptions));
     }
@@ -84,6 +87,7 @@ class OptionsManager {
         model.copyVerbose = model.copyVerboseDefault;
         model.copyReport = model.copyReportDefault;
         model.relationshipOR = model.relationshipORDefault;
+        model.sortOrder = model.sortOrderDefault;
         this.saveOptions();
         this.updateOptionsUI();
         App.filtersManager.applyAllFilters();
@@ -100,6 +104,7 @@ class OptionsManager {
         document.getElementById("reportChecked").checked = App.model.copyReport;
         document.getElementById("propagateChecked").checked = App.model.propagateSelections;
         document.getElementById("relationshipORChecked").checked = App.model.relationshipOR;
+        document.getElementById("sortOrderCombo").value = App.model.sortOrder;
     }
 
 }

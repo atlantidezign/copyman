@@ -14,6 +14,16 @@ You can also use the two buttons for **Expand or Collapse All**.
 
 To select/unselect all items you can use the two buttons **Select All** and **Deselect All**.
 
+You can also choose the **Sort order** of the tree. Possible values are:
+- Alphabetical ASC
+- Alphabetical DESC
+- Size ASC
+- Size DESC
+- Date ASC
+- Date DESC
+- Type ASC
+- Type DESC
+
 ---
 
 ### Filters

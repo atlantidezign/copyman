@@ -79,6 +79,7 @@ class SnapshotManager {
             copyReport: App.model.copyReport,
             propagateSelections: App.model.propagateSelections,
             relationshipOR: App.model.relationshipOR,
+            sortOrder: App.model.sortOrder,
             //filters (name + nuovi)
             filtersNamePlus: App.model.filtersNamePlus,
             filtersNameMinus: App.model.filtersNameMinus,
@@ -172,6 +173,7 @@ class SnapshotManager {
             copyReport: App.model.copyReport,
             propagateSelections: App.model.propagateSelections,
             relationshipOR: App.model.relationshipOR,
+            sortOrder: App.model.sortOrder,
             //filters (name + nuovi)
             filtersNamePlus: App.model.filtersNamePlus,
             filtersNameMinus: App.model.filtersNameMinus,
@@ -242,6 +244,7 @@ class SnapshotManager {
             App.model.copyReport = (typeof settings.copyReport === 'boolean') ? settings.copyReport : App.model.copyReportDefault;
             App.model.propagateSelections = (typeof settings.propagateSelections === 'boolean') ? settings.propagateSelections : App.model.propagateSelectionsDefault;
             App.model.relationshipOR = (typeof settings.relationshipOR === 'boolean') ? settings.relationshipOR : App.model.relationshipORDefault;
+            App.model.sortOrder = (typeof settings.sortOrder === 'string') ? settings.sortOrder : App.model.sortOrderDefault;
             App.model.filtersNamePlus = settings.filtersNamePlus || [];
             App.model.filtersNameMinus = settings.filtersNameMinus || [];
             App.model.filtersDatePlus = settings.filtersDatePlus || [];

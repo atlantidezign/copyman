@@ -4,7 +4,7 @@ class TreeManager {
     }
 
     init() {
-//Tree Expand/Collapse all
+        // Tree Expand/Collapse all
         document.getElementById('expandAll').addEventListener('click', () => {
             if (!App.model.sourceFolder) {
                 App.utils.showAlert("Please select a source folder first.");
@@ -71,16 +71,83 @@ class TreeManager {
 
             collapseAllFileTree();
         });
+        // Sort
+        document.getElementById('sortOrderCombo').addEventListener('change', (e) => {
+            App.model.sortOrder = e.target.value;
+            App.optionsManager.saveOptions();
+            App.utils.writeMessage('Sort order setting is now ' + App.model.sortOrder);
+
+            if (!App.model.sourceFolder) {
+                App.utils.showAlert('Please select the Source Folder!');
+                App.utils.writeMessage('Unable to reorder Source Folder.');
+                return;
+            }
+            // re build tree
+            App.treeManager.updateTree();
+            App.utils.writeMessage('Source Folder reordered.');
+        });
     }
 
-    //Tree render
+    /**
+     * Build file system tree array.
+     *
+     * @param {string} dir - directory to scan.
+     * @param {string} [relativePath=''] - relative path .
+     * sortOrder: "alphabetical", "reverseAlphabetical", "sizeAsc", "sizeDesc", "dateAsc", "dateDesc", "extAsc", "extDesc".
+     * @returns {Array} - Array of objects representing the tree.
+     */
     buildFileTree(dir, relativePath = '') {
+        let sortOrder = App.model.sortOrder; //
+        if (!sortOrder) sortOrder = 'alphabetical';
         const tree = [];
-        const items = fs.readdirSync(dir);
-        items.forEach(item => {
+        let items = fs.readdirSync(dir);
+        // Temporary array needed for sorting
+        let itemsData = items.map(item => {
             const fullPath = path.join(dir, item);
-            const itemRelativePath = path.join(relativePath, item);
             const stats = fs.statSync(fullPath);
+            return {
+                item,
+                fullPath,
+                stats,
+                ext: stats.isFile() ? path.extname(item).toLowerCase() : ''
+            };
+        });
+        // Sort depending on sortOrder
+        switch (sortOrder) {
+            case 'alphabetical':
+                itemsData.sort((a, b) => a.item.localeCompare(b.item));
+                break;
+            case 'reverseAlphabetical':
+                itemsData.sort((a, b) => b.item.localeCompare(a.item));
+                break;
+            case 'sizeAsc':
+                itemsData.sort((a, b) => (a.stats.size || 0) - (b.stats.size || 0));
+                break;
+            case 'sizeDesc':
+                itemsData.sort((a, b) => (b.stats.size || 0) - (a.stats.size || 0));
+                break;
+            case 'dateAsc':
+                itemsData.sort((a, b) => a.stats.mtimeMs - b.stats.mtimeMs);
+                break;
+            case 'dateDesc':
+                itemsData.sort((a, b) => b.stats.mtimeMs - a.stats.mtimeMs);
+                break;
+            case 'extAsc':
+                itemsData.sort((a, b) => a.ext.localeCompare(b.ext));
+                break;
+            case 'extDesc':
+                itemsData.sort((a, b) => b.ext.localeCompare(a.ext));
+                break;
+            default:
+                // default.
+                itemsData.sort((a, b) => a.item.localeCompare(b.item));
+                break;
+        }
+
+        // Tree render
+        itemsData.forEach(data => {
+            const { item, fullPath, stats } = data;
+            const itemRelativePath = path.join(relativePath, item);
             if (stats.isDirectory()) {
                 tree.push({
                     name: item,
@@ -94,7 +161,7 @@ class TreeManager {
                     sizeRaw: 0
                 });
             } else {
-                // check dimention for format: KB  if < 1MB, else MB
+                // check size for format: KB  if < 1MB, else MB
                 let formattedSize = App.utils.formatSizeForThree(stats.size);
                 tree.push({
                     name: item,
@@ -111,6 +178,7 @@ class TreeManager {
         return tree;
     }
 
+    // Tree rendering
     renderFileTree(treeData) {
         const container = document.getElementById('file-tree');
         container.innerHTML = '';
@@ -238,6 +306,7 @@ class TreeManager {
         return li;
     }
 
+    // Tree update
     updateTree() {
         App.model.clicksActive = false;
         App.utils.toggleSpinner(!App.model.clicksActive);

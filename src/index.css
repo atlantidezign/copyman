@@ -258,6 +258,11 @@ li {
     border-radius: 0;
 }
 
+#sortOrderCombo {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
 /* Modals */
 #modalSnapshotTrigger, #modalOptionsTrigger {
     margin-left: 10px;

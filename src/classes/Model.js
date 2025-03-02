@@ -43,18 +43,24 @@ class Model {
         if_different: 3,
         never: 4
     };
+    sortOrderList= ["alphabetical", "reverseAlphabetical", "sizeAsc", "sizeDesc",
+        "dateAsc", "dateDesc", "extAsc", "extDesc"];
+
     //User Options Defaults
     fileOverwriteDefault = this.fileOverwriteEnum.always;
     copyVerboseDefault = false;
     copyReportDefault = true;
     propagateSelectionsDefault = true;
     relationshipORDefault = true;
+    sortOrderDefault = this.sortOrderList[0];
+
     //User Options
     fileOverwrite = this.fileOverwriteDefault;
     copyVerbose = this.copyVerboseDefault;
     copyReport = this.copyReportDefault;
     propagateSelections = this.propagateSelectionsDefault;
     relationshipOR = this.relationshipORDefault;
+    sortOrder = this.sortOrderDefault;
 
     //Components
     initialRangeSliderValues = [500000, 1000000];
