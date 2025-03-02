@@ -12,13 +12,13 @@ ui: more compact
 settings: support localization for other languages (in options), for labels and datepicker (language and format); and add to snapshots
           check also all menu items (contextual, tray, main)
 
+copy: better verbose in case of small files
 test: thoroughly test, especially filters and progress with small files
 
 ## LATE
 copy: in verbose mode, using selectedNodes, include info on file sizes, and time?, for each file
 copy: before starting, using selectedNodes and scans of destinations, perform various checks on what will actually perform copy/overwrite/skip, etc. and use a window instead of confirm to show it to the user.
       with an option eg. showPreview
-copy: better verbose in case of small files
 
 electron: add more properties for Electron in package.json
 electron: splash with logo?

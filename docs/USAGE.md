@@ -2,6 +2,8 @@
 You need to choose a **Source** folder and at least one **Destination** folder.  
 Use the **Clear** buttons to remove the folder selections.
 
+You can also **Refresh Source Folder Tree**.
+
 ---
 
 ### Selection
@@ -68,7 +70,7 @@ Has an autosave behaviour, and can be **Reset** to defaults.
 #### Copying
 - **Verbose Progress** to choose if have a window with verborse progress during copying phase. Default false.
 - **Copying Report** to choose if have a window with report at the end of the copying phase. Default true.
-- **Overwrite Existing** to choose if overwrite (checked) or not (unchecked) files that already exist. Default true.
+- **Overwrite Existing** to choose the overwrite mode if a file/folder already exist. It can be: *Always*, *Never*, *If Different Size*, *If Newer*. Default Always.
 
 #### Selecting
 - **Propagate Selection** to choose if propagate (checked) or not (unchecked) the selection/deselection click of an item to parent and childen elements. Default true.
