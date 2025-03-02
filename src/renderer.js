@@ -14,6 +14,7 @@ const SelectionListManager = require('./classes/SelectionListManager');
 const Utils = require('./classes/Utils');
 const SysManager = require('./classes/SysManager');
 const LocalizationManager = require('./classes/LocalizationManager');
+const QueueManager = require('./classes/QueueManager');
 
 const App = require('./classes/App');
 const app = App; // App is a singleton, access by import

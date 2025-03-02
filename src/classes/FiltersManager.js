@@ -32,14 +32,19 @@ class FiltersManager {
                 App.utils.showAlert("Please enter a string for filter.");
                 return;
             }
-            if (App.model.filtersNameMinus.indexOf(filterValue) < 0 && App.model.filtersNamePlus.indexOf(filterValue) < 0) {
+            const indexPresence = App.model.filtersNameMinus.findIndex(item => item.includes(filterValue));
+            if (App.model.filtersNameMinus.indexOf(filterValue) < 0 && App.model.filtersNamePlus.indexOf(filterValue) < 0 && indexPresence < 0) {
                 App.model.filtersNameMinus.push(filterValue);
                 App.filtersManager.resetNameFilterUI();
                 App.filtersManager.applyAllFilters();
             } else {
-                App.utils.showAlert("This filter is already present.");
-                App.utils.writeMessage('Filter "' + filterValue + '" is already present.');
-
+                if (indexPresence >= 0) {
+                    App.utils.showAlert("This filter is already present as substring.");
+                    App.utils.writeMessage('Filter "' + filterValue + '" is already present as substring.');
+                } else {
+                    App.utils.showAlert("This filter is already present.");
+                    App.utils.writeMessage('Filter "' + filterValue + '" is already present.');
+                }
             }
         });
         document.getElementById('addNamePlusFilter').addEventListener('click', () => {
@@ -54,14 +59,19 @@ class FiltersManager {
 
                 return;
             }
-            if (App.model.filtersNameMinus.indexOf(filterValue) < 0 && App.model.filtersNamePlus.indexOf(filterValue) < 0) {
+            const indexPresence = App.model.filtersNamePlus.findIndex(item => item.includes(filterValue));
+            if (App.model.filtersNameMinus.indexOf(filterValue) < 0 && App.model.filtersNamePlus.indexOf(filterValue) < 0 && indexPresence < 0) {
                 App.model.filtersNamePlus.push(filterValue);
                 App.filtersManager.resetNameFilterUI();
                 App.filtersManager.applyAllFilters();
             } else {
-                App.utils.showAlert("This filter is already present.");
-                App.utils.writeMessage('Filter "' + filterValue + '" is already present.');
-
+                if (indexPresence >= 0) {
+                    App.utils.showAlert("This filter is already present as substring.");
+                    App.utils.writeMessage('Filter "' + filterValue + '" is already present as substring.');
+                } else {
+                    App.utils.showAlert("This filter is already present.");
+                    App.utils.writeMessage('Filter "' + filterValue + '" is already present.');
+                }
             }
 
         });
@@ -101,7 +111,7 @@ class FiltersManager {
                 App.utils.showAlert("Please enter at least a date for filter.");
                 return;
             }
-            if (!App.filtersManager.dateRangeInsideAnotherArrayOfRanges(rangePickerGet, App.model.filtersDateMinus) && !dateRangeInsideAnotherArrayOfRanges(rangePickerGet, App.model.filtersDatePlus)) {
+            if (!App.filtersManager.dateRangeInsideAnotherArrayOfRanges(rangePickerGet, App.model.filtersDateMinus) && !App.filtersManager.dateRangeInsideAnotherArrayOfRanges(rangePickerGet, App.model.filtersDatePlus)) {
                 App.model.filtersDateMinus.push(rangePickerGet);
                 App.filtersManager.resetDateFilterUI();
                 App.filtersManager.applyAllFilters();
@@ -123,7 +133,7 @@ class FiltersManager {
                 return;
             }
 
-            if (!App.filtersManager.dateRangeInsideAnotherArrayOfRanges(rangePickerGet, App.model.filtersDateMinus) && !dateRangeInsideAnotherArrayOfRanges(rangePickerGet, App.model.filtersDatePlus)) {
+            if (!App.filtersManager.dateRangeInsideAnotherArrayOfRanges(rangePickerGet, App.model.filtersDateMinus) && !App.filtersManager.dateRangeInsideAnotherArrayOfRanges(rangePickerGet, App.model.filtersDatePlus)) {
                 App.model.filtersDatePlus.push(rangePickerGet);
                 App.filtersManager.resetDateFilterUI();
                 App.filtersManager.applyAllFilters();
@@ -167,7 +177,7 @@ class FiltersManager {
                 App.utils.showAlert("Please enter at least a size for filter.");
                 return;
             }
-            if (!App.filtersManager.sizeRangeInsideAnotherArrayOfRanges(rangeSliderGet, App.model.filtersSizeMinus) && !sizeRangeInsideAnotherArrayOfRanges(rangeSliderGet, App.model.filtersSizePlus)) {
+            if (!App.filtersManager.sizeRangeInsideAnotherArrayOfRanges(rangeSliderGet, App.model.filtersSizeMinus) && !App.filtersManager.sizeRangeInsideAnotherArrayOfRanges(rangeSliderGet, App.model.filtersSizePlus)) {
                 App.model.filtersSizeMinus.push(rangeSliderGet);
                 App.filtersManager.resetSizeFilterUI();
                 App.filtersManager.applyAllFilters();
@@ -188,7 +198,7 @@ class FiltersManager {
                 App.utils.showAlert("Please enter at least a size for filter.");
                 return;
             }
-            if (!App.filtersManager.sizeRangeInsideAnotherArrayOfRanges(rangeSliderGet, App.model.filtersSizeMinus) && !sizeRangeInsideAnotherArrayOfRanges(rangeSliderGet, App.model.filtersSizePlus)) {
+            if (!App.filtersManager.sizeRangeInsideAnotherArrayOfRanges(rangeSliderGet, App.model.filtersSizeMinus) && !App.filtersManager.sizeRangeInsideAnotherArrayOfRanges(rangeSliderGet, App.model.filtersSizePlus)) {
                 App.model.filtersSizePlus.push(rangeSliderGet);
                 App.filtersManager.resetSizeFilterUI();
                 App.filtersManager.applyAllFilters();
@@ -285,7 +295,7 @@ class FiltersManager {
             const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
             checkboxes.forEach(checkbox => {
                 const nodeDate = checkbox.dataset.nodeModified;
-                if (this.dateSingleInsideARange(nodeDate, filterValue)) {
+                if (App.filtersManager.dateSingleInsideARange(nodeDate, filterValue)) {
                     if (App.model.relationshipOR) {
                         checkbox.checked = true;
                         // expand to selected node
@@ -307,7 +317,7 @@ class FiltersManager {
             const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
             checkboxes.forEach(checkbox => {
                 const nodeDate = checkbox.dataset.nodeModified;
-                if (this.dateSingleInsideARange(nodeDate, filterValue)) {
+                if (App.filtersManager.dateSingleInsideARange(nodeDate, filterValue)) {
                     checkbox.checked = false;
                 }
             });
@@ -318,7 +328,7 @@ class FiltersManager {
             const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
             checkboxes.forEach(checkbox => {
                 const nodeSize = checkbox.dataset.nodeSize;
-                if (this.sizeSingleInsideARange(nodeSize, filterValue)) {
+                if (App.filtersManager.sizeSingleInsideARange(nodeSize, filterValue)) {
                     if (App.model.relationshipOR) {
                         checkbox.checked = true;
                         // expand to selected
@@ -340,7 +350,7 @@ class FiltersManager {
             const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
             checkboxes.forEach(checkbox => {
                 const nodeSize = checkbox.dataset.nodeSize;
-                if (this.sizeSingleInsideARange(nodeSize, filterValue)) {
+                if (App.filtersManager.sizeSingleInsideARange(nodeSize, filterValue)) {
                     checkbox.checked = false;
                 }
             });

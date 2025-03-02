@@ -128,17 +128,21 @@ class OptionsManager {
     }
 
     async exportLogs() {
-            App.utils.writeMessage('Choose Log Export file.');
-            App.model.clicksActive = false;
-            App.utils.toggleSpinner(!App.model.clicksActive);
-            const saved = await ipcRenderer.invoke('select-export-log-file', App.model.logs);
-            if (saved) {
-                App.utils.writeMessage('Logs exported successfully.');
-            } else {
-                App.utils.writeMessage('Logs not exported.');
-            }
-            App.model.clicksActive = true;
-            App.utils.toggleSpinner(!App.model.clicksActive);
+        if (App.model.logs.length === 0) {
+            App.utils.writeMessage('No Logs to export.');
+            return;
+        }
+        App.utils.writeMessage('Choose Log Export file.');
+        App.model.clicksActive = false;
+        App.utils.toggleSpinner(!App.model.clicksActive);
+        const saved = await ipcRenderer.invoke('select-export-log-file', App.model.logs);
+        if (saved) {
+            App.utils.writeMessage('Logs exported successfully.');
+        } else {
+            App.utils.writeMessage('Logs not exported.');
+        }
+        App.model.clicksActive = true;
+        App.utils.toggleSpinner(!App.model.clicksActive);
     }
 }
 
