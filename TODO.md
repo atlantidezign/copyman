@@ -14,7 +14,9 @@ test: thoroughly test, especially filters and progress with small files
 
 ## LATE
 copy: before starting, using selectedNodes and scans of destinations, perform various checks on what will actually perform copy/overwrite/skip, etc. and use a window instead of confirm to show it to the user.
-      with an option eg. showPreview
+      with an option eg. showPreview. with check for free space on destinations
+
+options: in overwrite options, add "keep" that adds unique suffix to file to be copied over an existing one. (just for files, not folders)
 
 electron: add more properties for Electron in package.json
 electron: splash with logo?
@@ -29,11 +31,14 @@ ui: in floating windows
 ui: better tree view, with multiple columns for source (like mac) and/or even show the destinations?
     if show destinations: create a tree for the various destinations as well, in split screen with tabs; 
     then, when you open a source branch, open the same branch in the destination/s automatically.
+ui: change order of destination folders
 
 ext: add the exe files for other platforms to download, website and git
 ext: better Google Copyman account and GitHub profile
 
 sys: rewrite all in TypeScript
+
+sys: tasks queue
 
 ## NEVER?
 electron: signed build (requires a paid certificate)

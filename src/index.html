@@ -120,8 +120,8 @@
                title="Swap Source and (First) Destination Folder"><i class="bi bi-arrow-down-up"></i>
             </a>
             <a type="button" id="modalListTrigger" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                title="Open Selection List panel"
-                data-bs-target="#listModal"><i class="bi bi-list-check"></i>
+               title="Open Selection List panel"
+               data-bs-target="#listModal"><i class="bi bi-list-check"></i>
             </a>
             <a type="button" id="modalSnapshotTrigger" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                title="Open Snapshots panel"
@@ -156,7 +156,8 @@
     <div class="footer">
         <span id="status"></span>
         <div>
-            <button id="copySelected" class="btn btn-primary btn-sm" title="Copy Selected Items"><img src="images/80x80.svg" alt="Copyman" title="Copyman" /> Copy Selected Items
+            <button id="copySelected" class="btn btn-primary btn-sm" title="Copy Selected Items"><img
+                    src="images/80x80.svg" alt="Copyman" title="Copyman"/> Copy Selected Items
             </button>
         </div>
     </div>
@@ -172,26 +173,38 @@
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title" id="copyingModalLabel"><img src="images/logotype_indigo_alt.svg" alt="Copyman" title="Copyman"/> Copying</h1>
-                    <button type="button" class="btn-close copyingClose" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h1 class="modal-title" id="copyingModalLabel"><img src="images/logotype_indigo_alt.svg"
+                                                                        alt="Copyman" title="Copyman"/> Copying</h1>
+                    <button type="button" class="btn-close copyingClose" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="container-fluid">
-                        <div id="verboseProgress" class="d-flex hidden">
-                            <div class="p-2 flex-shrink-0">
-                                <div id="spinner2"></div>
-                                <div class="progress mt-2" role="progressbar" aria-label="Copy progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-                                    <div id="progressBarItems" class="progress-bar overflow-visible  bg-copyman" style="width: 0%"></div>
+                        <div id="verboseProgress" class="hidden">
+                            <div class="d-flex">
+                                <div class="p-2 flex-shrink-0">
+                                    <div id="spinner2"></div>
                                 </div>
-                                <div class="progress" role="progressbar" aria-label="Copy progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-                                    <div id="progressBarSize" class="progress-bar overflow-visible  bg-copyman-alt" style="width: 0%"></div>
+                                <div class="p-2 flex-grow-1" id="verboseProgressMD"></div>
+                            </div>
+                            <div>
+                                <div class="progress mt-2" role="progressbar" aria-label="Copy progress"
+                                     aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                    <div id="progressBarItems" class="progress-bar overflow-visible  bg-copyman"
+                                         style="width: 0%"></div>
+                                </div>
+                                <div class="progress" role="progressbar" aria-label="Copy progress" aria-valuenow="0"
+                                     aria-valuemin="0" aria-valuemax="100">
+                                    <div id="progressBarSize" class="progress-bar overflow-visible  bg-copyman-alt"
+                                         style="width: 0%"></div>
                                 </div>
                             </div>
-                            <div class="p-2 flex-grow-1" id="verboseProgressMD"> </div>
                         </div>
                         <div id="copyingReport" class="d-flex hidden">
-                            <div class="p-2 flex-shrink-0"><div id="spinnerNot"></div></div>
-                            <div class="p-2 flex-grow-1" id="copyingReportMD"> </div>
+                            <div class="p-2 flex-shrink-0">
+                                <div id="spinnerNot"></div>
+                            </div>
+                            <div class="p-2 flex-grow-1" id="copyingReportMD"></div>
                         </div>
                     </div>
                 </div>
@@ -208,7 +221,8 @@
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title" id="listModalLabel"><img src="images/logotype_indigo_alt.svg" alt="Copyman" title="Copyman"/> Selection List</h1>
+                    <h1 class="modal-title" id="listModalLabel"><img src="images/logotype_indigo_alt.svg" alt="Copyman"
+                                                                     title="Copyman"/> Selection List</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -237,7 +251,8 @@
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title" id="aboutModalLabel"><img src="images/logotype_indigo_alt.svg" alt="Copyman" title="Copyman"/> About</h1>
+                    <h1 class="modal-title" id="aboutModalLabel"><img src="images/logotype_indigo_alt.svg" alt="Copyman"
+                                                                      title="Copyman"/> About</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -259,7 +274,8 @@
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title" id="helpModalLabel"><img src="images/logotype_indigo_alt.svg" alt="Copyman" title="Copyman"/> Help</h1>
+                    <h1 class="modal-title" id="helpModalLabel"><img src="images/logotype_indigo_alt.svg" alt="Copyman"
+                                                                     title="Copyman"/> Help</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -281,7 +297,8 @@
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title" id="optionsModalLabel"><img src="images/logotype_indigo_alt.svg" alt="Copyman" title="Copyman"/> Options</h1>
+                    <h1 class="modal-title" id="optionsModalLabel"><img src="images/logotype_indigo_alt.svg"
+                                                                        alt="Copyman" title="Copyman"/> Options</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -291,43 +308,50 @@
 
                             <div class="form-check form-switch"
                                  title="Verborse progress during copying phase">
-                                <input class="form-check-input" type="checkbox" role="switch" id="verboseChecked" title="Verborse progress during copying phase"
+                                <input class="form-check-input" type="checkbox" role="switch" id="verboseChecked"
+                                       title="Verborse progress during copying phase"
                                        checked/>
                                 <label class="form-check-label" for="verboseChecked">Verbose Progress</label>
                             </div>
                             <div class="form-check form-switch"
                                  title="Report at the end of the copying phase">
-                                <input class="form-check-input" type="checkbox" role="switch" id="reportChecked" title="Report at the end of the copying phase"
+                                <input class="form-check-input" type="checkbox" role="switch" id="reportChecked"
+                                       title="Report at the end of the copying phase"
                                        checked/>
                                 <label class="form-check-label" for="reportChecked">Copying Report</label>
                             </div>
 
-                            <div class="ps-3 mt-2"><label class="form-check-label" title="Set Overwrite conditions for files and folders, during copying, if they already exist">Overwrite Existing</label></div>
+                            <div class="ps-3 mt-2"><label class="form-check-label"
+                                                          title="Set Overwrite conditions for files and folders, during copying, if they already exist">Overwrite
+                                Existing</label></div>
                             <div class="form-check form-check-inline" title="Always Overwrite">
-                                <input class="form-check-input" type="radio" name="overwriteChecked" id="overwriteChecked1" value="1" title="Always Overwrite" checked>
+                                <input class="form-check-input" type="radio" name="overwriteChecked"
+                                       id="overwriteChecked1" value="1" title="Always Overwrite" checked>
                                 <label class="form-check-label" for="overwriteChecked1">
                                     Always
                                 </label>
                             </div>
                             <div class="form-check form-check-inline" title="Overwrite if Newer">
-                                <input class="form-check-input" type="radio" name="overwriteChecked" id="overwriteChecked2" value="2"  title="Overwrite if Newer">
+                                <input class="form-check-input" type="radio" name="overwriteChecked"
+                                       id="overwriteChecked2" value="2" title="Overwrite if Newer">
                                 <label class="form-check-label" for="overwriteChecked2">
                                     If Newer
                                 </label>
                             </div>
                             <div class="form-check form-check-inline" title="Overwrite if Different Size">
-                                <input class="form-check-input" type="radio" name="overwriteChecked" id="overwriteChecked3" value="3" title="Overwrite if Different Size">
+                                <input class="form-check-input" type="radio" name="overwriteChecked"
+                                       id="overwriteChecked3" value="3" title="Overwrite if Different Size">
                                 <label class="form-check-label" for="overwriteChecked3">
                                     If Different Size
                                 </label>
                             </div>
                             <div class="form-check form-check-inline" title="Never Overwrite">
-                                <input class="form-check-input" type="radio" name="overwriteChecked" id="overwriteChecked4" value="4"  title="Never Overwrite">
+                                <input class="form-check-input" type="radio" name="overwriteChecked"
+                                       id="overwriteChecked4" value="4" title="Never Overwrite">
                                 <label class="form-check-label" for="overwriteChecked4">
                                     Never
                                 </label>
                             </div>
-
 
 
                         </div>
@@ -335,7 +359,8 @@
                             <h6>Selecting</h6>
                             <div class="form-check form-switch"
                                  title="Propagate selection of an item to parent and childen elements">
-                                <input class="form-check-input" type="checkbox" role="switch" id="propagateChecked" title="Propagate Selection to child items"
+                                <input class="form-check-input" type="checkbox" role="switch" id="propagateChecked"
+                                       title="Propagate Selection to child items"
                                        checked/>
                                 <label class="form-check-label" for="propagateChecked">Propagate Selection</label>
                             </div>
@@ -344,7 +369,8 @@
                             <h6>Filtering</h6>
                             <div class="form-check form-switch "
                                  title="Relationship between filter groups is OR, otherwise it's AND">
-                                <input class="form-check-input" type="checkbox" role="switch" id="relationshipORChecked" title="Aggregation condition between Filters is NOT (at least one matched) or AND (all togheter must match)"
+                                <input class="form-check-input" type="checkbox" role="switch" id="relationshipORChecked"
+                                       title="Aggregation condition between Filters is NOT (at least one matched) or AND (all togheter must match)"
                                        checked/>
                                 <label class="form-check-label" for="relationshipORChecked">Relationship OR</label>
                             </div>
@@ -352,10 +378,12 @@
                         <div>
                             <h6>System</h6>
                             <div class="form-check form-switch" title="Mantain application logs">
-                                <input class="form-check-input" type="checkbox" role="switch" id="mantainLogsChecked" title="Mantain Logs"
+                                <input class="form-check-input" type="checkbox" role="switch" id="mantainLogsChecked"
+                                       title="Mantain Logs"
                                        checked/>
                                 <label class="form-check-label" for="mantainLogsChecked">Mantain Logs</label>
-                                <a id="exportLogs" class="ms-3 btn btn-primary btn-sm" type="button" title="Export Logs to file.">Export Logs</a>
+                                <a id="exportLogs" class="ms-3 btn btn-primary btn-sm" type="button"
+                                   title="Export Logs to file.">Export Logs</a>
                             </div>
                         </div>
                     </div>
@@ -377,7 +405,8 @@
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title" id="snapshotModalLabel"><img src="images/logotype_indigo_alt.svg" alt="Copyman" title="Copyman"/> Snapshots</h1>
+                    <h1 class="modal-title" id="snapshotModalLabel"><img src="images/logotype_indigo_alt.svg"
+                                                                         alt="Copyman" title="Copyman"/> Snapshots</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -385,7 +414,8 @@
                         <div><b>Snapshot</b> includes: Folders, Filters and Options.</div>
                         <br>
                         <div class="input-group">
-                            <input type="text" class="form-control" id="saveSnapshotInput" title="Name of the Snapshot to save"
+                            <input type="text" class="form-control" id="saveSnapshotInput"
+                                   title="Name of the Snapshot to save"
                                    placeholder="Name of Snapshot"/>
                             <button id="saveSnapshot" type="button" class="btn btn-primary btn-sm snapshot-buttons"><i
                                     class="bi bi-box-arrow-down" title="Save Shapshot"></i>
@@ -397,7 +427,8 @@
                             </button>
                         </div>
                         <div class="input-group">
-                            <select class="form-select form-select-sm" aria-label="Choose a Snapshot to load" title="Choose a Snapshot to load"
+                            <select class="form-select form-select-sm" aria-label="Choose a Snapshot to load"
+                                    title="Choose a Snapshot to load"
                                     id="loadSnapshotInput">
                             </select>
                             <button id="loadSnapshot" type="button" class="btn btn-primary btn-sm snapshot-buttons"><i

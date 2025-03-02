@@ -34,7 +34,7 @@ class FiltersManager {
             }
             if (App.model.filtersNameMinus.indexOf(filterValue) < 0 && App.model.filtersNamePlus.indexOf(filterValue) < 0) {
                 App.model.filtersNameMinus.push(filterValue);
-                App.filtersManager.esetNameFilterUI();
+                App.filtersManager.resetNameFilterUI();
                 App.filtersManager.applyAllFilters();
             } else {
                 App.utils.showAlert("This filter is already present.");
@@ -264,7 +264,7 @@ class FiltersManager {
                 if (filterValue !== '' && nodeName.includes(filterValue.toLowerCase())) {
                     checkbox.checked = true;
                     // expand to selected child node
-                    this.expandAncestors(checkbox);
+                    App.treeManager.expandAncestors(checkbox);
                 }
             });
         }
@@ -289,12 +289,12 @@ class FiltersManager {
                     if (App.model.relationshipOR) {
                         checkbox.checked = true;
                         // expand to selected node
-                        this.expandAncestors(checkbox);
+                        App.treeManager.expandAncestors(checkbox);
                     } else {
                         if (App.model.filtersNameMinus.length === 0 && App.model.filtersNamePlus.length === 0) {
                             checkbox.checked = true;
                             // expand to selected node
-                            this.expandAncestors(checkbox);
+                            App.treeManager.expandAncestors(checkbox);
                         }
                         //on if no previous condition present (Name and Date)
                     }
@@ -322,12 +322,12 @@ class FiltersManager {
                     if (App.model.relationshipOR) {
                         checkbox.checked = true;
                         // expand to selected
-                        this.expandAncestors(checkbox);
+                        App.treeManager.expandAncestors(checkbox);
                     } else {
                         if (App.model.filtersNameMinus.length === 0 && App.model.filtersNamePlus.length === 0 && filterDateMinus.length === 0 && App.model.filtersDatePlus.length === 0) {
                             checkbox.checked = true;
                             // expand to selected
-                            this.expandAncestors(checkbox);
+                            App.treeManager.expandAncestors(checkbox);
                         }
                         //on if no previous condition exists (Name and Date for Size)
                     }
