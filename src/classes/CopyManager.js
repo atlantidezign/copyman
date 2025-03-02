@@ -87,6 +87,7 @@ class CopyManager {
                         name: checkbox.dataset.nodeName,
                         sizeBits: Number(checkbox.dataset.nodeSize),
                         getTime: App.utils.dateToGetTime(checkbox.dataset.nodeModified),
+                        ms: Number(checkbox.dataset.nodeMS),
                         isDir: (checkbox.dataset.isDirectory === '1')
                     });
                 }
@@ -105,7 +106,8 @@ class CopyManager {
             App.utils.writeMessage('Asking for copying confirmation...');
             App.model.clicksActive = false;
             App.utils.toggleSpinner(!App.model.clicksActive);
-            let confirmation = await App.utils.showConfirmWithReturn('Are you sure you want to copy ' + App.model.selectedNodes.length + ' items (' + App.utils.formatSizeForThree(App.model.sizeTotal) + ')\nfrom ' + App.model.sourceFolder + '\nto ' + destinations + '?');
+            let useOverwrite = App.utils.formatOverwriteMode(App.model.fileOverwrite);
+            let confirmation = await App.utils.showConfirmWithReturn('Are you sure you want to copy ' + App.model.selectedNodes.length + ' items (' + App.utils.formatSizeForThree(App.model.sizeTotal) + ')\nfrom ' + App.model.sourceFolder + '\nto ' + destinations + '\nwith overwrite mode set to ' +useOverwrite + '?');
             if (confirmation) {
                 App.utils.writeMessage('Copying Started...');
                 setTimeout(() => {
@@ -281,12 +283,12 @@ class CopyManager {
                 App.utils.writeMessage('[' + fileIndex + '/' + App.model.selectedNodes.length + '] Copying ' + sourceFullPath + ' to ' + destinationFullPath);
                 this.updateCopyingProgress('[' + fileIndex + '/' + App.model.selectedNodes.length + '] Copying ' + sourceFullPath + ' to ' + destinationFullPath, true)
                 try {
-                    await this.copyRecursive(sourceFullPath, destinationFullPath, destIndex);
+                    await this.copyRecursive(sourceFullPath, destinationFullPath, destIndex, node);
                 } catch (err) {
                     console.error('Error copying ', sourceFullPath, destinationFullPath, err);
-                    App.utils.writeMessage('Error copying ' + sourceFullPath + ' in ' + destinationFullPath);
+                    App.utils.writeMessage('Error copying ' + sourceFullPath + ' to ' + destinationFullPath);
                     App.model.itemsFailed[destIndex]++;
-                    this.updateCopyingProgress('Error copying ' + sourceFullPath + ' in ' + destinationFullPath, false);
+                    this.updateCopyingProgress('Error copying ' + sourceFullPath + ' to ' + destinationFullPath, false);
                 }
                 if (App.model.copyVerbose) {
                     await App.utils.waitForUiUpdate();
@@ -308,17 +310,34 @@ class CopyManager {
         }
     }
 
-    async copyRecursive(src, dest, destIndex) {
+    async copyRecursive(src, dest, destIndex, node) {
         const stats = fs.statSync(src);
         if (stats.isDirectory()) {
             if (!fs.existsSync(dest)) {
                 fs.mkdirSync(dest, {recursive: true});
-
             }
-            if (!App.model.fileOverwrite && fs.existsSync(dest)) {
-                this.updateCopyingProgress('Folder ' + dest + ' already exists. Skipping...', false);
-                App.utils.writeMessage('Folder ' + dest + ' already exists. Skipping...');
+            if (App.model.fileOverwrite == App.model.fileOverwriteEnum.never && fs.existsSync(dest)) {
+                this.updateCopyingProgress('Folder ' + dest + ' already exists. Overwrite set to "Never". Skipping...', false);
+                App.utils.writeMessage('Folder ' + dest + ' already exists. Overwrite set to "Never". Skipping...');
                 App.model.itemsSkipped[destIndex]++;
+            } else if (App.model.fileOverwrite == App.model.fileOverwriteEnum.if_newer && fs.existsSync(dest)) {
+                try {
+                    const stats = fs.statSync(dest);
+                    if (node.ms > stats.mtimeMs) {
+                        this.updateCopyingProgress('Folder ' + dest + ' copied.', false);
+                        App.utils.writeMessage('Folder ' + dest + ' copied.');
+                        App.model.itemsCopied[destIndex]++;
+                    } else {
+                        this.updateCopyingProgress('Folder ' + dest + ' already exists. Overwrite set to "If Newer". Skipping...', false);
+                        App.utils.writeMessage('Folder ' + dest + ' already exists. Overwrite set to "If Newer". Skipping...');
+                        App.model.itemsSkipped[destIndex]++;
+                    }
+                } catch (err) {
+                    console.error("Error reading folder stats for '"+dest+"':", err.message);
+                    this.updateCopyingProgress('Error reading folder stats for '+dest+'. Overwrite set to "If Newer". Skipping...', false);
+                    App.utils.writeMessage('Error reading folder stats for '+dest+'. Overwrite set to "If Newer". Skipping...');
+                    App.model.itemsSkipped[destIndex]++;
+                }
             } else {
                 this.updateCopyingProgress('Folder ' + dest + ' copied.', false);
                 App.utils.writeMessage('Folder ' + dest + ' copied.');
@@ -333,16 +352,56 @@ class CopyManager {
             if (!fs.existsSync(destDir)) {
                 fs.mkdirSync(destDir, {recursive: true});
             }
-            if (!App.model.fileOverwrite) {
+            if (App.model.fileOverwrite != App.model.fileOverwriteEnum.always) {
                 if (!fs.existsSync(dest)) {
                     fs.copyFileSync(src, dest);
                     this.updateCopyingProgress('File ' + dest + ' copied.', false);
                     App.utils.writeMessage('File ' + dest + ' copied.');
                     App.model.itemsCopied[destIndex]++;
                 } else {
-                    this.updateCopyingProgress('File ' + dest + ' already exists. Skipping...', false);
-                    App.utils.writeMessage('File ' + dest + ' already exists. Skipping...');
-                    App.model.itemsSkipped[destIndex]++;
+                    if (App.model.fileOverwrite == App.model.fileOverwriteEnum.never) {
+                        this.updateCopyingProgress('File ' + dest + ' already exists. Overwrite set to "Never". Skipping...', false);
+                        App.utils.writeMessage('File ' + dest + ' already exists. Overwrite set to "Never". Skipping...');
+                        App.model.itemsSkipped[destIndex]++;
+                    } else if (App.model.fileOverwrite == App.model.fileOverwriteEnum.if_newer) {
+                        try {
+                            const stats = fs.statSync(dest);
+                            if (node.ms > stats.mtimeMs) {
+                                fs.copyFileSync(src, dest);
+                                this.updateCopyingProgress('File ' + dest + ' copied.', false);
+                                App.utils.writeMessage('File ' + dest + ' copied.');
+                                App.model.itemsCopied[destIndex]++;
+                            } else {
+                                this.updateCopyingProgress('File ' + dest + ' already exists. Overwrite set to "If Newer". Skipping...', false);
+                                App.utils.writeMessage('File ' + dest + ' already exists. Overwrite set to "If Newer". Skipping...');
+                                App.model.itemsSkipped[destIndex]++;
+                            }
+                        } catch (err) {
+                            console.error("Error reading file stats for '"+dest+"':", err.message);
+                            this.updateCopyingProgress('Error reading file stats for '+dest+'. Overwrite set to "If Newer". Skipping...', false);
+                            App.utils.writeMessage('Error reading file stats for '+dest+'. Overwrite set to "If Newer". Skipping...');
+                            App.model.itemsSkipped[destIndex]++;
+                        }
+                    } else if (App.model.fileOverwrite == App.model.fileOverwriteEnum.if_different) {
+                        try {
+                            const stats = fs.statSync(dest);
+                            if (node.sizeBits != stats.size) {
+                                fs.copyFileSync(src, dest);
+                                this.updateCopyingProgress('File ' + dest + ' copied.', false);
+                                App.utils.writeMessage('File ' + dest + ' copied.');
+                                App.model.itemsCopied[destIndex]++;
+                            } else {
+                                this.updateCopyingProgress('File ' + dest + ' already exists. Overwrite set to "If Different Size". Skipping...', false);
+                                App.utils.writeMessage('File ' + dest + ' already exists. Overwrite set to "If Different Size". Skipping...');
+                                App.model.itemsSkipped[destIndex]++;
+                            }
+                        } catch (err) {
+                            console.error("Error reading file stats for '"+dest+"':", err.message);
+                            this.updateCopyingProgress('Error reading file stats for '+dest+'. Overwrite set to "If Different Size". Skipping...', false);
+                            App.utils.writeMessage('Error reading file stats for '+dest+'. Overwrite set to "If Different Size". Skipping...');
+                            App.model.itemsSkipped[destIndex]++;
+                        }
+                    }
                 }
             } else {
                 fs.copyFileSync(src, dest);

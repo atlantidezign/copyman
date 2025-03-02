@@ -26,7 +26,7 @@ class Utils {
         spinnerOverlay.style.display = spinnerActive ? 'flex' : 'none';
     }
 
-    //Utils: alert and confirm wrapped on native dialogs trough ipcRender
+    // Utils: alert and confirm wrapped on native dialogs trough ipcRender
     showAlert(message) {
         ipcRenderer.invoke("show-alert", message);
     }
@@ -36,7 +36,7 @@ class Utils {
         return confirmation;
     }
 
-    //Utils: date and size formatting
+    // Utils: date and size formatting
     formatSizeForFilters(size) {
         if (typeof size !== 'number') {
             const convertedSize = Number(size);
@@ -95,7 +95,27 @@ class Utils {
         return datePoint;
     }
 
-    //utils: delay for ui update
+    // Utils: overwrite mode to string
+    formatOverwriteMode(fileOverwrite) {
+        let enumToStr = '';
+        switch (fileOverwrite) {
+            case App.model.fileOverwriteEnum.always:
+                enumToStr = '"Always"';
+                break;
+            case App.model.fileOverwriteEnum.never:
+                enumToStr = '"Never"';
+                break;
+            case App.model.fileOverwriteEnum.if_different:
+                enumToStr = '"If Different Size"';
+                break;
+            case App.model.fileOverwriteEnum.if_newer:
+                enumToStr = '"If Newer"';
+                break;
+        }
+        return enumToStr;
+    }
+
+    // Utils: delay for ui update
     async waitForUiUpdate(ms = 250) {
         await new Promise(resolve => setTimeout(resolve, ms));
     }

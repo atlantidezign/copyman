@@ -6,10 +6,13 @@ class OptionsManager {
         this.initializeOptions();
 
         //Options ui
-        document.getElementById("overwriteChecked").addEventListener("change", function () {
-            App.model.fileOverwrite = this.checked;
-            App.optionsManager.saveOptions();
-            App.utils.writeMessage('Overwrite Existing setting is now ' + App.model.fileOverwrite);
+        const radioButtons = document.getElementsByName("overwriteChecked");
+        Array.from(radioButtons).forEach(function(radio) {
+            radio.addEventListener("change", function () {
+                App.model.fileOverwrite = Number(this.value);
+                App.optionsManager.saveOptions();
+                App.utils.writeMessage('Overwrite Existing setting is now ' + App.utils.formatOverwriteMode(App.model.fileOverwrite));
+            });
         });
         document.getElementById("verboseChecked").addEventListener("change", function () {
             App.model.copyVerbose = this.checked;
@@ -46,11 +49,11 @@ class OptionsManager {
         const savedOptions = localStorage.getItem('options');
         if (savedOptions) {
             const options = JSON.parse(savedOptions);
-            model.propagateSelections = model.propagateSelections;
-            model.fileOverwrite = model.fileOverwrite;
-            model.copyVerbose = model.copyVerbose;
-            model.copyReport = model.copyReport;
-            model.relationshipOR = model.relationshipOR;
+            model.propagateSelections = options.propagateSelections;
+            model.fileOverwrite = options.fileOverwrite;
+            model.copyVerbose = options.copyVerbose;
+            model.copyReport = options.copyReport;
+            model.relationshipOR = options.relationshipOR;
         } else {
             const saveOptions = {
                 propagateSelections: model.propagateSelections,
@@ -66,11 +69,11 @@ class OptionsManager {
     saveOptions() {
         let model = App.model;
         const saveOptions = {
-            propagateSelections: propagateSelections,
-            fileOverwrite: fileOverwrite,
-            copyVerbose: copyVerbose,
-            copyReport: copyReport,
-            relationshipOR: relationshipOR,
+            propagateSelections: model.propagateSelections,
+            fileOverwrite: model.fileOverwrite,
+            copyVerbose: model.copyVerbose,
+            copyReport: model.copyReport,
+            relationshipOR: model.relationshipOR,
         };
         localStorage.setItem('options', JSON.stringify(saveOptions));
     }
@@ -86,7 +89,13 @@ class OptionsManager {
         App.filtersManager.applyAllFilters();
     }
     updateOptionsUI() {
-        document.getElementById("overwriteChecked").checked = App.model.fileOverwrite;
+        const radioButtons = document.getElementsByName("overwriteChecked");
+        const currentValue = App.model.fileOverwrite;
+        Array.from(radioButtons).forEach(function(radio) {
+            if (Number(radio.value) === currentValue) {
+                radio.checked = true;
+            }
+        });
         document.getElementById("verboseChecked").checked = App.model.copyVerbose;
         document.getElementById("reportChecked").checked = App.model.copyReport;
         document.getElementById("propagateChecked").checked = App.model.propagateSelections;

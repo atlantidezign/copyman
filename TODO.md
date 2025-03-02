@@ -4,12 +4,11 @@
 sys: test new codebase;
 
 ## NEXT
-copy: overwrite option splitted to 4 cases: alyays / if newer / if bigger / never
-
 tree: setting sort => alphabetical order, date, size, file type (tree view)  (add to snapshots)
 
 ui: button to abort copy (clicks remain active; be careful if clicking elsewhere, be careful with toggleSpinner)
 ui: more compact
+ui: button to refresh source tree
 
 settings: support localization for other languages (in options), for labels and datepicker (language and format); and add to snapshots
           check also all menu items (contextual, tray, main)
@@ -19,7 +18,8 @@ test: thoroughly test, especially filters and progress with small files
 ## LATE
 copy: in verbose mode, using selectedNodes, include info on file sizes, and time?, for each file
 copy: before starting, using selectedNodes and scans of destinations, perform various checks on what will actually perform copy/overwrite/skip, etc. and use a window instead of confirm to show it to the user.
-with an option eg. showPreview
+      with an option eg. showPreview
+copy: better verbose in case of small files
 
 electron: add more properties for Electron in package.json
 electron: splash with logo?
@@ -34,6 +34,8 @@ ui: better tree view, with multiple columns for source (like mac) and/or even sh
 
 ext: add the exe files for other platforms to download, website and git
 ext: better Google Copyman account and GitHub profile
+
+sys: log of all messages
 
 sys: rewrite all in TypeScript
 

@@ -36,6 +36,7 @@ class SelectionListManager {
             fullSize: checkbox.dataset.nodeSize,
             size: App.utils.formatSizeForThree(checkbox.dataset.nodeSize),
             modified: checkbox.dataset.nodeModified,
+            ms: Number(checkbox.dataset.nodeMS),
             isDirectory: checkbox.dataset.isDirectory
         }));
 

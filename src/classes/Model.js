@@ -36,8 +36,15 @@ class Model {
     filtersSizePlus = []; //Array<{ from: number, to: number}>
     filtersSizeMinus = []; //Array<{ from: number, to: number}>
 
+    //Enums
+    fileOverwriteEnum = {
+        always: 1,
+        if_newer: 2,
+        if_different: 3,
+        never: 4
+    };
     //User Options Defaults
-    fileOverwriteDefault = true;
+    fileOverwriteDefault = this.fileOverwriteEnum.always;
     copyVerboseDefault = false;
     copyReportDefault = true;
     propagateSelectionsDefault = true;

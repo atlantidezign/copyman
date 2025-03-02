@@ -209,8 +209,8 @@ class SnapshotManager {
         try {
             fileContent = fs.readFileSync(filePath, 'utf8');
         } catch (error) {
-            console.error(`Errore nella lettura del file: ${error.message}`);
-            App.utils.writeMessage(`Errore nella lettura del file JSON dello Snapshot.`);
+            console.error(`Error reading JSON Snapshot file ${filePath}: ${error.message}`);
+            App.utils.writeMessage(`Error reading JSON Snapshot file.`);
             App.model.clicksActive = true;
             App.utils.toggleSpinner(!App.model.clicksActive);
             return;
@@ -223,8 +223,8 @@ class SnapshotManager {
             App.model.clicksActive = true;
             App.utils.toggleSpinner(!App.model.clicksActive);
         } catch (error) {
-            console.error(`Errore nel parsing del JSON: ${error.message}`);
-            App.utils.writeMessage(`Errore nel parsing del JSON dello Snapshot.`);
+            console.error(`Error on JSON Snapshot file parsing: ${error.message}`);
+            App.utils.writeMessage(`Error on JSON Snapshot file parsing.`);
             App.model.clicksActive = true;
             App.utils.toggleSpinner(!App.model.clicksActive);
             return;
@@ -237,7 +237,7 @@ class SnapshotManager {
             // update global app vars
             App.model.sourceFolder = settings.sourceFolder || '';
             App.model.destinationFolders = settings.destinationFolders || [];
-            App.model.fileOverwrite = (typeof settings.fileOverwrite === 'boolean') ? settings.fileOverwrite : App.model.fileOverwriteDefault;
+            App.model.fileOverwrite = (typeof settings.fileOverwrite === 'number') ? settings.fileOverwrite : App.model.fileOverwriteDefault;
             App.model.copyVerbose = (typeof settings.copyVerbose === 'boolean') ? settings.copyVerbose : App.model.copyVerboseDefault;
             App.model.copyReport = (typeof settings.copyReport === 'boolean') ? settings.copyReport : App.model.copyReportDefault;
             App.model.propagateSelections = (typeof settings.propagateSelections === 'boolean') ? settings.propagateSelections : App.model.propagateSelectionsDefault;
@@ -263,8 +263,8 @@ class SnapshotManager {
 
             App.utils.writeMessage('Snapshot loaded.');
         } catch (error) {
-            console.error("Error during Snapshot loading:", error);
-            App.utils.writeMessage('Error during Snapshot loading.');
+            console.error("Error during loading of Snapshot "+settings.name+":", error);
+            App.utils.writeMessage("Error during loading of Snapshot "+settings.name+".");
         }
     }
 }

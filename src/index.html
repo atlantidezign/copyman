@@ -288,12 +288,35 @@
                                        checked/>
                                 <label class="form-check-label" for="reportChecked">Copying Report</label>
                             </div>
-                            <div class="form-check form-switch"
-                                        title="Overwrite files and folders, during copying, if they already exist">
-                            <input class="form-check-input" type="checkbox" role="switch" id="overwriteChecked" title="Overwrite files, during copying, if existing"
-                                   checked/>
-                            <label class="form-check-label" for="overwriteChecked">Overwrite Existing</label>
-                        </div>
+
+                            <div class="ps-3 mt-2"><label class="form-check-label" title="Set Overwrite conditions for files and folders, during copying, if they already exist">Overwrite Existing</label></div>
+                            <div class="form-check form-check-inline" title="Always Overwrite">
+                                <input class="form-check-input" type="radio" name="overwriteChecked" id="overwriteChecked1" value="1" title="Always Overwrite" checked>
+                                <label class="form-check-label" for="overwriteChecked1">
+                                    Always
+                                </label>
+                            </div>
+                            <div class="form-check form-check-inline" title="Overwrite if Newer">
+                                <input class="form-check-input" type="radio" name="overwriteChecked" id="overwriteChecked2" value="2"  title="Overwrite if Newer">
+                                <label class="form-check-label" for="overwriteChecked2">
+                                    If Newer
+                                </label>
+                            </div>
+                            <div class="form-check form-check-inline" title="Overwrite if Different Size">
+                                <input class="form-check-input" type="radio" name="overwriteChecked" id="overwriteChecked3" value="3" title="Overwrite if Different Size">
+                                <label class="form-check-label" for="overwriteChecked3">
+                                    If Different Size
+                                </label>
+                            </div>
+                            <div class="form-check form-check-inline" title="Never Overwrite">
+                                <input class="form-check-input" type="radio" name="overwriteChecked" id="overwriteChecked4" value="4"  title="Never Overwrite">
+                                <label class="form-check-label" for="overwriteChecked4">
+                                    Never
+                                </label>
+                            </div>
+
+
+
                         </div>
                         <div>
                             <h6>Selecting</h6>

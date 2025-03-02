@@ -89,19 +89,20 @@ class TreeManager {
                     children: this.buildFileTree(fullPath, itemRelativePath),
                     modified: stats.mtime.toLocaleDateString(),
                     modifiedRaw: stats.mtime,
+                    modifiedMs: stats.mtimeMs,
                     size: "",
                     sizeRaw: 0
                 });
             } else {
                 // check dimention for format: KB  if < 1MB, else MB
                 let formattedSize = App.utils.formatSizeForThree(stats.size);
-
                 tree.push({
                     name: item,
                     path: itemRelativePath,
                     type: 'file',
                     modified: stats.mtime.toLocaleDateString(),
                     modifiedRaw: stats.mtime,
+                    modifiedMs: stats.mtimeMs,
                     size: formattedSize,
                     sizeRaw: stats.size
                 });
@@ -140,6 +141,7 @@ class TreeManager {
         checkbox.dataset.nodeName = node.name;
         checkbox.dataset.nodeSize = node.sizeRaw;
         checkbox.dataset.nodeModified = node.modifiedRaw;
+        checkbox.dataset.nodeMS = node.modifiedMs;
         checkbox.dataset.isDirectory = (node.type === 'directory') ? "1" : "0";
         checkbox.classList.add('form-check-input');
 
