@@ -8,7 +8,7 @@ class Utils {
     writeMessage(message) {
         if (this.messageTimeout) clearTimeout(this.messageTimeout);
         document.getElementById('status').textContent = message;
-        if (App.model.mantainLogs) {
+        if (App.model.maintainLogs) {
             App.model.logs.push(message);
         }
         this.messageTimeout = setTimeout(() => {
@@ -19,7 +19,7 @@ class Utils {
     // Utils: check if 'child' is a subfolder of 'parent'
     isSubFolder(child, parent) {
         const relative = path.relative(parent, child);
-        // if relative is ampty or starts with ".." or is absolute path, child not son of parent
+        // if relative is empty or starts with ".." or is absolute path, child not son of parent
         return relative && !relative.startsWith('..') && !path.isAbsolute(relative);
     }
 
@@ -49,7 +49,7 @@ class Utils {
                 size = 0;
             }
         }
-        if (size == undefined || size == null) return "???";
+        if (size === undefined || size === null) return "???";
         let formattedSize; //is yet in kb
         if (size < 1024) {
             formattedSize = (size).toFixed(2) + " Kb";
@@ -60,7 +60,7 @@ class Utils {
     }
 
     formatSizeForThree(size) {
-        if (size == undefined || size == null) return "???";
+        if (size === undefined || size === null) return "???";
         let formattedSize;
         if (size < 1024 * 1024) {
             formattedSize = (size / 1024).toFixed(2) + " Kb";
@@ -74,7 +74,7 @@ class Utils {
     }
 
     formatDate(date) {
-        if (date == undefined || date == null || (date.toString() === "Invalid Date")) return "???";
+        if (date === undefined || date === null || (date.toString() === "Invalid Date")) return "???";
         if (!(date instanceof Date)) {
             // try to convert to date
             date = new Date(date);
@@ -82,7 +82,7 @@ class Utils {
         // extract day mont and year from date
         const dd = String(date.getDate()).padStart(2, '0');
         const mm = String(date.getMonth() + 1).padStart(2, '0'); // getMonth() return 0 - 11 month
-        const yyyy = date.getFullYear();
+        const yyyy = String( date.getFullYear() );
 
         // replaces placeholders as for App.model.dateFormat
         return App.model.dateFormat.replace('dd', dd).replace('mm', mm).replace('yyyy', yyyy);

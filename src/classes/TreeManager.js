@@ -82,7 +82,7 @@ class TreeManager {
                 App.utils.writeMessage('Unable to reorder Source Folder.');
                 return;
             }
-            // re build tree
+            // rebuild tree
             App.treeManager.updateTree();
             App.utils.writeMessage('Source Folder reordered.');
         });
@@ -217,7 +217,7 @@ class TreeManager {
         checkbox.addEventListener('change', (e) => {
             const isChecked = e.target.checked;
             const currentLi = e.target.closest("li");
-            // if node has childrens (is directory) propagate down
+            // if node has children (is directory) propagate down
             if (currentLi.querySelector("ul")) {
                 if (App.model.propagateSelections) App.treeManager.propagateDown(currentLi, isChecked);
             }
@@ -250,7 +250,7 @@ class TreeManager {
             label.appendChild(labelExtrasDate);
             const labelExtrasSize = document.createElement('span');
             labelExtrasSize.classList.add('label-extras-size');
-            labelExtrasSize.textContent = (node.size != "" ? " " + node.size : "");
+            labelExtrasSize.textContent = (node.size !== "" ? " " + node.size : "");
             label.appendChild(labelExtrasSize);
             labelContainer.appendChild(label);
 
@@ -297,7 +297,7 @@ class TreeManager {
             label.appendChild(labelExtrasDate);
             const labelExtrasSize = document.createElement('span');
             labelExtrasSize.classList.add('label-extras-size');
-            labelExtrasSize.textContent = (node.size != "" ? " " + node.size : "");
+            labelExtrasSize.textContent = (node.size !== "" ? " " + node.size : "");
             label.appendChild(labelExtrasSize);
             labelContainer.appendChild(label);
 

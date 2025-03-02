@@ -35,10 +35,10 @@ class OptionsManager {
             App.utils.writeMessage('Relationship OR setting is now ' + App.model.relationshipOR);
             App.filtersManager.applyAllFilters();
         });
-        document.getElementById("mantainLogsChecked").addEventListener("change", function () {
-            App.model.mantainLogs = this.checked;
+        document.getElementById("maintainLogsChecked").addEventListener("change", function () {
+            App.model.maintainLogs = this.checked;
             App.optionsManager.saveOptions();
-            App.utils.writeMessage('Mantain Logs setting is now ' + App.model.mantainLogs);
+            App.utils.writeMessage('Maintain Logs setting is now ' + App.model.maintainLogs);
         });
         document.getElementById("resetOptions").addEventListener("click", async function () {
             let confirmation = await App.utils.showConfirmWithReturn('Are you sure you want to reset Options to defaults?');
@@ -50,7 +50,7 @@ class OptionsManager {
         document.getElementById("exportLogs").addEventListener("click", async function () {
             let confirmation = await App.utils.showConfirmWithReturn('Are you sure you want to export Logs to File?');
             if (confirmation) {
-                App.optionsManager.exportLogs();
+                await App.optionsManager.exportLogs();
                 App.utils.writeMessage('Logs have been exported to file.');
             }
         });
@@ -70,7 +70,7 @@ class OptionsManager {
             model.copyReport = options.copyReport;
             model.relationshipOR = options.relationshipOR;
             model.sortOrder = options.sortOrder;
-            model.mantainLogs = options.mantainLogs;
+            model.maintainLogs = options.maintainLogs;
         } else {
             const saveOptions = {
                 propagateSelections: model.propagateSelections,
@@ -79,7 +79,7 @@ class OptionsManager {
                 copyReport: model.copyReport,
                 relationshipOR: model.relationshipOR,
                 sortOrder: model.sortOrder,
-                mantainLogs: model.mantainLogs,
+                maintainLogs: model.maintainLogs,
             };
             localStorage.setItem('options', JSON.stringify(saveOptions));
         }
@@ -94,7 +94,7 @@ class OptionsManager {
             copyReport: model.copyReport,
             relationshipOR: model.relationshipOR,
             sortOrder: model.sortOrder,
-            mantainLogs: model.mantainLogs,
+            maintainLogs: model.maintainLogs,
         };
         localStorage.setItem('options', JSON.stringify(saveOptions));
     }
@@ -106,7 +106,7 @@ class OptionsManager {
         model.copyReport = model.copyReportDefault;
         model.relationshipOR = model.relationshipORDefault;
         model.sortOrder = model.sortOrderDefault;
-        model.mantainLogs = model.mantainLogsDefault;
+        model.maintainLogs = model.maintainLogsDefault;
         this.saveOptions();
         this.updateOptionsUI();
         App.filtersManager.applyAllFilters();
@@ -123,7 +123,7 @@ class OptionsManager {
         document.getElementById("reportChecked").checked = App.model.copyReport;
         document.getElementById("propagateChecked").checked = App.model.propagateSelections;
         document.getElementById("relationshipORChecked").checked = App.model.relationshipOR;
-        document.getElementById("mantainLogsChecked").checked = App.model.mantainLogs;
+        document.getElementById("maintainLogsChecked").checked = App.model.maintainLogs;
         document.getElementById("sortOrderCombo").value = App.model.sortOrder;
     }
 

@@ -11,7 +11,7 @@ class Model {
     appVersion = version;
 
     // Business vars
-    clicksActive = true; //system: to disactivate clicks while copying
+    clicksActive = true; //system: to deactivate clicks while copying
     fileTreeData = []; // system: tree data
 
     copyingReport = [];
@@ -54,7 +54,7 @@ class Model {
     propagateSelectionsDefault = true;
     relationshipORDefault = true;
     sortOrderDefault = this.sortOrderList[0];
-    mantainLogsDefault = false;
+    maintainLogsDefault = false;
 
     // User Options
     fileOverwrite = this.fileOverwriteDefault;
@@ -63,7 +63,7 @@ class Model {
     propagateSelections = this.propagateSelectionsDefault;
     relationshipOR = this.relationshipORDefault;
     sortOrder = this.sortOrderDefault;
-    mantainLogs = this.mantainLogsDefault;
+    maintainLogs = this.maintainLogsDefault;
 
     // Components
     initialRangeSliderValues = [500000, 1000000];

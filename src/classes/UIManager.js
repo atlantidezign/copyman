@@ -13,11 +13,11 @@ class UIManager {
         }, true);
 
         this.initializeComponents();
-        this.initalizeModals();
+        this.initializeModals();
     }
 
     //Modals
-    initalizeHelpModal() {
+    initializeHelpModal() {
         const usageFilePath = path.join(__dirname, '../../docs/USAGE.md');
         let markdown = '';
         try {
@@ -49,8 +49,8 @@ Source code available on <a href="https://github.com/atlantidezign/copyman"><i c
     initializeSnapshotModal() {
         App.snapshotManager.listSnapshots();
     }
-    initalizeModals() {
-        this.initalizeHelpModal();
+    initializeModals() {
+        this.initializeHelpModal();
         this.initializeSnapshotModal();
         App.selectionListManager.updateListContent();
     }
@@ -64,7 +64,7 @@ Source code available on <a href="https://github.com/atlantidezign/copyman"><i c
             App.model.localeLang = 'it';
         }
 
-        const elem = document.querySelector('.input-daterange');
+        const elem = document.querySelector('.input-dateRange');
         this.rangePicker = new DateRangePicker(elem, {
             buttonClass: 'btn',
             allowOneSidedRange: true,
@@ -93,8 +93,8 @@ Source code available on <a href="https://github.com/atlantidezign/copyman"><i c
         });
 
         //date
-        var dateFrom = document.getElementById('range-start');
-        var dateTo = document.getElementById('range-end');
+        let dateFrom = document.getElementById('range-start');
+        let dateTo = document.getElementById('range-end');
         // Flag to avoid recursions
         let updating1 = false;
         let updating2 = false;
@@ -147,10 +147,10 @@ Source code available on <a href="https://github.com/atlantidezign/copyman"><i c
         });
 
         //size
-        var sliderFrom = document.getElementById('slider-from');
-        var sliderTo = document.getElementById('slider-to');
+        let sliderFrom = document.getElementById('slider-from');
+        let sliderTo = document.getElementById('slider-to');
         this.rangeSlider.noUiSlider.on('update', (values, handle) => {
-            var value = values[handle];
+            let value = values[handle];
             if (handle) {
                 sliderTo.value = Number(value);
             } else {
@@ -172,7 +172,7 @@ Source code available on <a href="https://github.com/atlantidezign/copyman"><i c
             const match = inputValue.match(regex);
 
             if (!match) {
-                // if format not corrispoindig, returns original.
+                // if format not matches, returns original.
                 return inputValue;
             }
 

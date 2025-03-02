@@ -24,11 +24,11 @@ class SnapshotManager {
         if (useSettings.length > 0) {
             useSettings.reverse();
             useSettings.forEach((element, index) => {
-                //load all names, append to selectEl and select frist one
+                //load all names, append to selectEl and select first one
                 let name = element.name;
                 let opt = document.createElement("option");
-                opt.value = element.name;
-                opt.text = element.name;
+                opt.value = name;
+                opt.text = name;
                 if (index === 0) {
                     opt.selected = true;
                 }
@@ -44,7 +44,7 @@ class SnapshotManager {
         }
         document.getElementById('saveSnapshotInput').value = useName;
 
-        if (App.model.sourceFolder === '' && App.model.destinationFolders.length === 0 && App.model.filtersDateMinus.length == 0 && App.model.filtersDatePlus.length === 0 &&
+        if (App.model.sourceFolder === '' && App.model.destinationFolders.length === 0 && App.model.filtersDateMinus.length === 0 && App.model.filtersDatePlus.length === 0 &&
             App.model.filtersSizeMinus.length === 0 && App.model.filtersSizePlus.length === 0 && App.model.filtersNameMinus.length === 0 && App.model.filtersNamePlus.length === 0) {
             App.utils.showAlert('Please enter some Folder/Filter to save.');
             return;
@@ -58,7 +58,7 @@ class SnapshotManager {
 
         const index = useSettings.findIndex(setting => setting.name === useName);
         if (index !== -1) {
-            let confirmation = await App.utils.showConfirmWithReturn('A Snaphstot with name "' + useName + '" already exists. Do you want to overwrite it?');
+            let confirmation = await App.utils.showConfirmWithReturn('A Snapshot with name "' + useName + '" already exists. Do you want to overwrite it?');
             if (confirmation) {
                 useSettings.splice(index, 1);
                 App.utils.writeMessage(`Old Snapshot named "${useName}" removed.`);
@@ -73,15 +73,15 @@ class SnapshotManager {
             //source and destinations folders
             sourceFolder: App.model.sourceFolder,
             destinationFolders: App.model.destinationFolders,
-            //user settings (overwrite, propagate + nuovi)
+            //user settings (overwrite, propagate ...)
             fileOverwrite: App.model.fileOverwrite,
             copyVerbose: App.model.copyVerbose,
             copyReport: App.model.copyReport,
             propagateSelections: App.model.propagateSelections,
             relationshipOR: App.model.relationshipOR,
             sortOrder: App.model.sortOrder,
-            mantainLogs: App.model.mantainLogs,
-            //filters (name + nuovi)
+            maintainLogs: App.model.maintainLogs,
+            //filters (name ...)
             filtersNamePlus: App.model.filtersNamePlus,
             filtersNameMinus: App.model.filtersNameMinus,
             filtersDatePlus: App.model.filtersDatePlus,
@@ -157,7 +157,7 @@ class SnapshotManager {
         }
         document.getElementById('saveSnapshotInput').value = useName;
 
-        if (App.model.sourceFolder === '' && App.model.destinationFolders.length === 0 && App.model.filtersDateMinus.length == 0 && App.model.filtersDatePlus.length === 0 &&
+        if (App.model.sourceFolder === '' && App.model.destinationFolders.length === 0 && App.model.filtersDateMinus.length === 0 && App.model.filtersDatePlus.length === 0 &&
             App.model.filtersSizeMinus.length === 0 && App.model.filtersSizePlus.length === 0 && App.model.filtersNameMinus.length === 0 && App.model.filtersNamePlus.length === 0) {
             App.utils.showAlert('Please enter some Folder/Filter to save.');
             return;
@@ -168,15 +168,15 @@ class SnapshotManager {
             //source and destinations folders
             sourceFolder: App.model.sourceFolder,
             destinationFolders: App.model.destinationFolders,
-            //user settings (overwrite, propagate + nuovi)
+            //user settings (overwrite, propagate ...)
             fileOverwrite: App.model.fileOverwrite,
             copyVerbose: App.model.copyVerbose,
             copyReport: App.model.copyReport,
             propagateSelections: App.model.propagateSelections,
             relationshipOR: App.model.relationshipOR,
             sortOrder: App.model.sortOrder,
-            mantainLogs: App.model.mantainLogs,
-            //filters (name + nuovi)
+            maintainLogs: App.model.maintainLogs,
+            //filters (name ...)
             filtersNamePlus: App.model.filtersNamePlus,
             filtersNameMinus: App.model.filtersNameMinus,
             filtersDatePlus: App.model.filtersDatePlus,
@@ -190,9 +190,9 @@ class SnapshotManager {
         App.utils.toggleSpinner(!App.model.clicksActive);
         const saved = await ipcRenderer.invoke('select-export-snapshot-file', newSettings);
         if (saved) {
-            App.utils.writeMessage('Shapshot exported successfully.');
+            App.utils.writeMessage('Snapshot exported successfully.');
         } else {
-            App.utils.writeMessage('Shapshot not exported.');
+            App.utils.writeMessage('Snapshot not exported.');
         }
         App.model.clicksActive = true;
         App.utils.toggleSpinner(!App.model.clicksActive);
@@ -203,7 +203,7 @@ class SnapshotManager {
         App.utils.toggleSpinner(!App.model.clicksActive);
         const filePath = await ipcRenderer.invoke('select-import-snapshot-file', 'Select Snapshot File to Import');
         if (!filePath) {
-            App.utils.showAlert('Nessun file selezionato per l\'import dello Snapshot.');
+            App.utils.showAlert('No file selected for Snapshot import.');
             App.model.clicksActive = true;
             App.utils.toggleSpinner(!App.model.clicksActive);
             return;
@@ -246,7 +246,7 @@ class SnapshotManager {
             App.model.copyReport = (typeof settings.copyReport === 'boolean') ? settings.copyReport : App.model.copyReportDefault;
             App.model.propagateSelections = (typeof settings.propagateSelections === 'boolean') ? settings.propagateSelections : App.model.propagateSelectionsDefault;
             App.model.relationshipOR = (typeof settings.relationshipOR === 'boolean') ? settings.relationshipOR : App.model.relationshipORDefault;
-            App.model.mantainLogs = (typeof settings.mantainLogs === 'boolean') ? settings.mantainLogs : App.model.mantainLogsDefault;
+            App.model.maintainLogs = (typeof settings.maintainLogs === 'boolean') ? settings.maintainLogs : App.model.maintainLogsDefault;
             App.model.sortOrder = (typeof settings.sortOrder === 'string') ? settings.sortOrder : App.model.sortOrderDefault;
             App.model.filtersNamePlus = settings.filtersNamePlus || [];
             App.model.filtersNameMinus = settings.filtersNameMinus || [];
@@ -262,7 +262,7 @@ class SnapshotManager {
 
             App.copyManager.updateDestinationList();
 
-            // update snaphot name
+            // update snapshot name
             document.getElementById('saveSnapshotInput').value = settings.name;
 
             App.filtersManager.applyAllFilters();

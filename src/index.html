@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="dark">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' data:">
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' data:"/>
     <title>Copyman</title>
-    <link rel="stylesheet" href="vendors/bootstrap.min.css">
-    <link rel="stylesheet" href="vendors/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="vendors/nouislider.css ">
-    <link rel="stylesheet" href="vendors/datepicker-bs5.css">
-    <link rel="stylesheet" href="vendors/datepicker-dark.css"></link>
-    <link rel="stylesheet" href="index.css"></link>
+    <link rel="stylesheet" href="vendors/bootstrap.min.css"/>
+    <link rel="stylesheet" href="vendors/bootstrap-icons.min.css"/>
+    <link rel="stylesheet" href="vendors/nouislider.css "/>
+    <link rel="stylesheet" href="vendors/datepicker-bs5.css"/>
+    <link rel="stylesheet" href="vendors/datepicker-dark.css"/>
+    <link rel="stylesheet" href="index.css"/>
 </head>
 <body>
 <div>
@@ -55,7 +55,7 @@
 <div id="div-filters2">
     <div class="input-group">
         <a class="btn btn-secondary btn-sm a-filter" title="Filters for Date"><i class="bi bi-calendar-range"></i></a>
-        <div class="input-group date input-daterange" id="filterDateInput">
+        <div class="input-group date input-dateRange" id="filterDateInput">
             <input type="text" id="range-start" name="range-start" class="form-control" placeholder="Start Date"
                    title="Start Date"/>
             <span class="input-group-text">to</span>
@@ -191,12 +191,12 @@
                                 <div class="progress mt-2" role="progressbar" aria-label="Copy progress"
                                      aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
                                     <div id="progressBarItems" class="progress-bar overflow-visible  bg-copyman"
-                                         style="width: 0%"></div>
+                                         style="width: 0"></div>
                                 </div>
                                 <div class="progress" role="progressbar" aria-label="Copy progress" aria-valuenow="0"
                                      aria-valuemin="0" aria-valuemax="100">
                                     <div id="progressBarSize" class="progress-bar overflow-visible  bg-copyman-alt"
-                                         style="width: 0%"></div>
+                                         style="width: 0"></div>
                                 </div>
                             </div>
                         </div>
@@ -307,9 +307,9 @@
                             <h6>Copying</h6>
 
                             <div class="form-check form-switch"
-                                 title="Verborse progress during copying phase">
+                                 title="Verbose progress during copying phase">
                                 <input class="form-check-input" type="checkbox" role="switch" id="verboseChecked"
-                                       title="Verborse progress during copying phase"
+                                       title="Verbose progress during copying phase"
                                        checked/>
                                 <label class="form-check-label" for="verboseChecked">Verbose Progress</label>
                             </div>
@@ -362,7 +362,7 @@
                         <div>
                             <h6>Selecting</h6>
                             <div class="form-check form-switch"
-                                 title="Propagate selection of an item to parent and childen elements">
+                                 title="Propagate selection of an item to parent and children elements">
                                 <input class="form-check-input" type="checkbox" role="switch" id="propagateChecked"
                                        title="Propagate Selection to child items"
                                        checked/>
@@ -374,18 +374,18 @@
                             <div class="form-check form-switch "
                                  title="Relationship between filter groups is OR, otherwise it's AND">
                                 <input class="form-check-input" type="checkbox" role="switch" id="relationshipORChecked"
-                                       title="Aggregation condition between Filters is NOT (at least one matched) or AND (all togheter must match)"
+                                       title="Aggregation condition between Filters is NOT (at least one matched) or AND (all together must match)"
                                        checked/>
                                 <label class="form-check-label" for="relationshipORChecked">Relationship OR</label>
                             </div>
                         </div>
                         <div>
                             <h6>System</h6>
-                            <div class="form-check form-switch" title="Mantain application logs">
-                                <input class="form-check-input" type="checkbox" role="switch" id="mantainLogsChecked"
-                                       title="Mantain Logs"
+                            <div class="form-check form-switch" title="Maintain application logs">
+                                <input class="form-check-input" type="checkbox" role="switch" id="maintainLogsChecked"
+                                       title="Maintain Logs"
                                        checked/>
-                                <label class="form-check-label" for="mantainLogsChecked">Mantain Logs</label>
+                                <label class="form-check-label" for="maintainLogsChecked">Maintain Logs</label>
                                 <a id="exportLogs" class="ms-3 btn btn-primary btn-sm" type="button"
                                    title="Export Logs to file.">Export Logs</a>
                             </div>
@@ -422,11 +422,11 @@
                                    title="Name of the Snapshot to save"
                                    placeholder="Name of Snapshot"/>
                             <button id="saveSnapshot" type="button" class="btn btn-primary btn-sm snapshot-buttons"><i
-                                    class="bi bi-box-arrow-down" title="Save Shapshot"></i>
+                                    class="bi bi-box-arrow-down" title="Save Snapshot"></i>
                                 Save
                             </button>
                             <button id="exportSnapshot" type="button" class="btn btn-primary btn-sm snapshot-buttons"><i
-                                    class="bi bi-box-arrow-in-down" title="Export Shapshot to file"></i>
+                                    class="bi bi-box-arrow-in-down" title="Export Snapshot to file"></i>
                                 Export
                             </button>
                         </div>
@@ -436,7 +436,7 @@
                                     id="loadSnapshotInput">
                             </select>
                             <button id="loadSnapshot" type="button" class="btn btn-primary btn-sm snapshot-buttons"><i
-                                    class="bi bi-box-arrow-up" title="Load Saved Shapshot"></i>
+                                    class="bi bi-box-arrow-up" title="Load Saved Snapshot"></i>
                                 Load
                             </button>
                             <button id="cleanSnapshot" type="button" class="btn btn-primary btn-sm snapshot-buttons"><i
@@ -448,7 +448,7 @@
                 </div>
                 <div class="modal-footer">
                     <button id="importSnapshot" type="button" class="btn btn-primary btn-sm snapshot-buttons"><i
-                            class="bi bi-box-arrow-in-up" title="Import Shapshot from file"></i>
+                            class="bi bi-box-arrow-in-up" title="Import Snapshot from file"></i>
                         Import
                     </button>
                     <button id="cleanAllSnapshots" type="button"

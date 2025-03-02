@@ -156,7 +156,7 @@ class FiltersManager {
             let rangeSliderGet = App.uiManager.rangeSlider.noUiSlider.get(); //string -> Number(string) -> number
             let rangeSliderStart = rangeSliderGet[0] ? Number(rangeSliderGet[0]) : App.model.limitRangeSliderValues[0];
             let rangeSliderEnd = rangeSliderGet[1] ? Number(rangeSliderGet[1]) : App.model.limitRangeSliderValues[1];
-            if (rangeSliderStart == App.model.limitRangeSliderValues[0] && rangeSliderEnd == App.model.limitRangeSliderValues[1]) {
+            if (rangeSliderStart === App.model.limitRangeSliderValues[0] && rangeSliderEnd === App.model.limitRangeSliderValues[1]) {
                 App.utils.showAlert("Please enter at least a size for filter.");
                 return;
             }
@@ -173,7 +173,7 @@ class FiltersManager {
             let rangeSliderGet = App.uiManager.rangeSlider.noUiSlider.get(); //string -> Number(string) -> number
             let rangeSliderStart = rangeSliderGet[0] ? Number(rangeSliderGet[0]) : App.model.limitRangeSliderValues[0];
             let rangeSliderEnd = rangeSliderGet[1] ? Number(rangeSliderGet[1]) : App.model.limitRangeSliderValues[1];
-            if (rangeSliderStart == App.model.limitRangeSliderValues[0] && rangeSliderEnd == App.model.limitRangeSliderValues[1]) {
+            if (rangeSliderStart === App.model.limitRangeSliderValues[0] && rangeSliderEnd === App.model.limitRangeSliderValues[1]) {
                 App.utils.showAlert("Please enter at least a size for filter.");
                 return;
             }
@@ -194,7 +194,7 @@ class FiltersManager {
             let rangeSliderGet = App.uiManager.rangeSlider.noUiSlider.get(); //string -> Number(string) -> number
             let rangeSliderStart = rangeSliderGet[0] ? Number(rangeSliderGet[0]) : App.model.limitRangeSliderValues[0];
             let rangeSliderEnd = rangeSliderGet[1] ? Number(rangeSliderGet[1]) : App.model.limitRangeSliderValues[1];
-            if (rangeSliderStart == App.model.limitRangeSliderValues[0] && rangeSliderEnd == App.model.limitRangeSliderValues[1]) {
+            if (rangeSliderStart === App.model.limitRangeSliderValues[0] && rangeSliderEnd === App.model.limitRangeSliderValues[1]) {
                 App.utils.showAlert("Please enter at least a size for filter.");
                 return;
             }
@@ -288,7 +288,7 @@ class FiltersManager {
             });
         }
 
-        //apply filters for Date and Size, evalueting also App.model.relationshipOR true or false (AND)
+        //apply filters for Date and Size, evaluating also App.model.relationshipOR true or false (AND)
 
         for (const filterValue of App.model.filtersDatePlus) {
             // iterate all tree checkboxes
@@ -394,7 +394,7 @@ class FiltersManager {
         listContainer.innerHTML = '';
         drawFiltersFor(App.model.filtersNamePlus, "+");
         drawFiltersFor(App.model.filtersNameMinus, "-");
-        if (listContainer.innerHTML == '') listContainer.innerHTML = 'Name Filters list'
+        if (listContainer.innerHTML === '') listContainer.innerHTML = 'Name Filters list'
 
         function drawFiltersFor(arrayList, filterKind) {
             arrayList.forEach((filter, index) => {
@@ -509,7 +509,7 @@ class FiltersManager {
         listContainer.innerHTML = '';
         drawFiltersFor(App.model.filtersDatePlus, "+");
         drawFiltersFor(App.model.filtersDateMinus, "-");
-        if (listContainer.innerHTML == '') listContainer.innerHTML = 'Date Filters list'
+        if (listContainer.innerHTML === '') listContainer.innerHTML = 'Date Filters list'
 
         function drawFiltersFor(arrayList, filterKind) {
             arrayList.forEach((filter, index) => {
@@ -597,9 +597,7 @@ class FiltersManager {
         let isInside = false
         if (!sizeToCheck) return false;
 
-        let sliderPoint = (sizeToCheck !== null && sizeToCheck !== undefined)
-            ? sizeToCheck / 1024  //attenzione sizeToCheck è in in bytes - dividere per 1024
-            : App.model.limitRangeSliderValues[0];
+        let sliderPoint =sizeToCheck ? sizeToCheck / 1024 : App.model.limitRangeSliderValues[0]; // sizeToCheck is in bytes - divide by 1024
         if (typeof sliderPoint !== 'number') {
             const convertedSize = Number(sliderPoint);
             if (!isNaN(convertedSize)) {
@@ -631,7 +629,7 @@ class FiltersManager {
             }
         }
 
-        // checl if slider interval is inside current
+        // check if slider interval is inside current
         if (originStart <= sliderPoint && sliderPoint <= originEnd) {
             isInside = true;
         }
@@ -668,10 +666,10 @@ class FiltersManager {
 
     renderSizeFiltersList() {
         const listContainer = document.getElementById('sizeFilterList');
-        listContainer.innerHTML = ''; // Svuota la lista esistente
+        listContainer.innerHTML = ''; // clear existing list
         drawFiltersFor(App.model.filtersSizePlus, "+");
         drawFiltersFor(App.model.filtersSizeMinus, "-");
-        if (listContainer.innerHTML == '') listContainer.innerHTML = 'Size Filters list'
+        if (listContainer.innerHTML === '') listContainer.innerHTML = 'Size Filters list'
 
         function drawFiltersFor(arrayList, filterKind) {
             arrayList.forEach((filter, index) => {

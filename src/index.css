@@ -43,9 +43,8 @@ body {
 body > div {
     flex-shrink: 0; /* to not shrink */
     margin: 0;
-    padding: 10px;
+    padding: 10px 10px 0 10px;
     min-height: 40px;
-    padding-bottom: 0;
     flex-grow: 0;
 }
 
@@ -72,8 +71,7 @@ body > div#div-controls {
     background-color: rgba(0, 0, 0, 0.65);
     border-radius: 10px;
     flex-grow: 1;
-    margin: 10px;
-    margin-top: 0;
+    margin: 0 10px 10px 10px;
     padding: 10px;
     overflow: auto;
     max-height: calc(100vh - 295px);
@@ -118,7 +116,7 @@ li {
 }
 
 .controls {
-    padding: 0px;
+    padding: 0;
     display: flex;
     justify-content: space-between;
 }

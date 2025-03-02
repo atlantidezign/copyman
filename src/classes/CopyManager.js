@@ -60,7 +60,7 @@ class CopyManager {
                 App.utils.writeMessage('Unable to refresh Source Folder.');
                 return;
             }
-            // re build tree
+            // rebuild tree
             App.treeManager.updateTree();
             App.utils.writeMessage('Source Folder refreshed.');
         });
@@ -133,13 +133,13 @@ class CopyManager {
     }
 
     swapSourceAndDestination() {
-        if (!App.model.sourceFolder || App.model.destinationFolders.length == 0) {
+        if (!App.model.sourceFolder || App.model.destinationFolders.length === 0) {
             App.utils.showAlert("Please select the Source Folder and a Destination Folder before swap.")
             return;
         }
-        let oldsource = App.model.sourceFolder;
+        let oldSource = App.model.sourceFolder;
         App.model.sourceFolder = App.model.destinationFolders[0];
-        App.model.destinationFolders[0] = oldsource;
+        App.model.destinationFolders[0] = oldSource;
         document.getElementById('sourcePath').textContent = App.model.sourceFolder;
         App.treeManager.updateTree();
         this.updateDestinationList();
@@ -205,7 +205,7 @@ class CopyManager {
                 return;
             }
 
-            // chech folder is not inside App.model.sourceFolder
+            // check folder is not inside App.model.sourceFolder
             if (App.model.sourceFolder && App.utils.isSubFolder(folder, App.model.sourceFolder) && App.utils.isSubFolder(App.model.sourceFolder, folder)) {
                 App.utils.showAlert("The destination folder cannot be a subfolder or a parent of source folder.");
                 App.model.clicksActive = true;
@@ -326,11 +326,11 @@ class CopyManager {
             if (!fs.existsSync(dest)) {
                 fs.mkdirSync(dest, {recursive: true});
             }
-            if (App.model.fileOverwrite == App.model.fileOverwriteEnum.never && fs.existsSync(dest)) {
+            if (App.model.fileOverwrite === App.model.fileOverwriteEnum.never && fs.existsSync(dest)) {
                 this.updateCopyingProgress('Folder ' + dest + ' already exists. Overwrite set to "Never". Skipping...', false);
                 App.utils.writeMessage('Folder ' + dest + ' already exists. Overwrite set to "Never". Skipping...');
                 App.model.itemsSkipped[destIndex]++;
-            } else if (App.model.fileOverwrite == App.model.fileOverwriteEnum.if_newer && fs.existsSync(dest)) {
+            } else if (App.model.fileOverwrite === App.model.fileOverwriteEnum.if_newer && fs.existsSync(dest)) {
                 try {
                     const stats = fs.statSync(dest);
                     if (node.ms > stats.mtimeMs) {
@@ -362,18 +362,18 @@ class CopyManager {
             if (!fs.existsSync(destDir)) {
                 fs.mkdirSync(destDir, {recursive: true});
             }
-            if (App.model.fileOverwrite != App.model.fileOverwriteEnum.always) {
+            if (App.model.fileOverwrite !== App.model.fileOverwriteEnum.always) {
                 if (!fs.existsSync(dest)) {
                     fs.copyFileSync(src, dest);
                     this.updateCopyingProgress('File ' + dest + ' copied.', false);
                     App.utils.writeMessage('File ' + dest + ' copied.');
                     App.model.itemsCopied[destIndex]++;
                 } else {
-                    if (App.model.fileOverwrite == App.model.fileOverwriteEnum.never) {
+                    if (App.model.fileOverwrite === App.model.fileOverwriteEnum.never) {
                         this.updateCopyingProgress('File ' + dest + ' already exists. Overwrite set to "Never". Skipping...', false);
                         App.utils.writeMessage('File ' + dest + ' already exists. Overwrite set to "Never". Skipping...');
                         App.model.itemsSkipped[destIndex]++;
-                    } else if (App.model.fileOverwrite == App.model.fileOverwriteEnum.if_newer) {
+                    } else if (App.model.fileOverwrite === App.model.fileOverwriteEnum.if_newer) {
                         try {
                             const stats = fs.statSync(dest);
                             if (node.ms > stats.mtimeMs) {
@@ -392,10 +392,10 @@ class CopyManager {
                             App.utils.writeMessage('Error reading file stats for '+dest+'. Overwrite set to "If Newer". Skipping...');
                             App.model.itemsSkipped[destIndex]++;
                         }
-                    } else if (App.model.fileOverwrite == App.model.fileOverwriteEnum.if_different) {
+                    } else if (App.model.fileOverwrite === App.model.fileOverwriteEnum.if_different) {
                         try {
                             const stats = fs.statSync(dest);
-                            if (node.sizeBits != stats.size) {
+                            if (node.sizeBits !== stats.size) {
                                 fs.copyFileSync(src, dest);
                                 this.updateCopyingProgress('File ' + dest + ' copied.', false);
                                 App.utils.writeMessage('File ' + dest + ' copied.');
@@ -411,7 +411,7 @@ class CopyManager {
                             App.utils.writeMessage('Error reading file stats for '+dest+'. Overwrite set to "If Different Size". Skipping...');
                             App.model.itemsSkipped[destIndex]++;
                         }
-                    } else if (App.model.fileOverwrite == App.model.fileOverwriteEnum.keep) {
+                    } else if (App.model.fileOverwrite === App.model.fileOverwriteEnum.keep) {
                         let newDest = App.utils.addUniqueStringToFilePath(dest);
                         fs.copyFileSync(src, newDest);
                         this.updateCopyingProgress('File ' + newDest + ' copied using new name.', false);
@@ -471,12 +471,12 @@ class CopyManager {
             if (App.model.copyVerbose) {
                 if (sep) document.getElementById('verboseProgressMD').innerHTML = useMessage
                 else document.getElementById('verboseProgressMD').innerHTML = useMessage + document.getElementById('verboseProgressMD').innerHTML;
-                let percI = ((App.model.itemsProcessed * 100) / App.model.itemsTotal).toFixed(0);
-                let percS = ((App.model.sizeProcessed * 100) / App.model.sizeTotal).toFixed(0);
-                document.getElementById('progressBarItems').style.width = percI + "%";
+                let percentageI = ((App.model.itemsProcessed * 100) / App.model.itemsTotal).toFixed(0);
+                let percentageS = ((App.model.sizeProcessed * 100) / App.model.sizeTotal).toFixed(0);
+                document.getElementById('progressBarItems').style.width = percentageI + "%";
                 document.getElementById('progressBarItems').textContent = App.model.itemsProcessed + "/" + App.model.itemsTotal;
-                document.getElementById('progressBarSize').style.width = percS + "%";
-                document.getElementById('progressBarSize').textContent = percS + "%";
+                document.getElementById('progressBarSize').style.width = percentageS + "%";
+                document.getElementById('progressBarSize').textContent = percentageS + "%";
                 const modalBody = document.querySelector('#copyingModal .modal-body');
                 modalBody.scrollTop = 0;
             }

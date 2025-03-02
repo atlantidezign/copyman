@@ -14,7 +14,7 @@ class SelectionListManager {
         let htmlContent = '<table class="table table-striped">' +
             '<tr><th> </th><th>Path</th><th>Modified</th><th>Size</th></tr>';
 
-        selectedItems.forEach( (item, index) => {
+        selectedItems.forEach( (item) => {
             let date = new Date(item.fullModified)
             let dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
             htmlContent += '<tr><td>' + (item.isDirectory === "1" ? '<i class="bi bi-folder2"></i>':'<i class="bi bi-file-earmark"></i>') + '</td><td>' + item.path + '</td><td>' + dateStr + '</td><td>' + item.size + '</td></tr>';
