@@ -41,7 +41,8 @@ class Model {
         always: 1,
         if_newer: 2,
         if_different: 3,
-        never: 4
+        never: 4,
+        keep: 5
     };
     sortOrderList= ["alphabetical", "reverseAlphabetical", "sizeAsc", "sizeDesc",
         "dateAsc", "dateDesc", "extAsc", "extDesc"];

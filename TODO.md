@@ -3,8 +3,6 @@
 ## NOW
 sys: test new refractored codebase, especially filters
 
-options: in overwrite options, add "keep" that adds unique suffix to file to be copied over an existing one. (just for files, not folders)
-
 --- 
 
 ## NEXT

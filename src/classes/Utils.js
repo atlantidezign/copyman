@@ -114,6 +114,9 @@ class Utils {
             case App.model.fileOverwriteEnum.if_newer:
                 enumToStr = '"If Newer"';
                 break;
+            case App.model.fileOverwriteEnum.keep:
+                enumToStr = '"Keep"';
+                break;
         }
         return enumToStr;
     }
@@ -122,6 +125,36 @@ class Utils {
     async waitForUiUpdate(ms = 250) {
         await new Promise(resolve => setTimeout(resolve, ms));
     }
+
+    // Utils: add unique string to a path
+    addUniqueStringToFilePath(dest) {
+        // get date
+        const now = new Date();
+        const yyyy = now.getFullYear();
+        const mm = String(now.getMonth() + 1).padStart(2, '0');
+        const dd = String(now.getDate()).padStart(2, '0');
+        const hh = String(now.getHours()).padStart(2, '0');
+        const min = String(now.getMinutes()).padStart(2, '0');
+        const ss = String(now.getSeconds()).padStart(2, '0');
+
+        // create unique string
+        const uniqueAdd = `_${yyyy}-${mm}-${dd}_${hh}-${min}-${ss}`;
+
+        // find extension position
+        const indexOfDot = dest.lastIndexOf('.');
+
+        // if not extension, add to the end
+        if (indexOfDot === -1) {
+            return dest + uniqueAdd;
+        }
+
+        // else add before extension
+        const filename = dest.substring(0, indexOfDot);
+        const ext = dest.substring(indexOfDot); // with dot
+
+        return filename + uniqueAdd + ext;
+    }
+
 }
 
 module.exports = Utils;

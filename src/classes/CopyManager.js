@@ -411,6 +411,12 @@ class CopyManager {
                             App.utils.writeMessage('Error reading file stats for '+dest+'. Overwrite set to "If Different Size". Skipping...');
                             App.model.itemsSkipped[destIndex]++;
                         }
+                    } else if (App.model.fileOverwrite == App.model.fileOverwriteEnum.keep) {
+                        let newDest = App.utils.addUniqueStringToFilePath(dest);
+                        fs.copyFileSync(src, newDest);
+                        this.updateCopyingProgress('File ' + newDest + ' copied using new name.', false);
+                        App.utils.writeMessage('File ' + newDest + ' copied using new name .');
+                        App.model.itemsCopied[destIndex]++;
                     }
                 }
             } else {
