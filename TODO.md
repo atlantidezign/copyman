@@ -7,8 +7,6 @@ sys: test new refractored codebase;
 ui: button to abort copy (clicks remain active; be careful if clicking elsewhere, be careful with toggleSpinner)
 ui: more compact, eg. lower vertical padding, collapsable folders/filters panels 
 
-sys: log of all messages
-
 copy: in verbose mode, using selectedNodes, include info on file sizes/date, and elapsed?, and progress?, for each single file
 copy: better verbose in case of small files
 
@@ -41,5 +39,5 @@ sys: rewrite all in TypeScript
 electron: signed build (requires a paid certificate)
 electron: check update (requires the above and third-party services)
 
-sys: also delete and move selected files (complex if folders are empty/contain other items/partial selections, etc.)
+sys: also delete and move selected files (complex if folders are empty/contain other items/partial selections, etc.) and to open single file.
 sys: progress during verbose copy is slower due to empty promises to update ui, if possible refactor various awaits flow to keep ui updated smoothly (if delay is <200 ms the ui does not update correctly)

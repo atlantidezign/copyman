@@ -88,6 +88,9 @@ Has an autosave behaviour, and can be **Reset** to defaults.
 #### Filtering
 - **Relationship OR** to choose the kind of relationship between filter groups, OR (checked) or AND (unchecked). Default true (OR).
 
+#### System
+- **Mantain Logs** to choose if to record application logs. Can be exported with **Export logs**.
+
 ---
 
 ### Snapshots

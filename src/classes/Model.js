@@ -10,7 +10,7 @@ class Model {
     }
     appVersion = version;
 
-    //Business vars
+    // Business vars
     clicksActive = true; //system: to disactivate clicks while copying
     fileTreeData = []; // system: tree data
 
@@ -24,11 +24,11 @@ class Model {
     sizeProcessed = 0;
     selectedNodes = [];
 
-    //User folders
+    // User folders
     sourceFolder = ''; // user choose: source folder
     destinationFolders = []; // user choose: destinations folder
 
-    //User filters
+    // User filters
     filtersNamePlus = []; //Array<string>
     filtersNameMinus = []; //Array<string>
     filtersDatePlus = []; //Array<{ from: Date, to: Date}>
@@ -36,7 +36,7 @@ class Model {
     filtersSizePlus = []; //Array<{ from: number, to: number}>
     filtersSizeMinus = []; //Array<{ from: number, to: number}>
 
-    //Enums
+    // Enums
     fileOverwriteEnum = {
         always: 1,
         if_newer: 2,
@@ -46,30 +46,35 @@ class Model {
     sortOrderList= ["alphabetical", "reverseAlphabetical", "sizeAsc", "sizeDesc",
         "dateAsc", "dateDesc", "extAsc", "extDesc"];
 
-    //User Options Defaults
+    // User Options Defaults
     fileOverwriteDefault = this.fileOverwriteEnum.always;
     copyVerboseDefault = false;
     copyReportDefault = true;
     propagateSelectionsDefault = true;
     relationshipORDefault = true;
     sortOrderDefault = this.sortOrderList[0];
+    mantainLogsDefault = false;
 
-    //User Options
+    // User Options
     fileOverwrite = this.fileOverwriteDefault;
     copyVerbose = this.copyVerboseDefault;
     copyReport = this.copyReportDefault;
     propagateSelections = this.propagateSelectionsDefault;
     relationshipOR = this.relationshipORDefault;
     sortOrder = this.sortOrderDefault;
+    mantainLogs = this.mantainLogsDefault;
 
-    //Components
+    // Components
     initialRangeSliderValues = [500000, 1000000];
     limitRangeSliderValues = [0, 1000000000];
     dateFormat = 'mm/dd/yyyy';
     localeLang = 'en';
 
-    //Messages
+    // Messages
     messageLife = 3000; //system: message life in ms before clean
+
+    // Logs
+    logs = [];
 }
 
 // export for singleton

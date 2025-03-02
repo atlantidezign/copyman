@@ -8,6 +8,9 @@ class Utils {
     writeMessage(message) {
         if (this.messageTimeout) clearTimeout(this.messageTimeout);
         document.getElementById('status').textContent = message;
+        if (App.model.mantainLogs) {
+            App.model.logs.push(message);
+        }
         this.messageTimeout = setTimeout(() => {
             document.getElementById('status').textContent = '';
         }, App.model.messageLife);

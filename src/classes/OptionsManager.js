@@ -35,6 +35,11 @@ class OptionsManager {
             App.utils.writeMessage('Relationship OR setting is now ' + App.model.relationshipOR);
             App.filtersManager.applyAllFilters();
         });
+        document.getElementById("mantainLogsChecked").addEventListener("change", function () {
+            App.model.mantainLogs = this.checked;
+            App.optionsManager.saveOptions();
+            App.utils.writeMessage('Mantain Logs setting is now ' + App.model.mantainLogs);
+        });
         document.getElementById("resetOptions").addEventListener("click", async function () {
             let confirmation = await App.utils.showConfirmWithReturn('Are you sure you want to reset Options to defaults?');
             if (confirmation) {
@@ -42,6 +47,16 @@ class OptionsManager {
                 App.utils.writeMessage('Options have been reset to defaults.');
             }
         });
+        document.getElementById("exportLogs").addEventListener("click", async function () {
+            let confirmation = await App.utils.showConfirmWithReturn('Are you sure you want to export Logs to File?');
+            if (confirmation) {
+                App.optionsManager.exportLogs();
+                App.utils.writeMessage('Logs have been exported to file.');
+            }
+        });
+
+        let now = new Date();
+        App.utils.writeMessage('Welcome to Copyman v' + App.model.appVersion + '! ' + now.toLocaleDateString() + ' ' + now.toLocaleTimeString() );
     }
 
     initializeOptions() {
@@ -55,6 +70,7 @@ class OptionsManager {
             model.copyReport = options.copyReport;
             model.relationshipOR = options.relationshipOR;
             model.sortOrder = options.sortOrder;
+            model.mantainLogs = options.mantainLogs;
         } else {
             const saveOptions = {
                 propagateSelections: model.propagateSelections,
@@ -63,6 +79,7 @@ class OptionsManager {
                 copyReport: model.copyReport,
                 relationshipOR: model.relationshipOR,
                 sortOrder: model.sortOrder,
+                mantainLogs: model.mantainLogs,
             };
             localStorage.setItem('options', JSON.stringify(saveOptions));
         }
@@ -77,6 +94,7 @@ class OptionsManager {
             copyReport: model.copyReport,
             relationshipOR: model.relationshipOR,
             sortOrder: model.sortOrder,
+            mantainLogs: model.mantainLogs,
         };
         localStorage.setItem('options', JSON.stringify(saveOptions));
     }
@@ -88,6 +106,7 @@ class OptionsManager {
         model.copyReport = model.copyReportDefault;
         model.relationshipOR = model.relationshipORDefault;
         model.sortOrder = model.sortOrderDefault;
+        model.mantainLogs = model.mantainLogsDefault;
         this.saveOptions();
         this.updateOptionsUI();
         App.filtersManager.applyAllFilters();
@@ -104,9 +123,23 @@ class OptionsManager {
         document.getElementById("reportChecked").checked = App.model.copyReport;
         document.getElementById("propagateChecked").checked = App.model.propagateSelections;
         document.getElementById("relationshipORChecked").checked = App.model.relationshipOR;
+        document.getElementById("mantainLogsChecked").checked = App.model.mantainLogs;
         document.getElementById("sortOrderCombo").value = App.model.sortOrder;
     }
 
+    async exportLogs() {
+            App.utils.writeMessage('Choose Log Export file.');
+            App.model.clicksActive = false;
+            App.utils.toggleSpinner(!App.model.clicksActive);
+            const saved = await ipcRenderer.invoke('select-export-log-file', App.model.logs);
+            if (saved) {
+                App.utils.writeMessage('Logs exported successfully.');
+            } else {
+                App.utils.writeMessage('Logs not exported.');
+            }
+            App.model.clicksActive = true;
+            App.utils.toggleSpinner(!App.model.clicksActive);
+    }
 }
 
 module.exports = OptionsManager;

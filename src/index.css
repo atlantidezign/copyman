@@ -263,6 +263,10 @@ li {
     border-bottom-left-radius: 0;
 }
 
+.form-select option {
+    color: #dddddd;
+}
+
 /* Modals */
 #modalSnapshotTrigger, #modalOptionsTrigger {
     margin-left: 10px;

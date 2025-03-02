@@ -355,6 +355,27 @@ app.whenReady().then(() => {
         }
         return false;
     });
+    ipcMain.handle('select-export-log-file', async (event, dataToExport) => {
+        const pad = (number) => (number < 10 ? '0' + number : number);
+        const now = new Date();
+        const defaultFileName = `copyman_log_export-${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}-${pad(now.getHours())}-${pad(now.getMinutes())}-${pad(now.getSeconds())}.txt`;
+        const options = {
+            title: 'Export Logs as JSON file',
+            defaultPath: defaultFileName,
+            buttonLabel: 'Export'
+        };
+        let useText = dataToExport.join('\n');
+        const result = await dialog.showSaveDialog(options);
+        if (!result.canceled && result.filePath) {
+            try {
+                fs.writeFileSync(result.filePath, useText);
+            } catch (err) {
+                return false
+            }
+            return true;
+        }
+        return false;
+    });
 
     //Business: alert and confirm
     ipcMain.handle("show-alert", (e, message) => {
