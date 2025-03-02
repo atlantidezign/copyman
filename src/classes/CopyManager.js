@@ -54,6 +54,16 @@ class CopyManager {
             container.innerHTML = '';
             App.utils.writeMessage('Source folder cleared.');
         });
+        document.getElementById('refreshSource').addEventListener('click', async () => {
+            if (!App.model.sourceFolder) {
+                App.utils.showAlert('Please select the Source Folder!');
+                App.utils.writeMessage('Unable to refresh Source Folder.');
+                return;
+            }
+            // re build tree
+            App.treeManager.updateTree();
+            App.utils.writeMessage('Source Folder refreshed.');
+        });
         document.getElementById('buttonSwap').addEventListener('click', this.swapSourceAndDestination.bind(this));
 
         // Destination Folders

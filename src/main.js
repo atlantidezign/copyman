@@ -69,6 +69,12 @@ app.whenReady().then(() => {
                 }
             },
             {
+                label: 'Refresh Source',
+                click: () => {
+                    event.sender.send('context-menu-command', 'menu-source-refresh')
+                }
+            },
+            {
                 label: 'Add Destination',
                 click: () => {
                     event.sender.send('context-menu-command', 'menu-destinations-add')

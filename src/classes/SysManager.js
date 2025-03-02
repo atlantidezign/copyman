@@ -38,6 +38,9 @@ class SysManager {
                 case 'menu-source-clear':
                     document.getElementById('clearSource').click();
                     break;
+                case 'menu-source-refresh':
+                    document.getElementById('refreshSource').click();
+                    break;
                 case 'menu-destinations-add':
                     document.getElementById('addDestination').click();
                     break;

@@ -1,14 +1,13 @@
 # TODO
 
 ## NOW
-sys: test new codebase;
+sys: test new refractored codebase;
 
 ## NEXT
 tree: setting sort => alphabetical order, date, size, file type (tree view)  (add to snapshots)
 
 ui: button to abort copy (clicks remain active; be careful if clicking elsewhere, be careful with toggleSpinner)
 ui: more compact
-ui: button to refresh source tree
 
 settings: support localization for other languages (in options), for labels and datepicker (language and format); and add to snapshots
           check also all menu items (contextual, tray, main)

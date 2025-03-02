@@ -164,7 +164,7 @@ li {
 
 #addNamePlusFilter, #addNameMinusFilter, #addDatePlusFilter, #addDateMinusFilter,
 #addSizePlusFilter, #addSizeMinusFilter, #deselectAll, #collapseAll,
-#exportSnapshot {
+#exportSnapshot, #clearSource {
     margin-left: 1px;
 }
 
