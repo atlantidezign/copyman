@@ -10,6 +10,8 @@ options: in overwrite options, add "keep" that adds unique suffix to file to be 
 ## NEXT
 ui: button to abort copy (clicks remain active; be careful if clicking elsewhere, be careful with toggleSpinner)
 
+snapshots: save full selection
+
 copy: in verbose mode, using selectedNodes, include info on file sizes/date, and elapsed, and progres?, for each single file
       and better verbose and progress in case of small files
 copy: before starting, using selectedNodes and scans of destinations, perform various checks on what will actually perform copy/overwrite/skip, etc.

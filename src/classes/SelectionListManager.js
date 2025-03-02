@@ -8,27 +8,31 @@ class SelectionListManager {
         document.getElementById('listModalButtonSaveCsv').addEventListener('click', this.saveListOfSelectedItemsToCsv.bind(this));
     }
 
-//Selection list
+    // Update selection list ui
     updateListContent() {
         let selectedItems = this.getListOfSelectedItems();
         let htmlContent = '<table class="table table-striped">' +
             '<tr><th> </th><th>Path</th><th>Modified</th><th>Size</th></tr>';
 
         selectedItems.forEach( (item, index) => {
-            htmlContent += '<tr><td>' + (item.isDirectory === "1" ? '<i class="bi bi-folder2"></i>':'<i class="bi bi-file"></i>') + '</td><td>' + item.path + '</td><td>' + item.modified + '</td><td>' + item.size + '</td></tr>';
+            let date = new Date(item.fullModified)
+            let dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+            htmlContent += '<tr><td>' + (item.isDirectory === "1" ? '<i class="bi bi-folder2"></i>':'<i class="bi bi-file"></i>') + '</td><td>' + item.path + '</td><td>' + dateStr + '</td><td>' + item.size + '</td></tr>';
         })
         htmlContent += '</table>';
         document.getElementById('listContentMD').innerHTML = htmlContent;
         document.getElementById('listFooterTotal').innerHTML = 'Selected: ' + selectedItems.length;
     }
+
+    // Generate selection list
     getListOfSelectedItems() {
         // select div #file-tree
         const fileTree = document.getElementById('file-tree');
 
-// select al checked checkboxes inside
+        // select al checked checkboxes inside
         const checkedCheckboxes = fileTree.querySelectorAll('input[type="checkbox"]:checked');
 
-// map every checkbox to associated info
+        // map every checkbox to associated info
         const files = Array.from(checkedCheckboxes).map(checkbox => ({
             path: checkbox.dataset.filePath,
             fullPath: path.join(App.model.sourceFolder, checkbox.dataset.filePath),
@@ -36,13 +40,14 @@ class SelectionListManager {
             fullSize: checkbox.dataset.nodeSize,
             size: App.utils.formatSizeForThree(checkbox.dataset.nodeSize),
             modified: checkbox.dataset.nodeModified,
-            ms: Number(checkbox.dataset.nodeMS),
+            fullModified: Number(checkbox.dataset.nodeMS),
             isDirectory: checkbox.dataset.isDirectory
         }));
 
         return files;
     }
 
+    // Export selection list
     saveListOfSelectedItemsToJson() {
         let dataToExport = this.getListOfSelectedItems();
         if (dataToExport.length > 0) {
