@@ -368,7 +368,9 @@ body > div#div-modals {
     padding: .2rem .4rem;
     font-size: 0.85em;
 }
-
+#listFooterTotal {
+    font-size: 0.85em;
+}
 .verboseIcon {
     font-size: 4.5em;
     color: #ffffff;

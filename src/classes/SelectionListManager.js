@@ -13,15 +13,23 @@ class SelectionListManager {
         let selectedItems = this.getListOfSelectedItems();
         let htmlContent = '<table class="table table-striped">' +
             '<tr><th> </th><th>Path</th><th>Modified</th><th>Size</th></tr>';
-
+        let totalSize = 0;
+        let countFiles = 0;
+        let countFolders = 0;
         selectedItems.forEach( (item) => {
             let date = new Date(item.fullModified)
             let dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
             htmlContent += '<tr><td>' + (item.isDirectory === "1" ? '<i class="bi bi-folder2"></i>':'<i class="bi bi-file-earmark"></i>') + '</td><td>' + item.path + '</td><td>' + dateStr + '</td><td>' + item.size + '</td></tr>';
+            totalSize += item.fullSize;
+            if (item.isDirectory === "1") {
+                countFolders++
+            } else {
+                countFiles++
+            };
         })
         htmlContent += '</table>';
         document.getElementById('listContentMD').innerHTML = htmlContent;
-        document.getElementById('listFooterTotal').innerHTML = 'Selected: ' + selectedItems.length;
+        document.getElementById('listFooterTotal').innerHTML = 'Selected: ' + selectedItems.length + " ["+countFiles+" files / "+countFolders+" folders] ("+App.utils.formatSizeForThree(totalSize)+")";
     }
 
     // Generate selection list
@@ -37,8 +45,8 @@ class SelectionListManager {
             path: checkbox.dataset.filePath,
             fullPath: path.join(App.model.sourceFolder, checkbox.dataset.filePath),
             name: checkbox.dataset.nodeName,
-            fullSize: checkbox.dataset.nodeSize,
-            size: App.utils.formatSizeForThree(checkbox.dataset.nodeSize),
+            fullSize: Number(checkbox.dataset.nodeSize),
+            size: App.utils.formatSizeForThree(Number(checkbox.dataset.nodeSize)),
             modified: checkbox.dataset.nodeModified,
             fullModified: Number(checkbox.dataset.nodeMS),
             isDirectory: checkbox.dataset.isDirectory
