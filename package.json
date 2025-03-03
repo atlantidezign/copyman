@@ -29,8 +29,10 @@
 		"files": [
 			"!*",
 			"!**/*",
+			"./icon.png",
 			"./src/**/*",
 			"./docs/**/*",
+			"./build/**/*",
 			"./package.json"
 		],
 		"directories": {
@@ -45,11 +47,15 @@
 		"mac": {
 			"target": [
 				"dmg"
-			]
+			],
+			"icon": "./icon.png"
 		},
 		"linux": {
-			"target": "deb"
+			"target": "deb",
+			"icon": "./icon.png"
 		},
-		"deb": {}
+		"deb": {
+			"icon": "./icon.png"
+		}
 	}
 }
