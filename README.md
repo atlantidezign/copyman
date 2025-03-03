@@ -2,6 +2,9 @@
 
 Select and copy files from one folder to multiple destinations while preserving the folder structure.
 
+![Copyman screenshot](docs/copyman_screenshot.png)
+
+
 ## Development
 
 ### Requirements
