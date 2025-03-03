@@ -407,7 +407,7 @@ class FiltersManager {
                 listItemInner.classList.add('position-absolute', 'start-100', 'translate-middle', 'badge', 'rounded-pill', 'bg-danger');
                 // remove single
                 const removeButton = document.createElement('a');
-                removeButton.textContent = 'X';
+                removeButton.innerHTML = '<i class="bi bi-x-lg"></i>';
                 removeButton.addEventListener('click', () => {
                     App.filtersManager.removeSingleNameFilter(index, filterKind);
                 });
@@ -522,7 +522,7 @@ class FiltersManager {
                 listItemInner.classList.add('position-absolute', 'start-100', 'translate-middle', 'badge', 'rounded-pill', 'bg-danger');
                 // remove single item
                 const removeButton = document.createElement('a');
-                removeButton.textContent = 'X';
+                removeButton.innerHTML = '<i class="bi bi-x-lg"></i>';
                 removeButton.addEventListener('click', () => {
                     App.filtersManager.removeSingleDateFilter(index, filterKind);
                 });
@@ -682,7 +682,7 @@ class FiltersManager {
                 listItemInner.classList.add('position-absolute', 'start-100', 'translate-middle', 'badge', 'rounded-pill', 'bg-danger');
                 // remove single item
                 const removeButton = document.createElement('a');
-                removeButton.textContent = 'X';
+                removeButton.innerHTML = '<i class="bi bi-x-lg"></i>';
                 removeButton.addEventListener('click', () => {
                     App.filtersManager.removeSingleSizeFilter(index, filterKind);
                 });

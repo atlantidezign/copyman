@@ -270,6 +270,7 @@ li {
 
 .badge {
     font-size: 0.80em;
+    padding: 4px 4px 3px 4px;
 }
 .badge.badge-outer {
     font-size: 0.9em;

@@ -162,7 +162,7 @@ class CopyManager {
                 listItemInner.classList.add('position-absolute', 'start-100', 'translate-middle', 'badge', 'rounded-pill', 'bg-danger');
                 // remove single item
                 const removeButton = document.createElement('a');
-                removeButton.textContent = 'X';
+                removeButton.innerHTML = '<i class="bi bi-x-lg"></i>';
                 removeButton.addEventListener('click', () => {
                     App.copyManager.removeDestination(index);
                 });
