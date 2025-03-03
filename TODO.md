@@ -14,7 +14,7 @@ copy: before starting, using selectedNodes and scans of destinations, perform va
 copy: tasks queue
 
 ui: button to abort copy (clicks remain active; be careful if clicking elsewhere, be careful with toggleSpinner)
-ui: change order of destination folders
+ui: user can change order of destination folders
 
 ---
 

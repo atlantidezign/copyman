@@ -7,14 +7,17 @@
     --bs-primary: #6610f2 !important;
     --bs-primary-rgb: 102, 16, 242;
 }
+
 .bg-copyman {
     --bs-bg-opacity: 1;
     background-color: rgba(102, 16, 242, var(--bs-bg-opacity)) !important;
 }
+
 .bg-copyman-alt {
     --bs-bg-opacity: 1;
-    background-color: rgba(46,16,242, var(--bs-bg-opacity)) !important;
+    background-color: rgba(46, 16, 242, var(--bs-bg-opacity)) !important;
 }
+
 body {
     display: flex;
     flex-direction: column;
@@ -265,6 +268,15 @@ li {
     color: #dddddd;
 }
 
+.badge {
+    font-size: 0.80em;
+}
+.badge.badge-outer {
+    font-size: 0.9em;
+    padding: 4px 12px 5px 6px;
+    margin-top: 1px;
+}
+
 /* Modals */
 #modalSnapshotTrigger, #modalOptionsTrigger {
     margin-left: 10px;
@@ -364,15 +376,19 @@ body > div#div-modals {
 #copyingReportMD, #verboseProgressMD {
     font-size: 0.75em;
 }
+
 #copyingReportMD h6 {
     margin-top: 0;
 }
+
 #verboseProgress .verboseSep {
     padding-bottom: 5px;
 }
+
 #verboseProgress .progress {
     margin-top: 5px
 }
+
 #copyingReport .verboseSep {
     padding-top: 5px;
 }
@@ -381,6 +397,7 @@ body > div#div-modals {
     height: 16px;
     vertical-align: text-bottom;
 }
+
 /* Overlay full screen */
 body > div#spinner-overlay {
     flex-shrink: unset;
@@ -409,6 +426,7 @@ body > div#spinner-overlay {
     height: 80px;
     animation: spin 1.5s linear infinite;
 }
+
 #spinner2 {
     background-image: url(./images/80x80_2cols.svg);
     width: 80px;
@@ -424,11 +442,13 @@ body > div#spinner-overlay {
         transform: rotate(360deg);
     }
 }
+
 #spinnerNot {
     background-image: url(./images/80x80_2cols.svg);
     width: 50px;
     height: 50px;
 }
+
 /*NoUiSlider*/
 #slider-range {
     height: 31px;

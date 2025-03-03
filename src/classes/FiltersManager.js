@@ -399,7 +399,7 @@ class FiltersManager {
         function drawFiltersFor(arrayList, filterKind) {
             arrayList.forEach((filter, index) => {
                 const listItem = document.createElement('span');
-                listItem.classList.add('badge', 'text-bg-secondary', 'position-relative', 'me-2');
+                listItem.classList.add('badge', 'badge-outer', 'text-bg-secondary', 'position-relative', 'me-3');
                 if (filterKind === "+") listItem.classList.add('filter-plus');
                 if (filterKind === "-") listItem.classList.add('filter-minus');
                 listItem.textContent = filterKind + filter;
@@ -514,7 +514,7 @@ class FiltersManager {
         function drawFiltersFor(arrayList, filterKind) {
             arrayList.forEach((filter, index) => {
                 const listItem = document.createElement('span');
-                listItem.classList.add('badge', 'text-bg-secondary', 'position-relative', 'me-2');
+                listItem.classList.add('badge', 'badge-outer', 'text-bg-secondary', 'position-relative', 'me-3');
                 if (filterKind === "+") listItem.classList.add('filter-plus');
                 if (filterKind === "-") listItem.classList.add('filter-minus');
                 listItem.textContent = filterKind + App.filtersManager.renderSingleDateFilter(filter);
@@ -674,7 +674,7 @@ class FiltersManager {
         function drawFiltersFor(arrayList, filterKind) {
             arrayList.forEach((filter, index) => {
                 const listItem = document.createElement('span');
-                listItem.classList.add('badge', 'text-bg-secondary', 'position-relative', 'me-2');
+                listItem.classList.add('badge', 'badge-outer', 'text-bg-secondary', 'position-relative', 'me-3');
                 if (filterKind === "+") listItem.classList.add('filter-plus');
                 if (filterKind === "-") listItem.classList.add('filter-minus');
                 listItem.textContent = filterKind + App.filtersManager.renderSingleSizeFilter(filter);
