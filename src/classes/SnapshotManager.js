@@ -298,6 +298,9 @@ class SnapshotManager {
                 });
             }
 
+            //update stats
+            App.selectionListManager.updatetSelectionStats();
+
             App.utils.writeMessage('Snapshot loaded.');
         } catch (error) {
             console.error("Error during loading of Snapshot " + settings.name + ":", error);

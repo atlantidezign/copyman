@@ -190,8 +190,6 @@ class TreeManager {
             }
         });
         container.appendChild(ul);
-
-        App.selectionListManager.updateListContent();
     }
 
     createTreeNode(node) {
@@ -227,7 +225,8 @@ class TreeManager {
             }
             // if unchecked, no on-parents propagation
 
-            App.selectionListManager.updateListContent();
+            //update stats
+            App.selectionListManager.updatetSelectionStats();
         });
 
         if (node.type === 'directory') {

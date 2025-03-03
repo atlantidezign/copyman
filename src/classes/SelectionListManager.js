@@ -29,7 +29,8 @@ class SelectionListManager {
         })
         htmlContent += '</table>';
         document.getElementById('listContentMD').innerHTML = htmlContent;
-        document.getElementById('listFooterTotal').innerHTML = 'Selected: ' + selectedItems.length + " ["+countFiles+" files / "+countFolders+" folders] ("+App.utils.formatSizeForThree(totalSize)+")";
+        //document.getElementById('listFooterTotal').innerHTML = 'Selected: ' + selectedItems.length + " ["+countFiles+" files | "+countFolders+" folders] ("+App.utils.formatSizeForThree(totalSize)+")";
+        document.getElementById('listFooterTotal').innerHTML = "Selected: " +countFiles+" files | "+countFolders+" folders ("+App.utils.formatSizeForThree(totalSize)+")";
     }
 
     // Generate selection list
@@ -84,6 +85,34 @@ class SelectionListManager {
         }
         App.model.clicksActive = true;
         App.utils.toggleSpinner(!App.model.clicksActive);
+    }
+
+    // Update selection stats
+    updatetSelectionStats() {
+        const fileTree = document.getElementById('file-tree');
+        const checkedCheckboxes = fileTree.querySelectorAll('input[type="checkbox"]:checked');
+        const selectedItems = Array.from(checkedCheckboxes).map(checkbox => ({
+            fullSize: Number(checkbox.dataset.nodeSize),
+            isDirectory: checkbox.dataset.isDirectory
+        }));
+        let selectionString = '';
+        if (selectedItems.length > 0) {
+            let totalSize = 0;
+            let countFiles = 0;
+            let countFolders = 0;
+            selectedItems.forEach((item) => {
+                totalSize += item.fullSize;
+                if (item.isDirectory === "1") {
+                    countFolders++
+                } else {
+                    countFiles++
+                }
+                ;
+            })
+            //selectionString += 'Selected: ' + selectedItems.length + " ["+countFiles+" files | "+countFolders+" folders] ("+App.utils.formatSizeForThree(totalSize)+")";
+            selectionString = "Selected: " + countFiles+" files | "+countFolders+" folders ("+App.utils.formatSizeForThree(totalSize)+")";
+        }
+        document.getElementById('selectionStats').innerHTML = selectionString;
     }
 }
 

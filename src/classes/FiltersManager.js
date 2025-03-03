@@ -266,6 +266,7 @@ class FiltersManager {
 
         this.removeAllSelection();
 
+        // apply filters for names
         for (const filterValue of App.model.filtersNamePlus) {
             // iterate all tree checkboxes
             const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
@@ -289,7 +290,6 @@ class FiltersManager {
         }
 
         //apply filters for Date and Size, evaluating also App.model.relationshipOR true or false (AND)
-
         for (const filterValue of App.model.filtersDatePlus) {
             // iterate all tree checkboxes
             const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
@@ -355,6 +355,10 @@ class FiltersManager {
                 }
             });
         }
+
+        //update stats
+        App.selectionListManager.updatetSelectionStats();
+
         App.utils.writeMessage('Filters updated.');
     }
 
