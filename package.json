@@ -22,7 +22,7 @@
 		"electron": "^34.2.0",
 		"electron-builder": "^25.1.8"
 	},
-	"icon": "./src/images/256x256.png",
+	"icon": "./icon.png",
 	"build": {
 		"appId": "it.atlantide-design.copyman",
 		"productName": "Copyman",
@@ -40,7 +40,7 @@
 			"target": [
 				"portable"
 			],
-			"icon": "./src/images/256x256.png"
+			"icon": "./icon.png"
 		},
 		"mac": {
 			"target": [
