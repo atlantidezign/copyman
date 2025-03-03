@@ -4,7 +4,7 @@ class QueueManager {
     }
 
     init() {
-        //TODO
+        //TODO tasks queue
     }
 }
 

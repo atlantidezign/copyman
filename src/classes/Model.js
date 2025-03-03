@@ -55,6 +55,7 @@ class Model {
     relationshipORDefault = true;
     sortOrderDefault = this.sortOrderList[0];
     maintainLogsDefault = false;
+    saveSelectionDefault = true;
 
     // User Options
     fileOverwrite = this.fileOverwriteDefault;
@@ -64,6 +65,7 @@ class Model {
     relationshipOR = this.relationshipORDefault;
     sortOrder = this.sortOrderDefault;
     maintainLogs = this.maintainLogsDefault;
+    saveSelection = this.saveSelectionDefault;
 
     // Components
     initialRangeSliderValues = [500000, 1000000];

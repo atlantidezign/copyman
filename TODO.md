@@ -6,8 +6,6 @@ sys: test new refractored codebase, especially filters
 --- 
 
 ## NEXT
-snapshots: save full files selection
-
 copy: in verbose mode, using selectedNodes, include info on file sizes/date, and elapsed, and progres?, for each single file
       and better verbose and progress in case of small files
 copy: before starting, using selectedNodes and scans of destinations, perform various checks on what will actually perform copy/overwrite/skip, etc.

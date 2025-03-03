@@ -90,13 +90,16 @@ Default Always.
 #### Filtering
 - **Relationship OR** to choose the kind of relationship between filter groups, OR (checked) or AND (unchecked). Default true (OR).
 
+#### Snapshot
+- **Selection List** to choose if save/load also the Selection List in the Snapshot.
+
 #### System
 - **Maintain Logs** to choose if to record application logs. Can be exported with **Export logs**.
 
 ---
 
 ### Snapshots
-The **Snapshot** panel manages snapshot (current configuration of folders, filters, and options) save/load/clear/export;
+The **Snapshot** panel manages snapshot (current configuration of folders, filters, options and - optionally - selection list) save/load/clear/export;
 - **Save Shapshot** to save current snapshot, with a name.
 - **Export Shapshot** to export current snapshot to a json file, with a name.
 - **Load Shapshot** to load saved snapshot by selected name.

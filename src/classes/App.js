@@ -40,7 +40,7 @@ class App {
     }
 
     start() {
-        //TODO end preloader/splashscreen
+        //eventually: end preloader/splashscreen
     }
 }
 

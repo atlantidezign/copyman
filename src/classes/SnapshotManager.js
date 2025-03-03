@@ -36,6 +36,7 @@ class SnapshotManager {
             });
         }
     }
+
     async saveSnapshot() {
         let useName = document.getElementById('saveSnapshotInput').value.trim().toLowerCase();
         if (!useName) {
@@ -63,17 +64,17 @@ class SnapshotManager {
                 useSettings.splice(index, 1);
                 App.utils.writeMessage(`Old Snapshot named "${useName}" removed.`);
             } else {
-                App.utils.writeMessage('Snapshot "'+useName+'" not saved.');
+                App.utils.writeMessage('Snapshot "' + useName + '" not saved.');
                 return;
             }
         }
 
         let newSettings = {
             name: useName,
-            //source and destinations folders
+            // source and destinations folders
             sourceFolder: App.model.sourceFolder,
             destinationFolders: App.model.destinationFolders,
-            //user settings (overwrite, propagate ...)
+            // user settings
             fileOverwrite: App.model.fileOverwrite,
             copyVerbose: App.model.copyVerbose,
             copyReport: App.model.copyReport,
@@ -81,20 +82,27 @@ class SnapshotManager {
             relationshipOR: App.model.relationshipOR,
             sortOrder: App.model.sortOrder,
             maintainLogs: App.model.maintainLogs,
-            //filters (name ...)
+            saveSelection: App.model.saveSelection,
+            // filters
             filtersNamePlus: App.model.filtersNamePlus,
             filtersNameMinus: App.model.filtersNameMinus,
             filtersDatePlus: App.model.filtersDatePlus,
             filtersDateMinus: App.model.filtersDateMinus,
             filtersSizePlus: App.model.filtersSizePlus,
             filtersSizeMinus: App.model.filtersSizeMinus,
+            // selection list
+            selectionList: []
+        }
+        if (App.model.saveSelection) {
+            newSettings.selectionList = App.snapshotManager.getListOfSelectedItemsForSnapshot();
         }
         useSettings.push(newSettings);
         // serialize and save in localStorage
         localStorage.setItem('snapshots', JSON.stringify(useSettings));
         this.listSnapshots();
-        App.utils.writeMessage('Snapshot "'+useName+'" saved.');
+        App.utils.writeMessage('Snapshot "' + useName + '" saved.');
     }
+
     loadSnapshot() {
         App.utils.writeMessage('Loading Snapshot...');
         let useName = document.getElementById('loadSnapshotInput').value.trim().toLowerCase();
@@ -115,6 +123,7 @@ class SnapshotManager {
         }
         this.setFromSnapshot(settings);
     }
+
     async cleanSnapshot() {
         let useName = document.getElementById('loadSnapshotInput').value.trim().toLowerCase();
         if (!useName) {
@@ -141,6 +150,7 @@ class SnapshotManager {
             App.utils.writeMessage(`No Snapshot with name "${useName}".`);
         }
     }
+
     async cleanAllSnapshots() {
         let confirmation = await App.utils.showConfirmWithReturn('Are you sure you want to Clean all saved Snapshots?');
         if (confirmation) {
@@ -149,6 +159,7 @@ class SnapshotManager {
             App.utils.writeMessage('Snapshots cleaned.');
         }
     }
+
     async exportSnapshot() {
         let useName = document.getElementById('saveSnapshotInput').value.trim().toLowerCase();
         if (!useName) {
@@ -165,10 +176,10 @@ class SnapshotManager {
 
         let newSettings = {
             name: useName,
-            //source and destinations folders
+            // source and destinations folders
             sourceFolder: App.model.sourceFolder,
             destinationFolders: App.model.destinationFolders,
-            //user settings (overwrite, propagate ...)
+            // user settings
             fileOverwrite: App.model.fileOverwrite,
             copyVerbose: App.model.copyVerbose,
             copyReport: App.model.copyReport,
@@ -176,13 +187,18 @@ class SnapshotManager {
             relationshipOR: App.model.relationshipOR,
             sortOrder: App.model.sortOrder,
             maintainLogs: App.model.maintainLogs,
-            //filters (name ...)
+            saveSelection: App.model.saveSelection,
+            // filters
             filtersNamePlus: App.model.filtersNamePlus,
             filtersNameMinus: App.model.filtersNameMinus,
             filtersDatePlus: App.model.filtersDatePlus,
             filtersDateMinus: App.model.filtersDateMinus,
             filtersSizePlus: App.model.filtersSizePlus,
             filtersSizeMinus: App.model.filtersSizeMinus,
+            selectionList: []
+        }
+        if (App.model.saveSelection) {
+            newSettings.selectionList = App.snapshotManager.getListOfSelectedItemsForSnapshot();
         }
 
         App.utils.writeMessage('Choose Snapshot JSON file for Export.');
@@ -197,6 +213,7 @@ class SnapshotManager {
         App.model.clicksActive = true;
         App.utils.toggleSpinner(!App.model.clicksActive);
     }
+
     async importSnapshot() {
         App.utils.writeMessage('Choose Snapshot JSON file for Import.');
         App.model.clicksActive = false;
@@ -234,6 +251,7 @@ class SnapshotManager {
             return;
         }
     }
+
     setFromSnapshot(settings) {
         try {
             App.filtersManager.removeAllFilters();
@@ -247,6 +265,7 @@ class SnapshotManager {
             App.model.propagateSelections = (typeof settings.propagateSelections === 'boolean') ? settings.propagateSelections : App.model.propagateSelectionsDefault;
             App.model.relationshipOR = (typeof settings.relationshipOR === 'boolean') ? settings.relationshipOR : App.model.relationshipORDefault;
             App.model.maintainLogs = (typeof settings.maintainLogs === 'boolean') ? settings.maintainLogs : App.model.maintainLogsDefault;
+            App.model.saveSelection = (typeof settings.saveSelection === 'boolean') ? settings.saveSelection : App.model.saveSelectionDefault;
             App.model.sortOrder = (typeof settings.sortOrder === 'string') ? settings.sortOrder : App.model.sortOrderDefault;
             App.model.filtersNamePlus = settings.filtersNamePlus || [];
             App.model.filtersNameMinus = settings.filtersNameMinus || [];
@@ -265,13 +284,31 @@ class SnapshotManager {
             // update snapshot name
             document.getElementById('saveSnapshotInput').value = settings.name;
 
+            // apply filters
             App.filtersManager.applyAllFilters();
+
+            //apply selection
+            if (App.model.saveSelection && settings.selectionList && settings.selectionList.length > 0) {
+                const fileTree = document.getElementById('file-tree');
+                const allCheckboxes = fileTree.querySelectorAll('input[type="checkbox"]');
+                allCheckboxes.forEach(checkbox => {
+                    if (settings.selectionList.indexOf(checkbox.dataset.filePath) >= 0) {
+                        checkbox.checked = true;
+                    }
+                });
+            }
 
             App.utils.writeMessage('Snapshot loaded.');
         } catch (error) {
-            console.error("Error during loading of Snapshot "+settings.name+":", error);
-            App.utils.writeMessage("Error during loading of Snapshot "+settings.name+".");
+            console.error("Error during loading of Snapshot " + settings.name + ":", error);
+            App.utils.writeMessage("Error during loading of Snapshot " + settings.name + ".");
         }
+    }
+
+    getListOfSelectedItemsForSnapshot() {
+        const fileTree = document.getElementById('file-tree');
+        const checkedCheckboxes = fileTree.querySelectorAll('input[type="checkbox"]:checked');
+        return Array.from(checkedCheckboxes).map(item => item.dataset.filePath);
     }
 }
 

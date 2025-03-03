@@ -29,7 +29,7 @@ class SelectionListManager {
         // select div #file-tree
         const fileTree = document.getElementById('file-tree');
 
-        // select al checked checkboxes inside
+        // select all checked checkboxes inside
         const checkedCheckboxes = fileTree.querySelectorAll('input[type="checkbox"]:checked');
 
         // map every checkbox to associated info

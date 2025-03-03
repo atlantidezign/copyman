@@ -40,6 +40,11 @@ class OptionsManager {
             App.optionsManager.saveOptions();
             App.utils.writeMessage('Maintain Logs setting is now ' + App.model.maintainLogs);
         });
+        document.getElementById("saveSelectionChecked").addEventListener("change", function () {
+            App.model.saveSelection = this.checked;
+            App.optionsManager.saveOptions();
+            App.utils.writeMessage('Selection List setting is now ' + App.model.saveSelection);
+        });
         document.getElementById("resetOptions").addEventListener("click", async function () {
             let confirmation = await App.utils.showConfirmWithReturn('Are you sure you want to reset Options to defaults?');
             if (confirmation) {
@@ -71,6 +76,7 @@ class OptionsManager {
             model.relationshipOR = options.relationshipOR;
             model.sortOrder = options.sortOrder;
             model.maintainLogs = options.maintainLogs;
+            model.saveSelection = options.saveSelection;
         } else {
             const saveOptions = {
                 propagateSelections: model.propagateSelections,
@@ -80,6 +86,7 @@ class OptionsManager {
                 relationshipOR: model.relationshipOR,
                 sortOrder: model.sortOrder,
                 maintainLogs: model.maintainLogs,
+                saveSelection: model.saveSelection,
             };
             localStorage.setItem('options', JSON.stringify(saveOptions));
         }
@@ -95,6 +102,7 @@ class OptionsManager {
             relationshipOR: model.relationshipOR,
             sortOrder: model.sortOrder,
             maintainLogs: model.maintainLogs,
+            saveSelection: model.saveSelection,
         };
         localStorage.setItem('options', JSON.stringify(saveOptions));
     }
@@ -107,6 +115,7 @@ class OptionsManager {
         model.relationshipOR = model.relationshipORDefault;
         model.sortOrder = model.sortOrderDefault;
         model.maintainLogs = model.maintainLogsDefault;
+        model.saveSelection = model.saveSelectionDefault;
         this.saveOptions();
         this.updateOptionsUI();
         App.filtersManager.applyAllFilters();
@@ -124,6 +133,7 @@ class OptionsManager {
         document.getElementById("propagateChecked").checked = App.model.propagateSelections;
         document.getElementById("relationshipORChecked").checked = App.model.relationshipOR;
         document.getElementById("maintainLogsChecked").checked = App.model.maintainLogs;
+        document.getElementById("saveSelectionChecked").checked = App.model.saveSelection;
         document.getElementById("sortOrderCombo").value = App.model.sortOrder;
     }
 

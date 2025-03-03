@@ -597,7 +597,7 @@ class FiltersManager {
         let isInside = false
         if (!sizeToCheck) return false;
 
-        let sliderPoint =sizeToCheck ? sizeToCheck / 1024 : App.model.limitRangeSliderValues[0]; // sizeToCheck is in bytes - divide by 1024
+        let sliderPoint = sizeToCheck ? sizeToCheck / 1024 : App.model.limitRangeSliderValues[0]; // sizeToCheck is in bytes - divide by 1024
         if (typeof sliderPoint !== 'number') {
             const convertedSize = Number(sliderPoint);
             if (!isNaN(convertedSize)) {
