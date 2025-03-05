@@ -42,7 +42,8 @@ class Model {
         if_newer: 2,
         if_different: 3,
         never: 4,
-        keep: 5
+        keep: 5,
+        sync: 6
     };
     sortOrderList= ["alphabetical", "reverseAlphabetical", "sizeAsc", "sizeDesc",
         "dateAsc", "dateDesc", "extAsc", "extDesc"];
@@ -56,6 +57,7 @@ class Model {
     sortOrderDefault = this.sortOrderList[0];
     maintainLogsDefault = false;
     saveSelectionDefault = true;
+
 
     // User Options
     fileOverwrite = this.fileOverwriteDefault;

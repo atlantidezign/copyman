@@ -93,6 +93,7 @@ class CopyManager {
                     App.model.sizeTotal += Number(checkbox.dataset.nodeSize);
 
                     App.model.selectedNodes.push({
+                        fullPath: path.join(App.model.sourceFolder, checkbox.dataset.filePath),
                         path: checkbox.dataset.filePath,
                         name: checkbox.dataset.nodeName,
                         sizeBits: Number(checkbox.dataset.nodeSize),
@@ -323,9 +324,19 @@ class CopyManager {
     async copyRecursive(src, dest, destIndex, node) {
         const stats = fs.statSync(src);
         if (stats.isDirectory()) {
-            if (!fs.existsSync(dest)) {
-                fs.mkdirSync(dest, {recursive: true});
+
+            if (App.model.fileOverwrite === App.model.fileOverwriteEnum.sync && hasSelectedFilesInFolder(src)) {
+                if (fs.existsSync(dest)) {
+                    clearFolder(dest);
+                } else {
+                    fs.mkdirSync(dest, { recursive: true });
+                }
+            } else {
+                if (!fs.existsSync(dest)) {
+                    fs.mkdirSync(dest, { recursive: true });
+                }
             }
+
             if (App.model.fileOverwrite === App.model.fileOverwriteEnum.never && fs.existsSync(dest)) {
                 this.updateCopyingProgress('Folder ' + dest + ' already exists. Overwrite set to "Never". Skipping...', false);
                 App.utils.writeMessage('Folder ' + dest + ' already exists. Overwrite set to "Never". Skipping...');
@@ -426,6 +437,24 @@ class CopyManager {
                 App.model.itemsCopied[destIndex]++;
             }
         }
+
+
+        function clearFolder(folderPath) {
+            const items = fs.readdirSync(folderPath);
+            items.forEach((item) => {
+                const currentPath = path.join(folderPath, item);
+                const stats = fs.statSync(currentPath);
+                if (!stats.isDirectory()) {
+                    fs.unlinkSync(currentPath);
+                }
+            });
+
+        }
+
+        function hasSelectedFilesInFolder(folderPath) {
+            return App.model.selectedNodes.some(filePath => filePath.fullPath.startsWith(folderPath));
+        }
+
     }
 
     //Copying Progress and Report

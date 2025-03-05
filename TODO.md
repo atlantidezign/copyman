@@ -3,12 +3,12 @@
 ## NOW
 sys: test new refractored codebase, especially filters
 
+ext: new site copyman.it
+
 --- 
 
 ## NEXT
-electron: leaner build, better integrated build parameters and properties for Electron in package.json (eg. screenshot for .deb)
-
-ext: add the exe files for other platforms to download, website and git
+electron: leaner build, better integrated build parameters and properties for Electron in package.json
 
 ui: user can change order of destination folders
 ui: button to abort copy (clicks remain active; be careful if clicking elsewhere, be careful with toggleSpinner)

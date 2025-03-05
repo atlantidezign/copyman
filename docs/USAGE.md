@@ -81,7 +81,8 @@ Has an autosave behaviour, and can be **Reset** to defaults.
 - **Verbose Progress** to choose if have a window with verborse progress during copying phase. Default false.
 - **Copying Report** to choose if have a window with report at the end of the copying phase. Default true.
 - **Overwrite Existing** to choose the overwrite mode if a file/folder already exist. 
-It can be: *Always* (Always Overwrite), *Never* (Never Overwrite), *If Different Size* (Overwrite if Different Size), *If Newer* (Overwrite if Newer), *Keep* (Keep existing file using a new name for copy). 
+It can be: *Always* (Always Overwrite), *Never* (Never Overwrite), *If Different Size* (Overwrite if Different Size), 
+*If Newer* (Overwrite if Newer), *Keep* (Keep existing file using a new name for copy), *Sync* (Clean files in folders with at least a selected file (not folder) inside). 
 Default Always.
 
 #### Selecting

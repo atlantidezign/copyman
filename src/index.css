@@ -158,6 +158,10 @@ li {
     background-color: rgba(0, 0, 0, 0.65);
 }
 
+.form-check-inline {
+    min-width: 150px;
+}
+
 ::placeholder {
     color: #8f8f8f !important;
     opacity: 1; /* Firefox */
