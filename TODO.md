@@ -6,7 +6,7 @@ sys: test new refractored codebase, especially filters
 --- 
 
 ## NEXT
-electron: leaner build, better integrated build parameters and properties for Electron in package.json (eg. screenshot and icon for .deb)
+electron: leaner build, better integrated build parameters and properties for Electron in package.json (eg. screenshot for .deb)
 
 ext: add the exe files for other platforms to download, website and git
 
