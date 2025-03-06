@@ -325,7 +325,7 @@ class CopyManager {
         const stats = fs.statSync(src);
         if (stats.isDirectory()) {
 
-            if (App.model.fileOverwrite === App.model.fileOverwriteEnum.sync && hasSelectedFilesInFolder(src)) {
+            if ( (App.model.fileOverwrite === App.model.fileOverwriteEnum.sync && hasSelectedFilesInFolder(src)) || (App.model.fileOverwrite === App.model.fileOverwriteEnum.brute && hasSelectedFilesOrFoldersInFolder(src) )) {
                 if (fs.existsSync(dest)) {
                     clearFolder(dest);
                 } else {
@@ -444,14 +444,28 @@ class CopyManager {
             items.forEach((item) => {
                 const currentPath = path.join(folderPath, item);
                 const stats = fs.statSync(currentPath);
-                if (!stats.isDirectory()) {
-                    fs.unlinkSync(currentPath);
+                if (App.model.fileOverwrite === App.model.fileOverwriteEnum.brute) {
+                    if (stats.isDirectory()) {
+                        // Rimuove l'intera cartella ricorsivamente
+                        fs.rmdirSync(currentPath, { recursive: true });
+                    } else {
+                        fs.unlinkSync(currentPath);
+                    }
+
+                } else {
+                    if (!stats.isDirectory()) {
+                        fs.unlinkSync(currentPath);
+                    }
                 }
+
             });
 
         }
 
         function hasSelectedFilesInFolder(folderPath) {
+            return App.model.selectedNodes.some(filePath => filePath.fullPath.startsWith(folderPath) && !filePath.isDirectory);
+        }
+        function hasSelectedFilesOrFoldersInFolder(folderPath) {
             return App.model.selectedNodes.some(filePath => filePath.fullPath.startsWith(folderPath));
         }
 

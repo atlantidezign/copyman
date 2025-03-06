@@ -4,6 +4,7 @@
 sys: test new refractored codebase, especially filters
 
 ext: new site copyman.it
+ext: screenshot with open tree
 
 --- 
 

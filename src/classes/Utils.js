@@ -120,6 +120,9 @@ class Utils {
             case App.model.fileOverwriteEnum.sync:
                 enumToStr = '"Sync"';
                 break;
+            case App.model.fileOverwriteEnum.brute:
+                enumToStr = '"Brute"';
+                break;
         }
         return enumToStr;
     }

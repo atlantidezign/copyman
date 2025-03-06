@@ -43,7 +43,8 @@ class Model {
         if_different: 3,
         never: 4,
         keep: 5,
-        sync: 6
+        sync: 6,
+        brute: 7
     };
     sortOrderList= ["alphabetical", "reverseAlphabetical", "sizeAsc", "sizeDesc",
         "dateAsc", "dateDesc", "extAsc", "extDesc"];
