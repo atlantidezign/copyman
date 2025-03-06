@@ -4,6 +4,8 @@ Use the **Clear** buttons to remove the folder selections.
 
 You can also **Refresh Source Folder Tree**.
 
+In Destination folders list, you can *drag* elements over each other to change order.
+
 ---
 
 ### Selection
@@ -82,13 +84,14 @@ Has an autosave behaviour, and can be **Reset** to defaults.
 - **Copying Report** to choose if have a window with report at the end of the copying phase. Default true.
 - **Overwrite Existing** to choose the overwrite mode if a file/folder already exist. Default Always.
 It can be: 
-  - *Always* (Always Overwrite),
-  - *Never* (Never Overwrite), 
-  - *If Different Size* (Overwrite if Different Size),
-  - *If Newer* (Overwrite if Newer), 
-  - *Sync* (Clean files in folders with at least a selected file (not folder) inside),
-  - *Brute* (Clean files and folders in folders with at least a selected file or folder inside),
-  - *Keep* (Keep existing file using a new name for copy).
+  - *Always* Always Overwrite;
+  - *Never* Never Overwrite; 
+  - *If Different Size* Overwrite if Different Size;
+  - *If Newer* Overwrite if Newer; 
+  - *Sync1* Clean files in folders with at least a selected file (not folder) inside;
+  - *Sync2* Clean files in folders with at least a selected file or folder inside;
+  - *Brute* Clean files and folders recursively in folders with at least a selected file or folder inside;
+  - *Keep* Keep existing file using a new name for copy.
 
 
 #### Selecting

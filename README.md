@@ -49,11 +49,11 @@ npm build:linux
 ### Binaries Download
 You can download already compiled executables from:
 
-http://www.atlantide-design.it/copyman
+https://www.copyman.it
 
 ## Usage
 
-For more details on usage, please refer to [docs/USAGE.md](docs/USAGE.md).
+For instructions on usage, please refer to [docs/USAGE.md](docs/USAGE.md).
 
 ## To Do
 

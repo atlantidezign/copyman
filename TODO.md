@@ -3,7 +3,6 @@
 ## NOW
 sys: test new refractored codebase, especially filters
 
-ext: new site copyman.it
 ext: screenshot with open tree
 
 --- 
@@ -11,7 +10,6 @@ ext: screenshot with open tree
 ## NEXT
 electron: leaner build, better integrated build parameters and properties for Electron in package.json
 
-ui: user can change order of destination folders
 ui: button to abort copy (clicks remain active; be careful if clicking elsewhere, be careful with toggleSpinner)
 
 copy: in verbose mode, using selectedNodes, include info on file sizes/date, and elapsed, and progres?, for each single file
@@ -20,6 +18,8 @@ copy: before starting, using selectedNodes and scans of destinations, perform va
       and use a window instead of confirm to show it to the user.
       with an option eg. showPreview. with check for free space on destinations
 copy: tasks queue
+
+ext: new site copyman.it - in features add: "many copy modes", "cross platform", "actions preview", "queue tasks"
 
 ---
 
@@ -45,10 +45,10 @@ ext: better Google Copyman account and GitHub profile
 ---
 
 ## NEVER?
-electron: signed build (requires a paid certificate)
+electron: signed build for win and mac (requires a paid  for win, for mac?) 
 electron: check update (requires the above and third-party services)
 
-sys: also delete and move selected files (complex if folders are empty/contain other items/partial selections, etc.) and to open single file.
+sys: also delete and move selected files (complex if folders are empty/contain other items/partial selections, etc.) and to open single file, open in explorer.
 sys: progress during verbose copy is slower due to empty promises to update ui, if possible refactor various awaits flow to keep ui updated smoothly (if delay is <200 ms the ui does not update correctly)
 
 ---

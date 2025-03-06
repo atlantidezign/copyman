@@ -44,7 +44,8 @@ class Model {
         never: 4,
         keep: 5,
         sync: 6,
-        brute: 7
+        sync2: 7,
+        brute: 8
     };
     sortOrderList= ["alphabetical", "reverseAlphabetical", "sizeAsc", "sizeDesc",
         "dateAsc", "dateDesc", "extAsc", "extDesc"];

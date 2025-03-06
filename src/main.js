@@ -260,7 +260,7 @@ app.whenReady().then(() => {
                     label: 'Website',
                     click: async () => {
                         const {shell} = require('electron')
-                        await shell.openExternal('https://www.atlantide-design.it/copyman')
+                        await shell.openExternal('https://www.copyman.it')
                     }
                 }
             ]
