@@ -164,8 +164,9 @@ class CopyManager {
                 // remove single item
                 const removeButton = document.createElement('a');
                 removeButton.innerHTML = '<i class="bi bi-x-lg"></i>';
-                removeButton.addEventListener('click', () => {
-                    App.copyManager.removeDestination(index);
+                removeButton.dataset.index = index;
+                removeButton.addEventListener('click', (e) => {
+                    App.copyManager.removeDestination(e.target.dataset.index);
                 });
                 removeButton.style.cursor = 'pointer';
                 listItemInner.appendChild(removeButton);
@@ -179,89 +180,85 @@ class CopyManager {
 
         function addDraggableToDestinationFolders() {
 
-            // Recupera il contenitore e gli elementi badge
             const destinationList = document.getElementById('destinationList');
             let badges = Array.from(destinationList.querySelectorAll('.badge-outer'));
 
-// Variabile per memorizzare l'indice dell'elemento trascinato
+            // index of dragged item
             let draggedIndex = null;
 
-// Aggiunge i listener per ciascun badge
+            // listeners for each  badge
             badges.forEach((badge) => {
-                // Anche se l'attributo draggable è già impostato nel markup, lo assicuriamo qui.
                 badge.setAttribute('draggable', 'true');
 
                 badge.addEventListener('dragstart', (event) => {
-                    // Memorizza l'indice dell'elemento in drag
+                    // set index of dragged item
                     draggedIndex = badges.indexOf(badge);
                     event.dataTransfer.effectAllowed = 'move';
-                    // Se lo si desidera si può salvare inoltre qualche informazione
+                    // can also save some info
                     event.dataTransfer.setData('text/plain', draggedIndex);
                     badge.classList.add('dragging');
                 });
 
                 badge.addEventListener('dragend', (event) => {
                     badge.classList.remove('dragging');
-                    // Se il drop non avviene sopra un altro badge (dropEffect è "none"), nessun cambiamento viene effettuato.
-                    // Naturalmente, se il drop è valido, la logica è già stata eseguita in "drop".
+                    // If the drop does not occur over another badge (dropEffect is "none"), no changes are made.
+                    // Naturally, if the drop is valid, the logic has already been executed in "drop".
+
                 });
 
-                // L'evento dragover per abilitare il drop sull'elemento
+                //  dragover event for drop
                 badge.addEventListener('dragover', (event) => {
                     event.preventDefault();
                     event.dataTransfer.dropEffect = 'move';
                 });
 
-                // Gestione del drop sull'elemento badge
+                // drop on badge
                 badge.addEventListener('drop', (event) => {
                     event.preventDefault();
                     const targetIndex = badges.indexOf(badge);
 
-                    // Verifica se l'indice sorgente e destinazione sono diversi
+                    // if different index
                     if (draggedIndex !== null && draggedIndex !== targetIndex) {
-                        // Scambia le posizioni nell'array destinationFolders
+                        // swap items in destinationFolders array too
                         const temp = App.model.destinationFolders[draggedIndex];
                         App.model.destinationFolders[draggedIndex] = App.model.destinationFolders[targetIndex];
                         App.model.destinationFolders[targetIndex] = temp;
 
-                        // Scambia gli elementi nel DOM:
-                        // Se l'elemento trascinato si trova prima di quello target, inseriscilo subito dopo; altrimenti, subito prima.
+                        // swap items in DOM
                         if (draggedIndex < targetIndex) {
                             destinationList.insertBefore(badges[draggedIndex], badges[targetIndex].nextSibling);
                         } else {
                             destinationList.insertBefore(badges[draggedIndex], badges[targetIndex]);
                         }
 
-                        // Aggiorna l'array dei badges in base al nuovo ordine nel DOM
+                        // updated badges array according to new DOM
                         badges = Array.from(destinationList.querySelectorAll('.badge-outer'));
-
-                        console.log('destinationFolders aggiornato:', App.model.destinationFolders);
+                        badges.forEach((badge, index) => {
+                            let removeButton = badge.querySelector('a');
+                            removeButton.dataset.index = index;
+                        })
+                        App.utils.writeMessage('Destination Folders List updated!'); // + App.model.destinationFolders.join(","));
                     }
                     draggedIndex = null;
                 });
             });
 
-// Gestione degli eventi sul contenitore:
-// Se il drop avviene direttamente su #destinationList (e non su un badge), annulla l'azione.
+            // events on container:
+            // if drop on #destinationList, not on a badge, cancel
             destinationList.addEventListener('dragover', (event) => {
                 event.preventDefault();
             });
 
             destinationList.addEventListener('drop', (event) => {
-                // Se l'elemento rilasciato non è un badge interno, il drop non viene accettato.
+                // If the dropped element is not an internal badge, the drop is not accepted.
                 if (event.target === destinationList) {
                     event.preventDefault();
-                    console.log('Drop non valido: rilasciare solo su un elemento esistente.');
+                    //console.log('Drop not valid: release over another item.');
                 }
             });
 
 
         }
-
-
-
-
-
 
         function getLastTwoElements(folderPath) {
             const normalizedPath = path.normalize(folderPath);
