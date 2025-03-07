@@ -406,16 +406,19 @@ class CopyManager {
         if (this.moreQueue()) {
             App.snapshotManager.executeNextQueue();
         } else {
-            if (App.model.isQueue && App.model.preQueueSnapshot) {
-                App.snapshotManager.setFromSnapshot(App.model.preQueueSnapshot);
-                App.model.preQueueSnapshot = null;
-            }
-            App.model.isQueue = false;
-            document.getElementById('abortCopy').classList.add("hidden");
-            App.model.clicksActive = true;
-            App.utils.toggleSpinner(!App.model.clicksActive);
-            this.openReportModal();
+            this.endCopying();
         }
+    }
+    endCopying() {
+        if (App.model.isQueue && App.model.preQueueSnapshot) {
+            App.snapshotManager.setFromSnapshot(App.model.preQueueSnapshot);
+            App.model.preQueueSnapshot = null;
+        }
+        App.model.isQueue = false;
+        document.getElementById('abortCopy').classList.add("hidden");
+        App.model.clicksActive = true;
+        App.utils.toggleSpinner(!App.model.clicksActive);
+        this.openReportModal();
     }
 
     moreQueue() {

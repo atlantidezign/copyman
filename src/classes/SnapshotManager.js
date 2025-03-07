@@ -564,18 +564,20 @@ class SnapshotManager {
                 App.model.queueToExecute.shift();
                 this.executeNextQueue();
             } else {
-                return;
+                checkQueueDoneAndNoCopy();
             }
+            return;
         }
 
         if (!settings.sourceFolder || settings.destinationFolders.length === 0 || settings.selectionList.length === 0 || settings.destinationFolders.includes(settings.sourceFolder)) {
-            App.utils.writeMessage('Queue processing: Snapshot with "' + useName + '" is invalid.');
+            App.utils.writeMessage('Queue processing: Snapshot with name "' + useName + '" is invalid.');
             if (App.model.queueToExecute.length > 0 ) {
                 App.model.queueToExecute.shift();
                 this.executeNextQueue();
             } else {
-                return;
+                checkQueueDoneAndNoCopy();
             }
+            return;
         }
 
         App.utils.writeMessage('Queue processing: Executing Snapshot "' + useName + '"');
@@ -583,6 +585,13 @@ class SnapshotManager {
 
         // trigger start copy
         document.getElementById('copySelected').click();
+
+        function checkQueueDoneAndNoCopy() {
+            //case skip all and no any copy, does not pass for startCopying so force endCopying
+            if (App.model.someQueueDone == 0) {
+                App.copyManager.endCopying();
+            }
+        }
     }
 }
 

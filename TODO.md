@@ -6,8 +6,6 @@ sys: test new refactored codebase, especially filters
 ext: screenshot with open tree and of single panels
 ext: in website / features add: "cross-platform", "many copy modes", "queue tasks". and update screenshot.
 
-queue fix: case skip all and no any copy, does not pass for  startCopying so no report? added App.model.someQueueDone, manage it where it skips or donext
-
 --- 
 
 ## NEXT
