@@ -39,7 +39,7 @@ For each group, we have **Addictive** (+) filters, and **Subtractive** (-) filte
 A **Substractive Filter** removes from selection every item matches, as a **NOT** condition.
 
 **Relationship** between Addictive filters of different groups can be an **OR** or **AND** condition, according to options.
-OR means that item is selected if **at least one** of the group conditions matches, AND means that **all** conditions must match.
+*OR* means that item is selected if **at least one** of the group conditions matches, *AND* means that **all** conditions must match.
 
 #### Name Filter
 Accepts text string as input, as file/folder name substring.
@@ -107,7 +107,7 @@ It can be:
 - **Relationship OR** to choose the kind of relationship between filter groups, OR (checked) or AND (unchecked). Default true (OR).
 
 #### System
-- **Maintain Logs** to choose if to record application logs. Can be exported with **Export logs**.
+- **Maintain Logs** to choose if to record application logs in memory. Can be exported to file with **Export Logs**, and cleaned with **Clear Logs**.
 
 
 ---
