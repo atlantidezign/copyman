@@ -14,7 +14,6 @@ class App {
     selectionListManager = new SelectionListManager();
     sysManager = new SysManager();
     localizationManager = new LocalizationManager();
-    queueManager = new QueueManager();
 
     constructor() {
         if (App._instance) {
@@ -36,7 +35,6 @@ class App {
         this.treeManager.init();
         this.filtersManager.init();
         this.selectionListManager.init();
-        this.queueManager.init();
     }
 
     start() {

@@ -6,10 +6,11 @@ You can also **Refresh Source Folder Tree**.
 
 In Destination folders list, you can *drag* elements over each other to change order.
 
+
 ---
 
 ### Selection
-Within the **tree view**, you can **select** the items to copy (whether files or folders) using checkboxes.
+Within the **tree view**, you can **select** the items to copy (whether files or folders) using checkboxes (you can also click on names).
 
 You can navigate within the tree by **expanding** or **collapsing** branches.  
 You can also use the two buttons for **Expand or Collapse All**.
@@ -25,6 +26,7 @@ You can also choose the **Sort order** of the tree. Possible values are:
 - Date DESC
 - Type ASC
 - Type DESC
+
 
 ---
 
@@ -63,6 +65,7 @@ Accepts one or two numbers (expressed in Kb) as input, as file/folder size conta
 - In the **Size Filters List** you can see all Size filters applyed and remove individual filters.
 - Using the **Clear Size Filters** button, it removes the Size filters.
 
+
 ---
 
 ### Actions
@@ -73,6 +76,7 @@ There is a panel with action buttons:
 - **Options** Open Options panel.
 - **Help** Open Help panel.
 
+
 ---
 
 ### Options
@@ -82,6 +86,8 @@ Has an autosave behaviour, and can be **Reset** to defaults.
 #### Copying
 - **Verbose Progress** to choose if have a window with verborse progress during copying phase. Default false.
 - **Copying Report** to choose if have a window with report at the end of the copying phase. Default true.
+- **Abort Queue** to choose if the *Abort Copying* command affects full Queue or just current Queue Item. Default true.
+- **Don't Confirm Queue Steps** to choose if confirm or not every Queue Step start copying. Default false.
 - **Overwrite Existing** to choose the overwrite mode if a file/folder already exist. Default Always.
 It can be: 
   - *Always* Always Overwrite;
@@ -93,23 +99,21 @@ It can be:
   - *Brute* Clean files and folders recursively in folders with at least a selected file or folder inside;
   - *Keep* Keep existing file using a new name for copy.
 
-
 #### Selecting
 - **Propagate Selection** to choose if propagate (checked) or not (unchecked) the selection/deselection click of an item to parent and childen elements. Default true.
+- **Click on Names to Select**  to choose if also clicks on files/folders names can Select/Deselect the item. Default true.
 
 #### Filtering
 - **Relationship OR** to choose the kind of relationship between filter groups, OR (checked) or AND (unchecked). Default true (OR).
 
-#### Snapshot
-- **Selection List** to choose if save/load also the Selection List in the Snapshot.
-
 #### System
 - **Maintain Logs** to choose if to record application logs. Can be exported with **Export logs**.
 
+
 ---
 
-### Snapshots
-The **Snapshot** panel manages snapshot (current configuration of folders, filters, options and - optionally - selection list) save/load/clear/export;
+### Snapshots and Queue
+The **Snapshot** panel manages save/load/clear/export of a snapshot (current configuration of folders, filters, options and selection list);
 - **Save Shapshot** to save current snapshot, with a name.
 - **Export Shapshot** to export current snapshot to a json file, with a name.
 - **Load Shapshot** to load saved snapshot by selected name.
@@ -117,11 +121,18 @@ The **Snapshot** panel manages snapshot (current configuration of folders, filte
 - **Import Shapshot** to import snapshot from json file.
 - **Clear All Shapshots** to remove all saved snapshots.
 
+Snapshots can be **Queued** as tasks to be executed in succession.
+- You can choose snapshots to *Add*
+- You can move **Up** and **Down** and **Delete** queue list items.
+- You can **Execute** a queue.
+
+
 ---
 
 ### Selection List
 In the **Selection List** panel you'll find a table list of the selected items.
 Trough **Export JSON** or **Export CSV** button you can export the list in your preferred format.
+
 
 ---
 
@@ -131,6 +142,7 @@ With the **Copy Selected Items** button, the files are copied from the Source to
 **Pay attention:** Copy mode is *strict* on selection:
 only and exclusively the selected items will be copied.
 For example, if a folder is selected but only some of the files inside it are selected, only those will be copied.
+
 
 ---
 

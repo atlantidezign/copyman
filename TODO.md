@@ -1,25 +1,26 @@
 # TODO
 
 ## NOW
-sys: test new refractored codebase, especially filters
+sys: test new refactored codebase, especially filters
 
-ext: screenshot with open tree
+ext: screenshot with open tree and of single panels
+ext: in website / features add: "cross-platform", "many copy modes", "queue tasks". and update screenshot.
+
+queue fix: case skip all and no any copy, does not pass for  startCopying so no report? added App.model.someQueueDone, manage it where it skips or donext
 
 --- 
 
 ## NEXT
-electron: leaner build, better integrated build parameters and properties for Electron in package.json
+ui: alerts and confirms not using native dialogs but using html modals.
 
-ui: button to abort copy (clicks remain active; be careful if clicking elsewhere, be careful with toggleSpinner)
-
-copy: in verbose mode, using selectedNodes, include info on file sizes/date, and elapsed, and progres?, for each single file
+copy: in verbose mode, using selectedNodes, include info on file sizes/date, and elapsed, and progress?, for each single file
       and better verbose and progress in case of small files
 copy: before starting, using selectedNodes and scans of destinations, perform various checks on what will actually perform copy/overwrite/skip, etc.
       and use a window instead of confirm to show it to the user.
-      with an option eg. showPreview. with check for free space on destinations
-copy: tasks queue
+      with an option eg: showPreview. with check for free space on destinations
+ext: in website / features add: "actions preview".
 
-ext: new site copyman.it - in features add: "many copy modes", "cross platform", "actions preview", "queue tasks"
+electron: leaner build, better integrated build parameters and properties for Electron in package.json
 
 ---
 
@@ -41,6 +42,7 @@ sys: rewrite all in TypeScript
 sys: extensive testing
 
 ext: better Google Copyman account and GitHub profile
+ext: in website add robots.txt and better SEO (add to Google)
 
 ---
 

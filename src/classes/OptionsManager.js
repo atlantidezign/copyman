@@ -24,10 +24,25 @@ class OptionsManager {
             App.optionsManager.saveOptions();
             App.utils.writeMessage('Copying Report setting is now ' + App.model.copyReport);
         });
+        document.getElementById("abortQueueChecked").addEventListener("change", function () {
+            App.model.abortFullQueue = this.checked;
+            App.optionsManager.saveOptions();
+            App.utils.writeMessage('Abort Queue setting is now ' + App.model.abortFullQueue);
+        });
+        document.getElementById("dontConfirmQueueChecked").addEventListener("change", function () {
+            App.model.dontConfirmQueue = this.checked;
+            App.optionsManager.saveOptions();
+            App.utils.writeMessage('Don\'t Confirm Queue setting is now ' + App.model.dontConfirmQueue);
+        });
         document.getElementById("propagateChecked").addEventListener("change", function () {
             App.model.propagateSelections = this.checked;
             App.optionsManager.saveOptions();
             App.utils.writeMessage('Propagate Selection setting is now ' + App.model.propagateSelections);
+        });
+        document.getElementById("clickOnNamesChecked").addEventListener("change", function () {
+            App.model.clickOnNamesToSelect = this.checked;
+            App.optionsManager.saveOptions();
+            App.utils.writeMessage('Click on Names for Selecting setting is now ' + App.model.clickOnNamesToSelect);
         });
         document.getElementById("relationshipORChecked").addEventListener("change", function () {
             App.model.relationshipOR = this.checked;
@@ -70,9 +85,12 @@ class OptionsManager {
         if (savedOptions) {
             const options = JSON.parse(savedOptions);
             model.propagateSelections = options.propagateSelections;
+            model.clickOnNamesToSelect = options.clickOnNamesToSelect;
             model.fileOverwrite = options.fileOverwrite;
             model.copyVerbose = options.copyVerbose;
             model.copyReport = options.copyReport;
+            model.abortFullQueue = options.abortFullQueue;
+            model.dontConfirmQueue = options.dontConfirmQueue;
             model.relationshipOR = options.relationshipOR;
             model.sortOrder = options.sortOrder;
             model.maintainLogs = options.maintainLogs;
@@ -80,9 +98,12 @@ class OptionsManager {
         } else {
             const saveOptions = {
                 propagateSelections: model.propagateSelections,
+                clickOnNamesToSelect: model.clickOnNamesToSelect,
                 fileOverwrite: model.fileOverwrite,
                 copyVerbose: model.copyVerbose,
                 copyReport: model.copyReport,
+                abortFullQueue: model.abortFullQueue,
+                dontConfirmQueue: model.dontConfirmQueue,
                 relationshipOR: model.relationshipOR,
                 sortOrder: model.sortOrder,
                 maintainLogs: model.maintainLogs,
@@ -96,9 +117,12 @@ class OptionsManager {
         let model = App.model;
         const saveOptions = {
             propagateSelections: model.propagateSelections,
+            clickOnNamesToSelect: model.clickOnNamesToSelect,
             fileOverwrite: model.fileOverwrite,
             copyVerbose: model.copyVerbose,
             copyReport: model.copyReport,
+            abortFullQueue: model.abortFullQueue,
+            dontConfirmQueue: model.dontConfirmQueue,
             relationshipOR: model.relationshipOR,
             sortOrder: model.sortOrder,
             maintainLogs: model.maintainLogs,
@@ -109,9 +133,12 @@ class OptionsManager {
     resetOptions() {
         let model = App.model;
         model.propagateSelections = model.propagateSelectionsDefault;
+        model.clickOnNamesToSelect = model.clickOnNamesToSelectDefault;
         model.fileOverwrite = model.fileOverwriteDefault;
         model.copyVerbose = model.copyVerboseDefault;
         model.copyReport = model.copyReportDefault;
+        model.abortFullQueue = model.abortFullQueueDefault;
+        model.dontConfirmQueue = model.dontConfirmQueueDefault;
         model.relationshipOR = model.relationshipORDefault;
         model.sortOrder = model.sortOrderDefault;
         model.maintainLogs = model.maintainLogsDefault;
@@ -130,7 +157,10 @@ class OptionsManager {
         });
         document.getElementById("verboseChecked").checked = App.model.copyVerbose;
         document.getElementById("reportChecked").checked = App.model.copyReport;
+        document.getElementById("abortQueueChecked").checked = App.model.abortFullQueue;
+        document.getElementById("dontConfirmQueueChecked").checked = App.model.dontConfirmQueue;
         document.getElementById("propagateChecked").checked = App.model.propagateSelections;
+        document.getElementById("clickOnNamesChecked").checked = App.model.clickOnNamesToSelect;
         document.getElementById("relationshipORChecked").checked = App.model.relationshipOR;
         document.getElementById("maintainLogsChecked").checked = App.model.maintainLogs;
         document.getElementById("saveSelectionChecked").checked = App.model.saveSelection;

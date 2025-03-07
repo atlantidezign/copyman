@@ -39,6 +39,10 @@ body {
     display: none !important;
 }
 
+.opDisabled {
+    opacity: 0.5;
+}
+
 .text-right {
     text-align: right;
 }
@@ -90,8 +94,16 @@ body > div#div-controls {
     font-size: 0.75em;
     padding-top: 2px;
     max-width: 80%;
+    z-index: 1001; /* over #spinner-overlay but under bootrap modals */
 }
-
+.footer > div {
+    position: relative;
+}
+#abortCopy {
+    position: absolute;
+    right: 0;
+    z-index: 1099; /* over #spinner-overlay and over bootrap modals */
+}
 ul {
     list-style: none;
     padding-left: 20px;
@@ -176,7 +188,36 @@ li {
 .snapshot-buttons {
     width: 90px;
 }
-
+.snapshot-explain {
+    font-size: 0.85em;
+    padding-bottom: 20px;
+}
+#queueList {
+    min-height: 30px;
+    font-size: 0.80em;
+}
+#queueList p {
+    color: #8510f2;
+}
+.queue-item {
+    background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2px !important;
+    padding: 0 0 0 10px;
+    border: 1px solid var(--bs-border-color);
+    border-radius:5px;
+}
+.queue-item span {
+    flex: 1;
+}
+.queue-item button:nth-child(n+2) {
+    margin-left: 1px !important;
+}
+#addToQueue {
+    width: 97px;
+}
 .span-actions {
     flex-grow: 1;
     text-align: center;
@@ -429,7 +470,7 @@ body > div#spinner-overlay {
     justify-content: center;
     text-align: center;
     align-items: center;
-    z-index: 999;
+    z-index: 990;
 }
 
 /* Animated Spinner items*/

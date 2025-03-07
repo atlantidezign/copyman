@@ -54,7 +54,10 @@ class Model {
     fileOverwriteDefault = this.fileOverwriteEnum.always;
     copyVerboseDefault = false;
     copyReportDefault = true;
+    abortFullQueueDefault = true;
+    dontConfirmQueueDefault = false;
     propagateSelectionsDefault = true;
+    clickOnNamesToSelectDefault = true;
     relationshipORDefault = true;
     sortOrderDefault = this.sortOrderList[0];
     maintainLogsDefault = false;
@@ -65,7 +68,10 @@ class Model {
     fileOverwrite = this.fileOverwriteDefault;
     copyVerbose = this.copyVerboseDefault;
     copyReport = this.copyReportDefault;
+    abortFullQueue = this.abortFullQueueDefault;
+    dontConfirmQueue = this.dontConfirmQueueDefault;
     propagateSelections = this.propagateSelectionsDefault;
+    clickOnNamesToSelect = this.clickOnNamesToSelectDefault;
     relationshipOR = this.relationshipORDefault;
     sortOrder = this.sortOrderDefault;
     maintainLogs = this.maintainLogsDefault;
@@ -82,6 +88,18 @@ class Model {
 
     // Logs
     logs = [];
+
+    // Queue
+    queue = [];
+    queueToExecute = [];
+    isQueue = false;
+    preQueueSnapshot = null;
+    someQueueDone = 0;
+
+    // Abort
+    abort = false;
+    wasAborted = false;
+
 }
 
 // export for singleton

@@ -9,7 +9,9 @@ class Utils {
         if (this.messageTimeout) clearTimeout(this.messageTimeout);
         document.getElementById('status').textContent = message;
         if (App.model.maintainLogs) {
-            App.model.logs.push(message);
+            let now = new Date();
+            let nowString = "[" + now.toLocaleDateString() + ' ' + now.toLocaleTimeString() + "] ";
+            App.model.logs.push(nowString + message);
         }
         this.messageTimeout = setTimeout(() => {
             document.getElementById('status').textContent = '';

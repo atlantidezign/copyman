@@ -124,7 +124,7 @@
                data-bs-target="#listModal"><i class="bi bi-list-check"></i>
             </a>
             <a type="button" id="modalSnapshotTrigger" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-               title="Open Snapshots panel"
+               title="Open Snapshots and Queue panel"
                data-bs-target="#snapshotModal"><i class="bi bi-floppy"></i>
             </a>
             <a type="button" id="modalOptionsTrigger" class="btn btn-primary btn-sm" data-bs-toggle="modal"
@@ -160,6 +160,9 @@
     <div class="footer">
         <span id="status"></span>
         <div>
+            <button id="abortCopy" class="btn btn-primary btn-sm hidden" title="Abort Copying!"><i
+                    class="bi bi-x-circle"></i> Abort Copying
+            </button>
             <button id="copySelected" class="btn btn-primary btn-sm" title="Copy Selected Items"><img
                     src="images/80x80.svg" alt="Copyman" title="Copyman"/> Copy Selected Items
             </button>
@@ -317,6 +320,7 @@
                                        checked/>
                                 <label class="form-check-label" for="verboseChecked">Verbose Progress</label>
                             </div>
+
                             <div class="form-check form-switch"
                                  title="Report at the end of the copying phase">
                                 <input class="form-check-input" type="checkbox" role="switch" id="reportChecked"
@@ -324,6 +328,22 @@
                                        checked/>
                                 <label class="form-check-label" for="reportChecked">Copying Report</label>
                             </div>
+                            <div class="form-check form-switch"
+                                 title="If the Abort command affects full Queue or just current Queue Item">
+                                <input class="form-check-input" type="checkbox" role="switch" id="abortQueueChecked"
+                                       title="If the Abort command affects full Queue or just current Queue Item"
+                                       checked/>
+                                <label class="form-check-label" for="abortQueueChecked">Abort Queue</label>
+                            </div>
+
+                            <div class="form-check form-switch"
+                                 title="Do not confirm every Queue Step during copying">
+                                <input class="form-check-input" type="checkbox" role="switch" id="dontConfirmQueueChecked"
+                                       title="Do not confirm every Queue Step during copying"
+                                       checked/>
+                                <label class="form-check-label" for="dontConfirmQueueChecked">Don't Confirm Queue Steps </label>
+                            </div>
+
                             <div class="ps-3 mt-2"><label class="form-check-label"
                                                           title="Set Overwrite conditions for files and folders, during copying, if they already exist">Overwrite
                                 Existing</label></div>
@@ -396,6 +416,13 @@
                                        checked/>
                                 <label class="form-check-label" for="propagateChecked">Propagate Selection</label>
                             </div>
+                            <div class="form-check form-switch"
+                                 title="Click also on files/folders names to Select/Deselect the item">
+                                <input class="form-check-input" type="checkbox" role="switch" id="clickOnNamesChecked"
+                                       title="Click also on files/folders names to Select/Deselect the item"
+                                       checked/>
+                                <label class="form-check-label" for="clickOnNamesChecked">Click on Names to Select</label>
+                            </div>
                         </div>
                         <div>
                             <h6>Filtering</h6>
@@ -407,8 +434,8 @@
                                 <label class="form-check-label" for="relationshipORChecked">Relationship OR</label>
                             </div>
                         </div>
-                        <div>
-                            <h6>Shapshots</h6>
+                        <div class="hidden">
+                            <h6>Snapshots</h6>
                             <div class="form-check form-switch" title="Save/Load also Selection List">
                                 <input class="form-check-input" type="checkbox" role="switch" id="saveSelectionChecked"
                                        title="Save/Load also Selection List"
@@ -447,13 +474,12 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title" id="snapshotModalLabel"><img src="images/logotype_indigo_alt.svg"
-                                                                         alt="Copyman" title="Copyman"/> Snapshots</h1>
+                                                                         alt="Copyman" title="Copyman"/> Snapshots and Queue</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="container-fluid">
-                        <div><b>Snapshot</b> includes: Folders, Filters, Options and (optionally) Selection List.</div>
-                        <br>
+                        <div class="snapshot-explain"><b>Snapshot</b> includes: Folders, Filters, Options and Selection List.</div>
                         <div class="input-group">
                             <input type="text" class="form-control" id="saveSnapshotInput"
                                    title="Name of the Snapshot to save"
@@ -481,18 +507,51 @@
                                 Clear
                             </button>
                         </div>
+
+                        <div>
+                            <button id="importSnapshot" type="button" class="btn btn-primary btn-sm snapshot-buttons"><i
+                                class="bi bi-box-arrow-in-up" title="Import Snapshot from file"></i>
+                            Import
+                        </button>
+                            <button id="cleanAllSnapshots" type="button"
+                                    class="btn btn-primary btn-sm snapshot-buttons"><i
+                                    class="bi bi-trash" title="Clear All saved Snapshots"></i>
+                                Clear All
+                            </button>
+                        </div>
+                        <hr>
+                        <div class="snapshot-explain"><b>Snapshots</b> can be <b>queued</b> as tasks to be executed in succession.</div>
+                        <div>
+                            <!-- Section to display the queue -->
+                            <div class="mb-3">
+                                <span>Queue Items</span>
+                                <div id="queueList"></div>
+                            </div>
+                            <!-- Section to display add -->
+                            <div class="input-group">
+                                <select class="form-select form-select-sm" aria-label="Choose a Snapshot to add"
+                                        title="Choose a Snapshot to add"
+                                        id="queueSelect">
+                                </select>
+                                <button id="addToQueue" type="button" class="btn btn-primary btn-sm snapshot-buttons" title="Add to Queue"><i
+                                        class="bi bi-plus-lg" title="Add to Queue"></i>
+                                    Add
+                                </button>
+                            </div>
+                            <!-- Button to clear the entire queue -->
+                            <button id="clearQueue" class="btn btn-primary btn-sm" title="Empty Queue"><i
+                                    class="bi bi-trash" title="Empty Queue"></i>
+                                Empty
+                            </button>
+                            <button id="executeQueue" class="btn btn-primary btn-sm" title="Execute Queue"><i
+                                    class="bi bi-play-btn" title="Execute Queue"></i>
+                                Execute
+                            </button>
+                        </div>
+                        <br>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button id="importSnapshot" type="button" class="btn btn-primary btn-sm snapshot-buttons"><i
-                            class="bi bi-box-arrow-in-up" title="Import Snapshot from file"></i>
-                        Import
-                    </button>
-                    <button id="cleanAllSnapshots" type="button"
-                            class="btn btn-primary btn-sm snapshot-buttons"><i
-                            class="bi bi-trash" title="Clear All saved Snapshots"></i>
-                        Clear All
-                    </button>
                     <button type="button" class="btn btn-primary btn-sm" data-bs-dismiss="modal"><i
                             class="bi bi-x-lg"></i>
                         Close

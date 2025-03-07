@@ -253,6 +253,20 @@ class TreeManager {
             label.appendChild(labelExtrasSize);
             labelContainer.appendChild(label);
 
+            if (App.model.clickOnNamesToSelect) { labelContainer.style.cursor = 'pointer';}
+            // Add an event listener on the labelContainer for the text spans:
+            // This allows clicking on the label, date, or size to simulate a click on the checkbox.
+            labelContainer.addEventListener('click', (e) => {
+                // Do nothing if the click is on the toggle icon or on the checkbox itself
+                if (e.target === toggleIcon || e.target === checkbox) return;
+                if (App.model.clickOnNamesToSelect) {
+                    // Simulate a click on the checkbox
+                    checkbox.click();
+                    // Prevent further propagation if needed
+                    e.stopPropagation();
+                }
+            });
+
             li.appendChild(labelContainer);
 
             // children list (collapsed)
@@ -299,6 +313,20 @@ class TreeManager {
             labelExtrasSize.textContent = (node.size !== "" ? " " + node.size : "");
             label.appendChild(labelExtrasSize);
             labelContainer.appendChild(label);
+
+            // Add an event listener on the labelContainer for the text spans:
+            // This allows clicking on the label, date, or size to simulate a click on the checkbox.
+            if (App.model.clickOnNamesToSelect) { labelContainer.style.cursor = 'pointer';}
+            labelContainer.addEventListener('click', (e) => {
+                // Do nothing if the click is on the toggle icon or on the checkbox itself
+                if (e.target === checkbox) return;
+                if (App.model.clickOnNamesToSelect) {
+                    // Simulate a click on the checkbox
+                    checkbox.click();
+                    // Prevent further propagation if needed
+                    e.stopPropagation();
+                }
+            });
 
             li.appendChild(labelContainer);
         }

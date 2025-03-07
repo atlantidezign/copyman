@@ -5,7 +5,12 @@ class UIManager {
 
     init() {
         //General click
-        document.addEventListener('click', function (event) {
+        document.addEventListener('click', (event) => {
+            // If the clicked element is or is inside an element with id "abortCopy", do nothing
+            if (event.target.closest('#abortCopy')) {
+                return;
+            }
+            // For all other cases, block the click when clicksActive is false
             if (!App.model.clicksActive) {
                 event.stopImmediatePropagation();
                 event.preventDefault();

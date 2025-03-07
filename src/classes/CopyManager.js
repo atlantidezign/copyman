@@ -71,6 +71,10 @@ class CopyManager {
         document.getElementById('clearAllDestinations').addEventListener('click', this.clearDestinations.bind(this));
 
         // Copying
+        document.getElementById('abortCopy').addEventListener('click', (e) => {
+            e.target.classList.add("opDisabled");
+            App.model.abort = true;
+        });
         document.getElementById('copySelected').addEventListener('click', async () => {
             // check if at least a destination folder is selected, and if source folder selected
             App.utils.writeMessage('Preparing for Copy...');
@@ -118,6 +122,16 @@ class CopyManager {
             App.model.clicksActive = false;
             App.utils.toggleSpinner(!App.model.clicksActive);
             let useOverwrite = App.utils.formatOverwriteMode(App.model.fileOverwrite);
+
+            // remove confirmation request if queue
+            if (this.moreQueue() && App.model.dontConfirmQueue) {
+                App.utils.writeMessage('Copying Started...');
+                setTimeout(() => {
+                    App.copyManager.startCopying()
+                }, 100);
+                return;
+            }
+
             let confirmation = await App.utils.showConfirmWithReturn('Are you sure you want to copy ' + App.model.selectedNodes.length + ' items (' + App.utils.formatSizeForThree(App.model.sizeTotal) + ')\nfrom ' + App.model.sourceFolder + '\nto ' + destinations + '\nwith overwrite mode set to ' +useOverwrite + '?');
             if (confirmation) {
                 App.utils.writeMessage('Copying Started...');
@@ -125,9 +139,13 @@ class CopyManager {
                     App.copyManager.startCopying()
                 }, 100);
             } else {
-                App.utils.writeMessage('Copying Aborted.');
-                App.model.clicksActive = true;
-                App.utils.toggleSpinner(!App.model.clicksActive);
+                if (this.moreQueue()) {
+                    App.snapshotManager.executeNextQueue();
+                } else {
+                    App.utils.writeMessage('Copying Aborted.');
+                    App.model.clicksActive = true;
+                    App.utils.toggleSpinner(!App.model.clicksActive);
+                }
             }
 
         });
@@ -328,7 +346,7 @@ class CopyManager {
     }
 
     removeDestination(index) {
-        App.model.destinationFolders.splice(index, 1);
+        App.model.destinationFolders.splice(Number(index), 1);
         this.updateDestinationList();
         App.utils.writeMessage('Destination folder removed.');
     }
@@ -341,17 +359,37 @@ class CopyManager {
 
     //Copying
     async startCopying() {
-        App.model.copyingReport = [];
-        App.model.itemsCopied = [];
-        App.model.itemsSkipped = [];
-        App.model.itemsFailed = [];
-        for (let i = 0; i < App.model.destinationFolders.length; i++) {
-            App.model.itemsCopied.push(0);
-            App.model.itemsSkipped.push(0);
-            App.model.itemsFailed.push(0);
+        if (!this.moreQueue()) {
+            //reset counters
+            App.model.copyingReport = [];
+            App.model.itemsCopied = [];
+            App.model.itemsSkipped = [];
+            App.model.itemsFailed = [];
+            for (let i = 0; i < App.model.destinationFolders.length; i++) {
+                App.model.itemsCopied.push(0);
+                App.model.itemsSkipped.push(0);
+                App.model.itemsFailed.push(0);
+            }
+            App.model.itemsProcessed = 0;
+            App.model.itemsTotal = App.model.selectedNodes.length;
+        } else {
+            //update counters
+            if (App.model.destinationFolders.length > App.model.itemsCopied.length) {
+                for (let i = 0; i < (App.model.destinationFolders.length - App.model.itemsCopied.length); i++) {
+                    App.model.itemsCopied.push(0);
+                    App.model.itemsSkipped.push(0);
+                    App.model.itemsFailed.push(0);
+                }
+            }
+            App.model.itemsTotal += App.model.selectedNodes.length;
         }
-        App.model.itemsProcessed = 0;
-        App.model.itemsTotal = App.model.selectedNodes.length;
+
+        //reset abort
+        App.model.wasAborted = false;
+        App.model.abort = false;
+        document.getElementById('abortCopy').classList.remove("hidden");
+
+        //start
         this.openProgressModal();
         if (App.model.copyVerbose) {
             await App.utils.waitForUiUpdate();
@@ -360,18 +398,57 @@ class CopyManager {
         if (App.model.copyVerbose) {
             await App.utils.waitForUiUpdate();
         }
-        App.model.clicksActive = true;
-        App.utils.toggleSpinner(!App.model.clicksActive);
-        this.openReportModal();
+
+        //clear queue item if exists
+        if (App.model.queueToExecute.length > 0) {
+            App.model.queueToExecute.shift();
+        }
+        if (this.moreQueue()) {
+            App.snapshotManager.executeNextQueue();
+        } else {
+            if (App.model.isQueue && App.model.preQueueSnapshot) {
+                App.snapshotManager.setFromSnapshot(App.model.preQueueSnapshot);
+                App.model.preQueueSnapshot = null;
+            }
+            App.model.isQueue = false;
+            document.getElementById('abortCopy').classList.add("hidden");
+            App.model.clicksActive = true;
+            App.utils.toggleSpinner(!App.model.clicksActive);
+            this.openReportModal();
+        }
+    }
+
+    moreQueue() {
+        let moreQueue = App.model.queueToExecute.length > 0;
+        return moreQueue
     }
 
     async executeCopy() {
         let now1 = new Date();
         let startTime = now1.getTime();
+        App.model.someQueueDone++;
         this.updateCopyingProgress('▷ ' + 'Copy started at: ' + now1.toLocaleTimeString(), true);
         // copy every selected item
         let fileIndex = 1;
         for (const node of App.model.selectedNodes) {
+            // check for abort
+            if (App.model.abort) {
+                App.model.abort = false;
+                App.model.wasAborted = true;
+                document.getElementById('abortCopy').classList.remove("opDisabled");
+                if (App.model.abortFullQueue) {
+                    App.model.queueToExecute = [];
+                    App.utils.writeMessage('Copy Aborted!');
+                } else {
+                    if (App.model.queueToExecute.length > 0) {
+                        App.utils.writeMessage('Copy of the current Queue item Aborted!');
+                    } else {
+                        App.utils.writeMessage('Copy Aborted!');
+                    }
+                }
+                break;
+            }
+            // copy
             let relPath = node.path;
             const sourceFullPath = path.join(App.model.sourceFolder, relPath);
             let destIndex = 0;
@@ -579,11 +656,18 @@ class CopyManager {
             document.getElementById('verboseProgress').classList.add('hidden');
             document.getElementById('copyingReport').classList.remove('hidden');
             document.querySelectorAll('.copyingClose').forEach((el) => el.classList.remove('hidden'));
-            document.getElementById('copyingReportMD').innerHTML = '<h6>Report</h6>' + App.model.copyingReport.join("\n") + `<hr>
+            let innerHTML = '<h6>Report</h6>' + App.model.copyingReport.join("\n") + `<hr>
         Processed <b>${App.model.itemsProcessed}</b> of <b>${App.model.itemsTotal}</b> items, into <b>${App.model.destinationFolders.length}</b> Destination folders.<br>
         Copied: <b>${App.model.itemsCopied.toString()}</b>; Skipped: <b>${App.model.itemsSkipped.toString()}</b>; Failed: <b>${App.model.itemsFailed.toString()}</b>.<br>
         Size: ${App.utils.formatSizeForThree(App.model.sizeTotal)}
         `;
+            if (App.model.wasAborted) {
+                innerHTML += `<hr> Copying aborted by user!
+                `;
+                App.model.wasAborted = false;
+            }
+            document.getElementById('copyingReportMD').innerHTML = innerHTML;
+
             setTimeout( () => {
                 const modalBody = document.querySelector('#copyingModal .modal-body');
                 modalBody.scrollTop = modalBody.scrollHeight;
