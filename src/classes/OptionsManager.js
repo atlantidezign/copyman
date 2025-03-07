@@ -74,6 +74,13 @@ class OptionsManager {
                 App.utils.writeMessage('Logs have been exported to file.');
             }
         });
+        document.getElementById("clearLogs").addEventListener("click", async function () {
+            let confirmation = await App.utils.showConfirmWithReturn('Are you sure you want to clear Logs in memory?');
+            if (confirmation) {
+                App.model.logs = [];
+                App.utils.writeMessage('Logs have been cleared.');
+            }
+        });
 
         let now = new Date();
         App.utils.writeMessage('Welcome to Copyman v' + App.model.appVersion + '! ' + now.toLocaleDateString() + ' ' + now.toLocaleTimeString() );
