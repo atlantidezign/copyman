@@ -478,11 +478,10 @@ class SnapshotManager {
 
                 // saves actual snapshot
                 let useName = "preQueueSnapshot";
-                let newSettings = this.createSnapshotObject(useName);
-                App.model.preQueueSnapshot = newSettings;
+                App.model.preQueueSnapshot = this.createSnapshotObject(useName);
 
                 App.model.isQueue = true;
-                App.model.someQueueDone = 0;
+                App.model.someCopyDone = 0;
                 App.utils.writeMessage('Start executing queue..');
 
                 const modal = bootstrap.Modal.getOrCreateInstance('#snapshotModal');
@@ -510,7 +509,7 @@ class SnapshotManager {
                 App.model.queueToExecute.shift();
                 this.executeNextQueue();
             } else {
-                checkQueueDoneAndNoCopy();
+                App.copyManager.endCopying();
             }
             return;
         }
@@ -521,7 +520,7 @@ class SnapshotManager {
                 App.model.queueToExecute.shift();
                 this.executeNextQueue();
             } else {
-                checkQueueDoneAndNoCopy();
+                App.copyManager.endCopying();
             }
             return;
         }
@@ -532,11 +531,6 @@ class SnapshotManager {
         // trigger start copy
         document.getElementById('copySelected').click();
 
-        function checkQueueDoneAndNoCopy() {
-            //if (App.model.someQueueDone == 0) {
-                App.copyManager.endCopying();
-            //}
-        }
     }
 }
 

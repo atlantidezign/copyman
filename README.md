@@ -2,7 +2,7 @@
 
 ## File copying, reinvented
 
-Copyman is the ultimate file copying utility designed to make your workflow faster and more efficient. With blazing-fast performance, it allows you to copy files simultaneously from a single source folder to multiple destination folders while preserving the folder structure.
+Copyman is the ultimate file copying utility designed to make your workflow faster and more efficient. With blazing-fast performance, it allows you to copy files simultaneously from a single source folder to multiple destination folders while preserving the folder structure and automating repetitive tasks.
 
 ### Key Features:
 

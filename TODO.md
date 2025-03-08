@@ -1,27 +1,21 @@
 # TODO
 
 ## NOW
-sys: test new refactored codebase, especially filters
-sys: test queue flow with aborts and confirms all negative
-
-ext: screenshot with open tree and of single panels in /docs
-ext: in website / features add: "cross-platform", "many copy modes", "queue tasks". and update screenshot.
-
---- 
-
-## NEXT
-ui: alerts and confirms not using native dialogs but using html modals.
+test: new refactored codebase, especially date/size filters
 
 copy: in verbose mode, using selectedNodes, include info on file sizes/date, and elapsed, and progress?, for each single file
       and better verbose and progress in case of small files
 copy: before starting, using selectedNodes and scans of destinations, perform various checks on what will actually perform copy/overwrite/skip, etc.
       and use a window instead of confirm to show it to the user.
       with an option eg: showPreview. with check for free space on destinations
-ext: in website / features add: "actions preview".
+copy: new mode: if selected something only on leaf or descending trees (ignoring when folder selection is just to reach the leaf path - no other selection in the descending ones) it syncs just starting from that ones
 
-copy: new mode: if selected something only on leaf or descending trees (ignoring when folder selection is just to reach the leaf path - no other selection in the descending ones) it syncs just starting from that ones 
+--- 
 
+## NEXT
 queue: multiple queues with load/save/export/import for singles and for all.
+
+snapshots: preview
 
 electron: leaner build, better integrated build parameters and properties for Electron in package.json
 
@@ -36,6 +30,7 @@ electron: splash with logo?
 electron: notifications? (possibly also for update checking via my URL)
           create a dedicated modal for listing/reading and add a spinning icon
 
+ui: alerts and confirms not using native dialogs but using html modals.
 ui: collapsable folders/filters panels or all separated panels using floating windows?
 ui: better tree view, with multiple columns for source (like mac) and/or even show the destinations?
     if show destinations: create a tree for the various destinations as well, in split screen with tabs; 

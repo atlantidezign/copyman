@@ -94,11 +94,11 @@ class Model {
     queueToExecute = [];
     isQueue = false;
     preQueueSnapshot = null;
-    someQueueDone = 0;
 
     // Abort
     abort = false;
     wasAborted = false;
+    someCopyDone = 0;
 
 }
 

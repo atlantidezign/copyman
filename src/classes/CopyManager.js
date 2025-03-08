@@ -139,7 +139,9 @@ class CopyManager {
                     App.copyManager.startCopying()
                 }, 100);
             } else {
-                if (this.moreQueue()) {
+                //clear queue item if exists
+                if (App.model.queueToExecute.length > 0) {
+                    App.model.queueToExecute.shift();
                     App.snapshotManager.executeNextQueue();
                 } else {
                     App.utils.writeMessage('Copying Aborted.');
@@ -404,6 +406,7 @@ class CopyManager {
         if (App.model.queueToExecute.length > 0) {
             App.model.queueToExecute.shift();
         }
+
         if (this.moreQueue()) {
             App.snapshotManager.executeNextQueue();
         } else {
@@ -411,11 +414,13 @@ class CopyManager {
         }
     }
     endCopying() {
-        if (App.model.isQueue && App.model.preQueueSnapshot) {
-            App.snapshotManager.setFromSnapshot(App.model.preQueueSnapshot);
-            App.model.preQueueSnapshot = null;
+        if (App.model.isQueue && !this.moreQueue()) {
+            if (App.model.preQueueSnapshot) {
+                App.snapshotManager.setFromSnapshot(App.model.preQueueSnapshot);
+                App.model.preQueueSnapshot = null;
+            }
+            App.model.isQueue = false;
         }
-        App.model.isQueue = false;
         document.getElementById('abortCopy').classList.add("hidden");
         document.getElementById('copySelected').classList.remove("hidden");
         App.model.clicksActive = true;
@@ -431,7 +436,7 @@ class CopyManager {
     async executeCopy() {
         let now1 = new Date();
         let startTime = now1.getTime();
-        App.model.someQueueDone++;
+        App.model.someCopyDone++;
         this.updateCopyingProgress('▷ ' + 'Copy started at: ' + now1.toLocaleTimeString(), true);
         // copy every selected item
         let fileIndex = 1;
@@ -661,7 +666,11 @@ class CopyManager {
             document.getElementById('verboseProgress').classList.add('hidden');
             document.getElementById('copyingReport').classList.remove('hidden');
             document.querySelectorAll('.copyingClose').forEach((el) => el.classList.remove('hidden'));
-            let innerHTML = '<h6>Report</h6>' + App.model.copyingReport.join("\n") + `<hr>
+            let copyReport = App.model.copyingReport.join("\n");
+            if (copyReport == "") {
+                copyReport = "No items copied!"
+            }
+            let innerHTML = '<h6>Report</h6>' + copyReport + `<hr>
         Processed <b>${App.model.itemsProcessed}</b> of <b>${App.model.itemsTotal}</b> items, into <b>${App.model.destinationFolders.length}</b> Destination folders.<br>
         Copied: <b>${App.model.itemsCopied.toString()}</b>; Skipped: <b>${App.model.itemsSkipped.toString()}</b>; Failed: <b>${App.model.itemsFailed.toString()}</b>.<br>
         Size: ${App.utils.formatSizeForThree(App.model.sizeTotal)}
