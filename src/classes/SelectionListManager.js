@@ -30,7 +30,12 @@ class SelectionListManager {
         htmlContent += '</table>';
         document.getElementById('listContentMD').innerHTML = htmlContent;
         //document.getElementById('listFooterTotal').innerHTML = 'Selected: ' + selectedItems.length + " ["+countFiles+" files | "+countFolders+" folders] ("+App.utils.formatSizeForThree(totalSize)+")";
-        document.getElementById('listFooterTotal').innerHTML = "Selected: " +countFiles+" files | "+countFolders+" folders ("+App.utils.formatSizeForThree(totalSize)+")";
+        document.getElementById('listFooterTotal').innerHTML = this.getSelectionCountString(countFiles, countFolders, totalSize);
+    }
+    getSelectionCountString(countFiles, countFolders, totalSize) {
+        let fileString = countFiles === 1 ? "file" : "files";
+        let folderString = countFolders === 1 ? "folder" : "folders";
+        return "Selected: " +countFiles+" "+fileString+" | "+countFolders+" "+folderString+" ("+App.utils.formatSizeForThree(totalSize)+")"
     }
 
     // Generate selection list
@@ -109,8 +114,7 @@ class SelectionListManager {
                 }
                 ;
             })
-            //selectionString += 'Selected: ' + selectedItems.length + " ["+countFiles+" files | "+countFolders+" folders] ("+App.utils.formatSizeForThree(totalSize)+")";
-            selectionString = "Selected: " + countFiles+" files | "+countFolders+" folders ("+App.utils.formatSizeForThree(totalSize)+")";
+            selectionString = this.getSelectionCountString(countFiles, countFolders, totalSize);
         }
         document.getElementById('selectionStats').innerHTML = selectionString;
     }

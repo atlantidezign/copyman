@@ -44,9 +44,8 @@ Source code available on <a href="https://github.com/atlantidezign/copyman"><i c
     v${App.model.appVersion}
     <br>
     <br>
-    <p>Select and copy items, at lightning speed, from one folder to multiple destinations while preserving the folder structure.</p>
+    <p>Select and copy items at lightning speed to multiple destinations while preserving the folder structure - with a focus on automation.</p>
     `;
-
         document.getElementById('helpContentMD').innerHTML = marked.parse(markdown) + underDocs;
         document.getElementById('aboutContentMD').innerHTML = aboutDocs + underDocs;
     }

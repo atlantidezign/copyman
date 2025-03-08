@@ -112,8 +112,10 @@ It can be:
 
 ---
 
-### Snapshots and Queue
-The **Snapshot** panel manages save/load/clear/export of a snapshot (current configuration of folders, filters, options and selection list);
+### Automation: Snapshots and Queue
+The **Snapshot** panel provides useful tools for automation: you can save and reload snapshots of frequently used tasks, eliminating the need to make selections each time – simply load and execute.
+A snapshot includes the current configuration of folders, filters, options, and the selection list.
+In this panel, you can manage saving, loading, clearing, and exporting snapshots.
 - **Save Shapshot** to save current snapshot, with a name.
 - **Export Shapshot** to export current snapshot to a json file, with a name.
 - **Load Shapshot** to load saved snapshot by selected name.
@@ -122,8 +124,8 @@ The **Snapshot** panel manages save/load/clear/export of a snapshot (current con
 - **Clear All Shapshots** to remove all saved snapshots.
 
 Snapshots can be **Queued** as tasks to be executed in succession.
-- You can choose snapshots to *Add*
-- You can move **Up** and **Down** and **Delete** queue list items.
+- You can choose snapshots to *Add*.
+- You can move **Up** and **Down** and **Delete** items in the queue list.
 - You can **Execute** a queue.
 
 

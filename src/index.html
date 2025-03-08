@@ -124,8 +124,8 @@
                data-bs-target="#listModal"><i class="bi bi-list-check"></i>
             </a>
             <a type="button" id="modalSnapshotTrigger" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-               title="Open Snapshots and Queue panel"
-               data-bs-target="#snapshotModal"><i class="bi bi-floppy"></i>
+               title="Open Automation (Snapshots and Queue) panel"
+               data-bs-target="#snapshotModal"><i class="bi bi-star-fill"></i>
             </a>
             <a type="button" id="modalOptionsTrigger" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                title="Open Options panel"
@@ -311,7 +311,7 @@
                 <div class="modal-body">
                     <div class="container-fluid">
                         <div>
-                            <h6>Copying</h6>
+                            <h6><i class="bi bi-copy"></i> Copying</h6>
 
                             <div class="form-check form-switch"
                                  title="Verbose progress during copying phase">
@@ -408,7 +408,7 @@
                             </div>
                         </div>
                         <div>
-                            <h6>Selecting</h6>
+                            <h6><i class="bi bi-check2-all"></i> Selecting</h6>
                             <div class="form-check form-switch"
                                  title="Propagate selection of an item to parent and children elements">
                                 <input class="form-check-input" type="checkbox" role="switch" id="propagateChecked"
@@ -425,7 +425,7 @@
                             </div>
                         </div>
                         <div>
-                            <h6>Filtering</h6>
+                            <h6><i class="bi bi-funnel"></i> Filtering</h6>
                             <div class="form-check form-switch "
                                  title="Relationship between filter groups is OR, otherwise it's AND">
                                 <input class="form-check-input" type="checkbox" role="switch" id="relationshipORChecked"
@@ -435,7 +435,7 @@
                             </div>
                         </div>
                         <div class="hidden">
-                            <h6>Snapshots</h6>
+                            <h6><i class="bi bi-floppy2"></i> Snapshots</h6>
                             <div class="form-check form-switch" title="Save/Load also Selection List">
                                 <input class="form-check-input" type="checkbox" role="switch" id="saveSelectionChecked"
                                        title="Save/Load also Selection List"
@@ -444,7 +444,7 @@
                             </div>
                         </div>
                         <div>
-                            <h6>System</h6>
+                            <h6><i class="bi bi-window"></i> System</h6>
                             <div class="form-check form-switch" title="Maintain application logs">
                                 <input class="form-check-input" type="checkbox" role="switch" id="maintainLogsChecked"
                                        title="Maintain Logs"
@@ -476,12 +476,14 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title" id="snapshotModalLabel"><img src="images/logotype_indigo_alt.svg"
-                                                                         alt="Copyman" title="Copyman"/> Snapshots and Queue</h1>
+                                                                         alt="Copyman" title="Copyman"/> Automation</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="container-fluid">
-                        <div class="snapshot-explain"><b>Snapshot</b> includes: Folders, Filters, Options and Selection List.</div>
+                        <div class="snapshot-explain">
+                            <h5><i class="bi bi-floppy2"></i> Snapshots</h5>
+                            <b>Snapshot</b> includes: Folders, Filters, Options and Selection List.</div>
                         <div class="input-group">
                             <input type="text" class="form-control" id="saveSnapshotInput"
                                    title="Name of the Snapshot to save"
@@ -522,7 +524,9 @@
                             </button>
                         </div>
                         <hr>
-                        <div class="snapshot-explain"><b>Snapshots</b> can be <b>queued</b> as tasks to be executed in succession.</div>
+                        <div class="snapshot-explain">
+                            <h5><i class="bi bi-collection"></i> Queue</h5>
+                            <b>Snapshots</b> can be <b>queued</b> as tasks to be executed in succession.</div>
                         <div>
                             <!-- Section to display the queue -->
                             <div class="mb-3">
@@ -546,7 +550,7 @@
                                 Empty
                             </button>
                             <button id="executeQueue" class="btn btn-primary btn-sm" title="Execute Queue"><i
-                                    class="bi bi-play-btn" title="Execute Queue"></i>
+                                    class="bi bi-play-fill" title="Execute Queue"></i>
                                 Execute
                             </button>
                         </div>

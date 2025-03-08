@@ -193,6 +193,12 @@ li {
     font-size: 0.85em;
     padding-bottom: 20px;
 }
+.snapshot-explain h5{
+    margin-bottom: 10px;
+}
+.snapshot-explain i{
+    font-size: 0.85em;
+}
 #queueList {
     min-height: 30px;
     font-size: 0.80em;

@@ -8,11 +8,11 @@ Copyman is the ultimate file copying utility designed to make your workflow fast
 
 - **Fast and Smart** – Copy large files and folders at high speed.
 - **Advanced Selection** – Quickly select files and folders using powerful filters or an intuitive tree structure.
-- **Snapshots for Automation** – Save complex operations (folders, filters, options, selections) as snapshots and execute them with a single click-individually or in batches.
+- **Snapshots for Automation** – Save complex operations (folders, filters, options, selections) as snapshots and execute them with a single click - individually or in batches.
 - **Flexible Copy Modes** – Customize behavior: choose to overwrite existing files, sync folder structures, or keep only selected files...
 - **Free and Cross-Platform** – Enjoy Copyman on your preferred operating system, completely free.
 
-Take control of your file management with Copyman-effortless, fast, and reliable.
+Take control of your file management with Copyman - effortless, fast, and reliable.
 
 ![Copyman screenshot](docs/copyman_screenshot.png)
 
@@ -58,7 +58,7 @@ npm build:linux
 ```
 
 ### Binaries Download
-You can download already compiled executables 
+You can download already compiled executables:
 - from [Releases](https://github.com/atlantidezign/copyman/releases) section
 - from the official Copyman website: https://www.copyman.it
 
