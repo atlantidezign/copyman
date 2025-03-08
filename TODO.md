@@ -3,21 +3,19 @@
 ## NOW
 test: new refactored codebase, especially date/size filters
 
-copy: in verbose mode, using selectedNodes, include info on file sizes/date, and elapsed, and progress?, for each single file
-      and better verbose and progress in case of small files
-copy: before starting, using selectedNodes and scans of destinations, perform various checks on what will actually perform copy/overwrite/skip, etc.
-      and use a window instead of confirm to show it to the user.
-      with an option eg: showPreview. with check for free space on destinations
-copy: new mode: if selected something only on leaf or descending trees (ignoring when folder selection is just to reach the leaf path - no other selection in the descending ones) it syncs just starting from that ones
+copy: new copy mode -> if selected something only on leaf or descending trees (ignoring when folder selection is just to reach the leaf path - no other selection in the descending ones) it syncs just starting from that ones
 
 --- 
 
 ## NEXT
 queue: multiple queues with load/save/export/import for singles and for all.
 
-snapshots: preview
+snapshots: info window for the shapshots to load
 
 electron: leaner build, better integrated build parameters and properties for Electron in package.json
+
+copy: in verbose mode, using selectedNodes, include info on file sizes/date, and elapsed, and progress?, for each single file
+and better verbose and progress in case of small files
 
 ---
 
@@ -42,8 +40,7 @@ sys: extensive testing
 ext: better Google Copyman account and GitHub profile
 ext: in website add robots.txt and better SEO (and add to Google search)
 
-copy: not copy single files/folder, but produce zip archive to be moved to destinations, and a descriptor txt/json widh list of files/dates that can be used for searching/history
-
+copy: new feature copy to archive -> not copy single files/folder, but produce zip archive to be moved to destinations, and a descriptor txt/json widh list of files/dates that can be used for searching/history
 
 ---
 

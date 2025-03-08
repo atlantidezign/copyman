@@ -93,7 +93,7 @@ body > div#div-controls {
     color: #aaaaaa;
     font-size: 0.75em;
     padding-top: 2px;
-    max-width: 80%;
+    max-width: 65%;
     z-index: 1001; /* over #spinner-overlay but under bootrap modals */
 }
 .footer > div {
@@ -104,6 +104,10 @@ body > div#div-controls {
     right: 0;
     z-index: 1099; /* over #spinner-overlay and over bootrap modals */
     min-width: 180px;
+}
+#previewCheckedContainer {
+    display: inline-block;
+    margin: 0 5px 0 0;
 }
 ul {
     list-style: none;

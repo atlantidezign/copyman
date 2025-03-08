@@ -472,7 +472,9 @@ class SnapshotManager {
                 App.utils.showAlert('Queue is empty.');
                 return;
             }
-            let confirmation = await App.utils.showConfirmWithReturn('Are you sure you want to execute the queue?');
+            let previewStr = '';
+            if (App.model.isPreview) previewStr = '\nPreview Mode is active.'
+            let confirmation = await App.utils.showConfirmWithReturn('Are you sure you want to execute the queue?'+previewStr);
             if (confirmation) {
                 App.model.queueToExecute = JSON.parse(JSON.stringify(App.model.queue));
 

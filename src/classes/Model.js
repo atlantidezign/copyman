@@ -63,7 +63,6 @@ class Model {
     maintainLogsDefault = false;
     saveSelectionDefault = true;
 
-
     // User Options
     fileOverwrite = this.fileOverwriteDefault;
     copyVerbose = this.copyVerboseDefault;
@@ -83,6 +82,9 @@ class Model {
     dateFormat = 'mm/dd/yyyy';
     localeLang = 'en';
 
+    // Preview
+    isPreview = false;
+
     // Messages
     messageLife = 3000; //system: message life in ms before clean
 
@@ -99,7 +101,6 @@ class Model {
     abort = false;
     wasAborted = false;
     someCopyDone = 0;
-
 }
 
 // export for singleton

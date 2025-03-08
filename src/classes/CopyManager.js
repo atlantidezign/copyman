@@ -71,6 +71,14 @@ class CopyManager {
         document.getElementById('clearAllDestinations').addEventListener('click', this.clearDestinations.bind(this));
 
         // Copying
+        document.getElementById("previewChecked").addEventListener("change", function () {
+            App.model.isPreview = this.checked;
+            App.utils.writeMessage('Preview Mode is now ' + App.model.isPreview);
+            if (App.model.isPreview && !App.model.copyReport) {
+                App.utils.writeMessage('Copying Report is disabled, enable it in Options panel to show Preview result!');
+                App.utils.showAlert('Copying Report is disabled, enable it in Options panel to show Preview result!');
+            }
+        });
         document.getElementById('abortCopy').addEventListener('click', (e) => {
             e.target.classList.add("opDisabled");
             App.model.abort = true;
@@ -123,16 +131,18 @@ class CopyManager {
             App.utils.toggleSpinner(!App.model.clicksActive);
             let useOverwrite = App.utils.formatOverwriteMode(App.model.fileOverwrite);
 
-            // remove confirmation request if queue
-            if (this.moreQueue() && App.model.dontConfirmQueue) {
+            // remove confirmation request if queue or preview
+            if ((this.moreQueue() && App.model.dontConfirmQueue) || (App.model.isPreview)) {
                 App.utils.writeMessage('Copying Started...');
                 setTimeout(() => {
                     App.copyManager.startCopying()
                 }, 100);
                 return;
             }
-
-            let confirmation = await App.utils.showConfirmWithReturn('Are you sure you want to copy ' + App.model.selectedNodes.length + ' items (' + App.utils.formatSizeForThree(App.model.sizeTotal) + ')\nfrom ' + App.model.sourceFolder + '\nto ' + destinations + '\nwith overwrite mode set to ' +useOverwrite + '?');
+            let previewStr = '';
+            if (App.model.isPreview) previewStr = '\nPreview Mode is active.'
+            let confirmation = await App.utils.showConfirmWithReturn('Are you sure you want to copy ' + App.model.selectedNodes.length + ' items (' + App.utils.formatSizeForThree(App.model.sizeTotal) + ')\nfrom ' + App.model.sourceFolder +
+                '\nto ' + destinations + '\nwith overwrite mode set to ' +useOverwrite + '?'+previewStr);
             if (confirmation) {
                 App.utils.writeMessage('Copying Started...');
                 setTimeout(() => {
@@ -391,14 +401,15 @@ class CopyManager {
         App.model.abort = false;
         document.getElementById('abortCopy').classList.remove("hidden");
         document.getElementById('copySelected').classList.add("hidden");
+        document.getElementById('previewCheckedContainer').classList.add("hidden");
 
         //start
         this.openProgressModal();
-        if (App.model.copyVerbose) {
+        if (App.model.copyVerbose && !App.model.isPreview) {
             await App.utils.waitForUiUpdate();
         }
         await this.executeCopy();
-        if (App.model.copyVerbose) {
+        if (App.model.copyVerbose && !App.model.isPreview) {
             await App.utils.waitForUiUpdate();
         }
 
@@ -423,6 +434,7 @@ class CopyManager {
         }
         document.getElementById('abortCopy').classList.add("hidden");
         document.getElementById('copySelected').classList.remove("hidden");
+        document.getElementById('previewCheckedContainer').classList.remove("hidden");
         App.model.clicksActive = true;
         App.utils.toggleSpinner(!App.model.clicksActive);
         this.openReportModal();
@@ -474,7 +486,7 @@ class CopyManager {
                     App.model.itemsFailed[destIndex]++;
                     this.updateCopyingProgress('Error copying ' + sourceFullPath + ' to ' + destinationFullPath, false);
                 }
-                if (App.model.copyVerbose) {
+                if (App.model.copyVerbose && !App.model.isPreview) {
                     await App.utils.waitForUiUpdate();
                 }
                 destIndex++;
@@ -489,7 +501,7 @@ class CopyManager {
         let elapsedTimeS = (elapsedTimeMS / 1000).toFixed(2);
         this.updateCopyingProgress('▷ ' + 'Copy finished at: ' + now2.toLocaleTimeString() + '.<hr>Elapsed: ' + elapsedTimeS + 's (' + elapsedTimeMS + 'ms)', true);
         App.utils.writeMessage('Copy Completed!');
-        if (App.model.copyVerbose) {
+        if (App.model.copyVerbose && !App.model.isPreview) {
             await App.utils.waitForUiUpdate();
         }
     }
@@ -502,13 +514,13 @@ class CopyManager {
                 || (App.model.fileOverwrite === App.model.fileOverwriteEnum.sync2 && hasSelectedFilesOrFoldersInFolder(src))
                 || (App.model.fileOverwrite === App.model.fileOverwriteEnum.brute && hasSelectedFilesOrFoldersInFolder(src)) ) {
                 if (fs.existsSync(dest)) {
-                    clearFolder(dest);
+                    if (!App.model.isPreview) clearFolder(dest);
                 } else {
-                    fs.mkdirSync(dest, { recursive: true });
+                    if (!App.model.isPreview) fs.mkdirSync(dest, { recursive: true });
                 }
             } else {
                 if (!fs.existsSync(dest)) {
-                    fs.mkdirSync(dest, { recursive: true });
+                    if (!App.model.isPreview) fs.mkdirSync(dest, { recursive: true });
                 }
             }
 
@@ -546,11 +558,11 @@ class CopyManager {
         } else {
             const destDir = path.dirname(dest);
             if (!fs.existsSync(destDir)) {
-                fs.mkdirSync(destDir, {recursive: true});
+                if (!App.model.isPreview) fs.mkdirSync(destDir, {recursive: true});
             }
             if (App.model.fileOverwrite !== App.model.fileOverwriteEnum.always) {
                 if (!fs.existsSync(dest)) {
-                    fs.copyFileSync(src, dest);
+                    if (!App.model.isPreview) fs.copyFileSync(src, dest);
                     this.updateCopyingProgress('File ' + dest + ' copied.', false);
                     App.utils.writeMessage('File ' + dest + ' copied.');
                     App.model.itemsCopied[destIndex]++;
@@ -563,7 +575,7 @@ class CopyManager {
                         try {
                             const stats = fs.statSync(dest);
                             if (node.ms > stats.mtimeMs) {
-                                fs.copyFileSync(src, dest);
+                                if (!App.model.isPreview) fs.copyFileSync(src, dest);
                                 this.updateCopyingProgress('File ' + dest + ' copied.', false);
                                 App.utils.writeMessage('File ' + dest + ' copied.');
                                 App.model.itemsCopied[destIndex]++;
@@ -582,7 +594,7 @@ class CopyManager {
                         try {
                             const stats = fs.statSync(dest);
                             if (node.sizeBits !== stats.size) {
-                                fs.copyFileSync(src, dest);
+                                if (!App.model.isPreview) fs.copyFileSync(src, dest);
                                 this.updateCopyingProgress('File ' + dest + ' copied.', false);
                                 App.utils.writeMessage('File ' + dest + ' copied.');
                                 App.model.itemsCopied[destIndex]++;
@@ -599,14 +611,14 @@ class CopyManager {
                         }
                     } else if (App.model.fileOverwrite === App.model.fileOverwriteEnum.keep) {
                         let newDest = App.utils.addUniqueStringToFilePath(dest);
-                        fs.copyFileSync(src, newDest);
+                        if (!App.model.isPreview) fs.copyFileSync(src, newDest);
                         this.updateCopyingProgress('File ' + newDest + ' copied using new name.', false);
                         App.utils.writeMessage('File ' + newDest + ' copied using new name .');
                         App.model.itemsCopied[destIndex]++;
                     }
                 }
             } else {
-                fs.copyFileSync(src, dest);
+                if (!App.model.isPreview) fs.copyFileSync(src, dest);
                 this.updateCopyingProgress('File ' + dest + ' copied.', false);
                 App.utils.writeMessage('File ' + dest + ' copied.');
                 App.model.itemsCopied[destIndex]++;
@@ -621,14 +633,14 @@ class CopyManager {
                 const stats = fs.statSync(currentPath);
                 if (App.model.fileOverwrite === App.model.fileOverwriteEnum.brute) {
                     if (stats.isDirectory()) {
-                        fs.rmdirSync(currentPath, { recursive: true });
+                        if (!App.model.isPreview) fs.rmdirSync(currentPath, { recursive: true });
                     } else {
-                        fs.unlinkSync(currentPath);
+                        if (!App.model.isPreview) fs.unlinkSync(currentPath);
                     }
 
                 } else {
                     if (!stats.isDirectory()) {
-                        fs.unlinkSync(currentPath);
+                        if (!App.model.isPreview) fs.unlinkSync(currentPath);
                     }
                 }
 
@@ -647,7 +659,7 @@ class CopyManager {
 
     //Copying Progress and Report
     openProgressModal() {
-        if (App.model.copyVerbose) {
+        if (App.model.copyVerbose && !App.model.isPreview) {
             document.getElementById('verboseProgress').classList.remove('hidden');
             document.getElementById('copyingReport').classList.add('hidden');
             document.querySelectorAll('.copyingClose').forEach((el) => el.classList.add('hidden'));
@@ -696,7 +708,7 @@ class CopyManager {
             let useClass = '';
             if (sep) useClass = ' class="verboseSep"';
             let useMessage = "<div" + useClass + ">" + message + "</div>";
-            if (App.model.copyVerbose) {
+            if (App.model.copyVerbose && !App.model.isPreview) {
                 if (sep) document.getElementById('verboseProgressMD').innerHTML = useMessage
                 else document.getElementById('verboseProgressMD').innerHTML = useMessage + document.getElementById('verboseProgressMD').innerHTML;
                 let percentageI = ((App.model.itemsProcessed * 100) / App.model.itemsTotal).toFixed(0);

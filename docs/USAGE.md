@@ -141,10 +141,11 @@ Trough **Export JSON** or **Export CSV** button you can export the list in your 
 ### Copying
 With the **Copy Selected Items** button, the files are copied from the Source to the Destinations.
 
-**Pay attention:** Copy mode is *strict* on selection:
+**Pay attention:** Copy mode is **strict** on selection:
 only and exclusively the selected items will be copied.
 For example, if a folder is selected but only some of the files inside it are selected, only those will be copied.
 
+With **Preview** switch you can enable/disable *Preview Mode*: Copying is not performed, but the report is generated.
 
 ---
 
