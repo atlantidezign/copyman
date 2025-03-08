@@ -312,7 +312,7 @@
         </div>
     </div>
     <div class="modal fade" id="optionsModal" tabindex="-1" aria-labelledby="optionsModalLabel">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title" id="optionsModalLabel"><img src="images/logotype_indigo_alt.svg"
@@ -321,150 +321,161 @@
                 </div>
                 <div class="modal-body">
                     <div class="container-fluid">
-                        <div>
-                            <h6><i class="bi bi-copy"></i> Copying</h6>
+                        <div class="d-flex align-items-start">
+                            <div class="nav flex-column nav-pills flex-sm-column me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                                <button class="nav-link btn-sm active" id="v-pills-01-tab" data-bs-toggle="pill" data-bs-target="#v-pills-01" type="button" role="tab" aria-controls="v-pills-01" aria-selected="true"><i class="bi bi-copy"></i> Copying</button>
+                                <button class="nav-link btn-sm" id="v-pills-02-tab" data-bs-toggle="pill" data-bs-target="#v-pills-02" type="button" role="tab" aria-controls="v-pills-02" aria-selected="false"><i class="bi bi-funnel"></i> Selecting</button>
+                                <button class="nav-link btn-sm" id="v-pills-03-tab" data-bs-toggle="pill" data-bs-target="#v-pills-03" type="button" role="tab" aria-controls="v-pills-02" aria-selected="false"><i class="bi bi-check-all"></i> Filtering</button>
+                                <button class="nav-link btn-sm" id="v-pills-04-tab" data-bs-toggle="pill" data-bs-target="#v-pills-04" type="button" role="tab" aria-controls="v-pills-03" aria-selected="false"><i class="bi bi-window"></i> System</button>
+                                <button class="nav-link btn-sm hidden" id="v-pills-99-tab" data-bs-toggle="pill" data-bs-target="#v-pills-99" type="button" role="tab" aria-controls="v-pills-99" aria-selected="false" disabled><i class="bi bi-floppy2"></i> Snapshots</button>
+                            </div>
+                            <div class="tab-content" id="v-pills-tabContent">
+                                <div class="tab-pane fade show active" id="v-pills-01" role="tabpanel" aria-labelledby="v-pills-01-tab" tabindex="0">
+                                    <div>
+                                        <div class="form-check form-switch"
+                                             title="Verbose progress during copying phase">
+                                            <input class="form-check-input" type="checkbox" role="switch" id="verboseChecked"
+                                                   title="Verbose progress during copying phase"
+                                                   checked/>
+                                            <label class="form-check-label" for="verboseChecked">Verbose Progress</label>
+                                        </div>
+                                        <div class="form-check form-switch"
+                                             title="Report at the end of the copying phase">
+                                            <input class="form-check-input" type="checkbox" role="switch" id="reportChecked"
+                                                   title="Report at the end of the copying phase"
+                                                   checked/>
+                                            <label class="form-check-label" for="reportChecked">Copying Report</label>
+                                        </div>
+                                    </div>
+                                    <hr/>
+                                    <div>
+                                        <div class="form-check form-switch"
+                                             title="If the Abort command affects full Queue or just current Queue Item">
+                                            <input class="form-check-input" type="checkbox" role="switch" id="abortQueueChecked"
+                                                   title="If the Abort command affects full Queue or just current Queue Item"
+                                                   checked/>
+                                            <label class="form-check-label" for="abortQueueChecked">Abort Queue</label>
+                                        </div>
+                                        <div class="form-check form-switch"
+                                             title="Do not confirm every Queue Step during copying">
+                                            <input class="form-check-input" type="checkbox" role="switch" id="dontConfirmQueueChecked"
+                                                   title="Do not confirm every Queue Step during copying"
+                                                   checked/>
+                                            <label class="form-check-label" for="dontConfirmQueueChecked">Don't Confirm Queue Steps </label>
+                                        </div>
+                                    </div>
+                                    <hr/>
+                                    <div>
+                                        <div class="ps-3 mt-2"><label class="form-check-label"
+                                                                      title="Set Overwrite conditions for files and folders, during copying, if they already exist">Overwrite
+                                            Existing</label></div>
+                                        <div class="form-check form-check-inline" title="Always Overwrite">
+                                            <input class="form-check-input" type="radio" name="overwriteChecked"
+                                                   id="overwriteChecked1" value="1" title="Always Overwrite" checked>
+                                            <label class="form-check-label" for="overwriteChecked1">
+                                                Always
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-inline" title="Never Overwrite">
+                                            <input class="form-check-input" type="radio" name="overwriteChecked"
+                                                   id="overwriteChecked4" value="4" title="Never Overwrite">
+                                            <label class="form-check-label" for="overwriteChecked4">
+                                                Never
+                                            </label>
+                                        </div>
 
-                            <div class="form-check form-switch"
-                                 title="Verbose progress during copying phase">
-                                <input class="form-check-input" type="checkbox" role="switch" id="verboseChecked"
-                                       title="Verbose progress during copying phase"
-                                       checked/>
-                                <label class="form-check-label" for="verboseChecked">Verbose Progress</label>
-                            </div>
+                                        <div class="form-check form-check-inline" title="Overwrite if Newer">
+                                            <input class="form-check-input" type="radio" name="overwriteChecked"
+                                                   id="overwriteChecked2" value="2" title="Overwrite if Newer">
+                                            <label class="form-check-label" for="overwriteChecked2">
+                                                If Newer
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-inline" title="Overwrite if Different Size">
+                                            <input class="form-check-input" type="radio" name="overwriteChecked"
+                                                   id="overwriteChecked3" value="3" title="Overwrite if Different Size">
+                                            <label class="form-check-label" for="overwriteChecked3">
+                                                If Different Size
+                                            </label>
+                                        </div>
 
-                            <div class="form-check form-switch"
-                                 title="Report at the end of the copying phase">
-                                <input class="form-check-input" type="checkbox" role="switch" id="reportChecked"
-                                       title="Report at the end of the copying phase"
-                                       checked/>
-                                <label class="form-check-label" for="reportChecked">Copying Report</label>
-                            </div>
-                            <div class="form-check form-switch"
-                                 title="If the Abort command affects full Queue or just current Queue Item">
-                                <input class="form-check-input" type="checkbox" role="switch" id="abortQueueChecked"
-                                       title="If the Abort command affects full Queue or just current Queue Item"
-                                       checked/>
-                                <label class="form-check-label" for="abortQueueChecked">Abort Queue</label>
-                            </div>
+                                        <div class="form-check form-check-inline" title="Clean files in folders with at least a selected file (not folder) inside">
+                                            <input class="form-check-input" type="radio" name="overwriteChecked"
+                                                   id="overwriteChecked6" value="6" title="Clean files in folders with at least a selected file (not folder) inside">
+                                            <label class="form-check-label" for="overwriteChecked6">
+                                                Sync1
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-inline" title="Clean files in folders with at least a selected file or folder inside">
+                                            <input class="form-check-input" type="radio" name="overwriteChecked"
+                                                   id="overwriteChecked7" value="7" title="Clean files in folders with at least a selected file or folder inside">
+                                            <label class="form-check-label" for="overwriteChecked7">
+                                                Sync2
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-inline" title="Clean files and folders recursively in folders with at least a selected file or folder inside">
+                                            <input class="form-check-input" type="radio" name="overwriteChecked"
+                                                   id="overwriteChecked8" value="8" title="Clean files and folders recursively in folders with at least a selected file or folder inside">
+                                            <label class="form-check-label" for="overwriteChecked8">
+                                                Brute
+                                            </label>
+                                        </div>
 
-                            <div class="form-check form-switch"
-                                 title="Do not confirm every Queue Step during copying">
-                                <input class="form-check-input" type="checkbox" role="switch" id="dontConfirmQueueChecked"
-                                       title="Do not confirm every Queue Step during copying"
-                                       checked/>
-                                <label class="form-check-label" for="dontConfirmQueueChecked">Don't Confirm Queue Steps </label>
-                            </div>
+                                        <div class="form-check form-check-inline" title="Keep existing files using a new name for copy">
+                                            <input class="form-check-input" type="radio" name="overwriteChecked"
+                                                   id="overwriteChecked5" value="5" title="Keep existing file using a new name for copy">
+                                            <label class="form-check-label" for="overwriteChecked5">
+                                                Keep
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="v-pills-02" role="tabpanel" aria-labelledby="v-pills-02-tab" tabindex="0">
+                                    <div class="form-check form-switch"
+                                                                                                                                              title="Propagate selection of an item to parent and children elements">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="propagateChecked"
+                                           title="Propagate Selection to child items"
+                                           checked/>
+                                    <label class="form-check-label" for="propagateChecked">Propagate Selection</label>
+                                </div>
+                                    <div class="form-check form-switch"
+                                         title="Click also on files/folders names to Select/Deselect the item">
+                                        <input class="form-check-input" type="checkbox" role="switch" id="clickOnNamesChecked"
+                                               title="Click also on files/folders names to Select/Deselect the item"
+                                               checked/>
+                                        <label class="form-check-label" for="clickOnNamesChecked">Click on Names to Select</label>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="v-pills-03" role="tabpanel" aria-labelledby="v-pills-03-tab" tabindex="0">
 
-                            <div class="ps-3 mt-2"><label class="form-check-label"
-                                                          title="Set Overwrite conditions for files and folders, during copying, if they already exist">Overwrite
-                                Existing</label></div>
-                            <div class="form-check form-check-inline" title="Always Overwrite">
-                                <input class="form-check-input" type="radio" name="overwriteChecked"
-                                       id="overwriteChecked1" value="1" title="Always Overwrite" checked>
-                                <label class="form-check-label" for="overwriteChecked1">
-                                    Always
-                                </label>
-                            </div>
-                            <div class="form-check form-check-inline" title="Never Overwrite">
-                                <input class="form-check-input" type="radio" name="overwriteChecked"
-                                       id="overwriteChecked4" value="4" title="Never Overwrite">
-                                <label class="form-check-label" for="overwriteChecked4">
-                                    Never
-                                </label>
-                            </div>
-
-                            <div class="form-check form-check-inline" title="Overwrite if Newer">
-                                <input class="form-check-input" type="radio" name="overwriteChecked"
-                                       id="overwriteChecked2" value="2" title="Overwrite if Newer">
-                                <label class="form-check-label" for="overwriteChecked2">
-                                    If Newer
-                                </label>
-                            </div>
-                            <div class="form-check form-check-inline" title="Overwrite if Different Size">
-                                <input class="form-check-input" type="radio" name="overwriteChecked"
-                                       id="overwriteChecked3" value="3" title="Overwrite if Different Size">
-                                <label class="form-check-label" for="overwriteChecked3">
-                                    If Different Size
-                                </label>
-                            </div>
-
-                            <div class="form-check form-check-inline" title="Clean files in folders with at least a selected file (not folder) inside">
-                                <input class="form-check-input" type="radio" name="overwriteChecked"
-                                       id="overwriteChecked6" value="6" title="Clean files in folders with at least a selected file (not folder) inside">
-                                <label class="form-check-label" for="overwriteChecked6">
-                                    Sync1
-                                </label>
-                            </div>
-                            <div class="form-check form-check-inline" title="Clean files in folders with at least a selected file or folder inside">
-                                <input class="form-check-input" type="radio" name="overwriteChecked"
-                                       id="overwriteChecked7" value="7" title="Clean files in folders with at least a selected file or folder inside">
-                                <label class="form-check-label" for="overwriteChecked7">
-                                    Sync2
-                                </label>
-                            </div>
-                            <div class="form-check form-check-inline" title="Clean files and folders recursively in folders with at least a selected file or folder inside">
-                                <input class="form-check-input" type="radio" name="overwriteChecked"
-                                       id="overwriteChecked8" value="8" title="Clean files and folders recursively in folders with at least a selected file or folder inside">
-                                <label class="form-check-label" for="overwriteChecked8">
-                                    Brute
-                                </label>
-                            </div>
-
-                            <div class="form-check form-check-inline" title="Keep existing files using a new name for copy">
-                                <input class="form-check-input" type="radio" name="overwriteChecked"
-                                       id="overwriteChecked5" value="5" title="Keep existing file using a new name for copy">
-                                <label class="form-check-label" for="overwriteChecked5">
-                                    Keep
-                                </label>
-                            </div>
-                        </div>
-                        <div>
-                            <h6><i class="bi bi-check2-all"></i> Selecting</h6>
-                            <div class="form-check form-switch"
-                                 title="Propagate selection of an item to parent and children elements">
-                                <input class="form-check-input" type="checkbox" role="switch" id="propagateChecked"
-                                       title="Propagate Selection to child items"
-                                       checked/>
-                                <label class="form-check-label" for="propagateChecked">Propagate Selection</label>
-                            </div>
-                            <div class="form-check form-switch"
-                                 title="Click also on files/folders names to Select/Deselect the item">
-                                <input class="form-check-input" type="checkbox" role="switch" id="clickOnNamesChecked"
-                                       title="Click also on files/folders names to Select/Deselect the item"
-                                       checked/>
-                                <label class="form-check-label" for="clickOnNamesChecked">Click on Names to Select</label>
-                            </div>
-                        </div>
-                        <div>
-                            <h6><i class="bi bi-funnel"></i> Filtering</h6>
-                            <div class="form-check form-switch "
-                                 title="Relationship between filter groups is OR, otherwise it's AND">
-                                <input class="form-check-input" type="checkbox" role="switch" id="relationshipORChecked"
-                                       title="Aggregation condition between Filters is NOT (at least one matched) or AND (all together must match)"
-                                       checked/>
-                                <label class="form-check-label" for="relationshipORChecked">Relationship OR</label>
-                            </div>
-                        </div>
-                        <div class="hidden">
-                            <h6><i class="bi bi-floppy2"></i> Snapshots</h6>
-                            <div class="form-check form-switch" title="Save/Load also Selection List">
-                                <input class="form-check-input" type="checkbox" role="switch" id="saveSelectionChecked"
-                                       title="Save/Load also Selection List"
-                                       checked/>
-                                <label class="form-check-label" for="saveSelectionChecked">Selection List</label>
-                            </div>
-                        </div>
-                        <div>
-                            <h6><i class="bi bi-window"></i> System</h6>
-                            <div class="form-check form-switch" title="Maintain application logs">
-                                <input class="form-check-input" type="checkbox" role="switch" id="maintainLogsChecked"
-                                       title="Maintain Logs"
-                                       checked/>
-                                <label class="form-check-label" for="maintainLogsChecked">Maintain Logs</label>
-                                <a id="exportLogs" class="ms-3 btn btn-primary btn-sm" type="button"
-                                   title="Export Logs to file.">Export Logs</a>
-                                <a id="clearLogs" class="ms-1 btn btn-primary btn-sm" type="button"
-                                   title="Clear Logs in memory.">Clear Logs</a>
+                                    <div class="form-check form-switch "
+                                         title="Relationship between filter groups is OR, otherwise it's AND">
+                                        <input class="form-check-input" type="checkbox" role="switch" id="relationshipORChecked"
+                                               title="Aggregation condition between Filters is NOT (at least one matched) or AND (all together must match)"
+                                               checked/>
+                                        <label class="form-check-label" for="relationshipORChecked">Relationship OR</label>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="v-pills-04" role="tabpanel" aria-labelledby="v-pills-04-tab" tabindex="0">
+                                    <div class="form-check form-switch" title="Maintain application logs">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="maintainLogsChecked"
+                                           title="Maintain Logs"
+                                           checked/>
+                                    <label class="form-check-label" for="maintainLogsChecked">Maintain Logs</label>
+                                    <a id="exportLogs" class="ms-3 btn btn-primary btn-sm" type="button"
+                                       title="Export Logs to file.">Export Logs</a>
+                                    <a id="clearLogs" class="ms-1 btn btn-primary btn-sm" type="button"
+                                       title="Clear Logs in memory.">Clear Logs</a>
+                                </div>
+                                </div>
+                                <div class="tab-pane fade" id="v-pills-99" role="tabpanel" aria-labelledby="v-pills-99-tab" tabindex="0">
+                                    <div class="form-check form-switch" title="Save/Load also Selection List">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="saveSelectionChecked"
+                                           title="Save/Load also Selection List"
+                                           checked/>
+                                    <label class="form-check-label" for="saveSelectionChecked">Selection List</label>
+                                </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -537,7 +548,7 @@
                         <hr>
                         <div class="snapshot-explain">
                             <h5><i class="bi bi-collection"></i> Queue</h5>
-                            <b>Snapshots</b> can be <b>queued</b> as tasks to be executed in succession.</div>
+                            Snapshots can be <b>queued</b> as tasks to be executed in succession.</div>
                         <div>
                             <!-- Section to display the queue -->
                             <div class="mb-3">

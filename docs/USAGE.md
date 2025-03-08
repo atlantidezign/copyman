@@ -147,6 +147,7 @@ For example, if a folder is selected but only some of the files inside it are se
 
 With **Preview** switch you can enable/disable *Preview Mode*: Copying is not performed, but the report is generated.
 
+
 ---
 
 ### Menus
