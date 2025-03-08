@@ -388,6 +388,7 @@ class CopyManager {
         App.model.wasAborted = false;
         App.model.abort = false;
         document.getElementById('abortCopy').classList.remove("hidden");
+        document.getElementById('copySelected').classList.add("hidden");
 
         //start
         this.openProgressModal();
@@ -416,6 +417,7 @@ class CopyManager {
         }
         App.model.isQueue = false;
         document.getElementById('abortCopy').classList.add("hidden");
+        document.getElementById('copySelected').classList.remove("hidden");
         App.model.clicksActive = true;
         App.utils.toggleSpinner(!App.model.clicksActive);
         this.openReportModal();

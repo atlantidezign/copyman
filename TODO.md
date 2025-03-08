@@ -2,8 +2,9 @@
 
 ## NOW
 sys: test new refactored codebase, especially filters
+sys: test queue flow with aborts and confirms all negative
 
-ext: screenshot with open tree and of single panels
+ext: screenshot with open tree and of single panels in /docs
 ext: in website / features add: "cross-platform", "many copy modes", "queue tasks". and update screenshot.
 
 --- 
@@ -17,6 +18,10 @@ copy: before starting, using selectedNodes and scans of destinations, perform va
       and use a window instead of confirm to show it to the user.
       with an option eg: showPreview. with check for free space on destinations
 ext: in website / features add: "actions preview".
+
+copy: new mode: if selected something only on leaf or descending trees (ignoring when folder selection is just to reach the leaf path - no other selection in the descending ones) it syncs just starting from that ones 
+
+queue: multiple queues with load/save/export/import for singles and for all.
 
 electron: leaner build, better integrated build parameters and properties for Electron in package.json
 
@@ -40,7 +45,10 @@ sys: rewrite all in TypeScript
 sys: extensive testing
 
 ext: better Google Copyman account and GitHub profile
-ext: in website add robots.txt and better SEO (add to Google)
+ext: in website add robots.txt and better SEO (and add to Google search)
+
+copy: not copy single files/folder, but produce zip archive to be moved to destinations, and a descriptor txt/json widh list of files/dates that can be used for searching/history
+
 
 ---
 

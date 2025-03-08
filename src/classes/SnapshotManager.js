@@ -78,6 +78,36 @@ class SnapshotManager {
             }
         }
 
+        let newSettings = this.createSnapshotObject(useName);
+        useSettings.push(newSettings);
+        // serialize and save in localStorage
+        localStorage.setItem('snapshots', JSON.stringify(useSettings));
+        this.listSnapshots();
+        App.utils.writeMessage('Snapshot "' + useName + '" saved.');
+    }
+
+    loadSnapshot() {
+        App.utils.writeMessage('Loading Snapshot...');
+        let useName = document.getElementById('loadSnapshotInput').value.trim().toLowerCase();
+        if (!useName) {
+            App.utils.showAlert('Please enter a name for Snapshot to load.');
+            return;
+        }
+        // get from localStorage
+        let useSettings = [];
+        const settingsStr = localStorage.getItem('snapshots');
+        if (settingsStr) {
+            useSettings = JSON.parse(settingsStr);
+        }
+        let settings = useSettings.find((setting) => setting.name === useName);
+        if (!settings) {
+            App.utils.writeMessage('No saved Snapshot found with name "' + useName + '"');
+            return;
+        }
+        this.setFromSnapshot(settings);
+    }
+
+    createSnapshotObject(useName) {
         let newSettings = {
             name: useName,
             // source and destinations folders
@@ -108,34 +138,8 @@ class SnapshotManager {
         if (App.model.saveSelection) {
             newSettings.selectionList = App.snapshotManager.getListOfSelectedItemsForSnapshot();
         }
-        useSettings.push(newSettings);
-        // serialize and save in localStorage
-        localStorage.setItem('snapshots', JSON.stringify(useSettings));
-        this.listSnapshots();
-        App.utils.writeMessage('Snapshot "' + useName + '" saved.');
+        return newSettings
     }
-
-    loadSnapshot() {
-        App.utils.writeMessage('Loading Snapshot...');
-        let useName = document.getElementById('loadSnapshotInput').value.trim().toLowerCase();
-        if (!useName) {
-            App.utils.showAlert('Please enter a name for Snapshot to load.');
-            return;
-        }
-        // get from localStorage
-        let useSettings = [];
-        const settingsStr = localStorage.getItem('snapshots');
-        if (settingsStr) {
-            useSettings = JSON.parse(settingsStr);
-        }
-        let settings = useSettings.find((setting) => setting.name === useName);
-        if (!settings) {
-            App.utils.writeMessage('No saved Snapshot found with name "' + useName + '"');
-            return;
-        }
-        this.setFromSnapshot(settings);
-    }
-
     async cleanSnapshot() {
         let useName = document.getElementById('loadSnapshotInput').value.trim().toLowerCase();
         if (!useName) {
@@ -194,36 +198,7 @@ class SnapshotManager {
             return;
         }
 
-        let newSettings = {
-            name: useName,
-            // source and destinations folders
-            sourceFolder: App.model.sourceFolder,
-            destinationFolders: App.model.destinationFolders,
-            // user settings
-            fileOverwrite: App.model.fileOverwrite,
-            copyVerbose: App.model.copyVerbose,
-            copyReport: App.model.copyReport,
-            abortFullQueue: App.model.abortFullQueue,
-            dontConfirmQueue: App.model.dontConfirmQueue,
-            propagateSelections: App.model.propagateSelections,
-            clickOnNamesToSelect: App.model.clickOnNamesToSelect,
-            relationshipOR: App.model.relationshipOR,
-            sortOrder: App.model.sortOrder,
-            maintainLogs: App.model.maintainLogs,
-            saveSelection: App.model.saveSelection,
-            // filters
-            filtersNamePlus: App.model.filtersNamePlus,
-            filtersNameMinus: App.model.filtersNameMinus,
-            filtersDatePlus: App.model.filtersDatePlus,
-            filtersDateMinus: App.model.filtersDateMinus,
-            filtersSizePlus: App.model.filtersSizePlus,
-            filtersSizeMinus: App.model.filtersSizeMinus,
-            // selection list
-            selectionList: []
-        }
-        if (App.model.saveSelection) {
-            newSettings.selectionList = App.snapshotManager.getListOfSelectedItemsForSnapshot();
-        }
+        let newSettings = this.createSnapshotObject(useName);
 
         App.utils.writeMessage('Choose Snapshot JSON file for Export.');
         App.model.clicksActive = false;
@@ -503,36 +478,7 @@ class SnapshotManager {
 
                 // saves actual snapshot
                 let useName = "preQueueSnapshot";
-                let newSettings = {
-                    name: useName,
-                    // source and destinations folders
-                    sourceFolder: App.model.sourceFolder,
-                    destinationFolders: App.model.destinationFolders,
-                    // user settings
-                    fileOverwrite: App.model.fileOverwrite,
-                    copyVerbose: App.model.copyVerbose,
-                    copyReport: App.model.copyReport,
-                    abortFullQueue: App.model.abortFullQueue,
-                    dontConfirmQueue: App.model.dontConfirmQueue,
-                    propagateSelections: App.model.propagateSelections,
-                    clickOnNamesToSelect: App.model.clickOnNamesToSelect,
-                    relationshipOR: App.model.relationshipOR,
-                    sortOrder: App.model.sortOrder,
-                    maintainLogs: App.model.maintainLogs,
-                    saveSelection: App.model.saveSelection,
-                    // filters
-                    filtersNamePlus: App.model.filtersNamePlus,
-                    filtersNameMinus: App.model.filtersNameMinus,
-                    filtersDatePlus: App.model.filtersDatePlus,
-                    filtersDateMinus: App.model.filtersDateMinus,
-                    filtersSizePlus: App.model.filtersSizePlus,
-                    filtersSizeMinus: App.model.filtersSizeMinus,
-                    // selection list
-                    selectionList: []
-                }
-                if (App.model.saveSelection) {
-                    newSettings.selectionList = App.snapshotManager.getListOfSelectedItemsForSnapshot();
-                }
+                let newSettings = this.createSnapshotObject(useName);
                 App.model.preQueueSnapshot = newSettings;
 
                 App.model.isQueue = true;
@@ -587,10 +533,9 @@ class SnapshotManager {
         document.getElementById('copySelected').click();
 
         function checkQueueDoneAndNoCopy() {
-            //case skip all and no any copy, does not pass for startCopying so force endCopying
-            if (App.model.someQueueDone == 0) {
+            //if (App.model.someQueueDone == 0) {
                 App.copyManager.endCopying();
-            }
+            //}
         }
     }
 }

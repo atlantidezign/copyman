@@ -103,6 +103,7 @@ body > div#div-controls {
     position: absolute;
     right: 0;
     z-index: 1099; /* over #spinner-overlay and over bootrap modals */
+    min-width: 180px;
 }
 ul {
     list-style: none;
