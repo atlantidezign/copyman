@@ -222,13 +222,7 @@ app.whenReady().then(() => {
                 {role: 'zoomIn'},
                 {role: 'zoomOut'},
                 {type: 'separator'},
-                {role: 'togglefullscreen'}
-            ]
-        },
-        // { role: 'windowMenu' }
-        {
-            label: 'Window',
-            submenu: [
+                {role: 'togglefullscreen'},
                 {role: 'minimize'},
                 ...(isMac
                     ? [
@@ -242,6 +236,7 @@ app.whenReady().then(() => {
                     ])
             ]
         },
+        // { role: 'windowMenu' }
         {
             role: 'help',
             submenu: [

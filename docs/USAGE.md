@@ -152,5 +152,8 @@ With **Preview** switch you can enable/disable *Preview Mode*: Copying is not pe
 
 ### Menus
 Trough the **contextual menu** (right click) you have shortcuts to the main features of the application.
-The **main menu** contains generic actions, the **About** panel and the **Usage** panel with instructions.
+
+The **main menu** contains classical *View* actions, for  **Reload**, **Zoom** levels, **Full Screen** and **Minimize** switches; 
+it also contains the *Help* submenu, with links to **About** panel, to **Usage** panel (with instructions), and to **Website**.
+
 There is also the **tray** icon and its minimal menu, with **Quit** button.
