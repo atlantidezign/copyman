@@ -183,7 +183,7 @@ app.whenReady().then(() => {
     })
 
     //Main menu
-    const isMac = process.platform === 'darwin'
+    const isMac = process.platform === 'darwin';
     const mainTemplate = [
         // { role: 'appMenu' }
         ...(isMac
@@ -231,9 +231,7 @@ app.whenReady().then(() => {
                         {type: 'separator'},
                         {role: 'window'}
                     ]
-                    : [
-                        {role: 'close'}
-                    ])
+                    : [])
             ]
         },
         // { role: 'windowMenu' }
@@ -249,6 +247,12 @@ app.whenReady().then(() => {
                     label: 'Usage',
                     click: () => {
                         win.webContents.send('main-menu-command', 'menu-help')
+                    }
+                },
+                {
+                    label: 'Check for Updates',
+                    click: () => {
+                        win.webContents.send('main-menu-command', 'menu-update')
                     }
                 },
                 {
@@ -392,6 +396,11 @@ app.whenReady().then(() => {
             return false;
         }
     });
+
+    // Os
+    ipcMain.handle('get-os-platform', (event) => {
+        return os.platform();
+    })
 
     //launch
     app.on('activate', function () {

@@ -5,17 +5,15 @@ test: new refactored codebase, especially date/size filters
 
 copy: new copy mode -> if selected something only on leaf or descending trees (ignoring when folder selection is just to reach the leaf path - no other selection in the descending ones) it syncs just starting from that ones
 
+snapshots: info window for the shapshots to load
+
 --- 
 
 ## NEXT
 queue: multiple queues with load/save/export/import for singles and for all.
 
-snapshots: info window for the shapshots to load
-
-electron: leaner build, better integrated build parameters and properties for Electron in package.json
-
 copy: in verbose mode, using selectedNodes, include info on file sizes/date, and elapsed, and progress?, for each single file
-and better verbose and progress in case of small files
+      and better verbose and progress in case of small files
 
 ---
 
@@ -24,9 +22,9 @@ settings: support localization for other languages (in options), for labels and 
           and add to snapshots
           check also all menu items (contextual, tray, main)
 
+electron: leaner build, better integrated build parameters and properties for Electron in package.json
 electron: splash with logo?
-electron: notifications? (possibly also for update checking via my URL)
-          create a dedicated modal for listing/reading and add a spinning icon
+electron: notifications? create a dedicated modal for listing/reading and add a spinning icon
 
 ui: alerts and confirms not using native dialogs but using html modals.
 ui: collapsable folders/filters panels or all separated panels using floating windows?
@@ -40,7 +38,7 @@ sys: extensive testing
 ext: better Google Copyman account and GitHub profile
 ext: in website add robots.txt and better SEO (and add to Google search)
 
-copy: new feature copy to archive -> not copy single files/folder, but produce zip archive to be moved to destinations, and a descriptor txt/json widh list of files/dates that can be used for searching/history
+copy: new feature copy to archive -> not copy single files/folder, but produce a zip archive to be moved to destinations, and a descriptor txt/json with list of files/dates that can be used for searching/history
 
 ---
 

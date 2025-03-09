@@ -99,6 +99,9 @@ class SysManager {
                 case 'menu-help':
                     document.getElementById('modalHelpTrigger').click();
                     break;
+                case 'menu-update':
+                    App.sysManager.checkUpdate();
+                    break;
             }
         });
 
@@ -108,6 +111,53 @@ class SysManager {
         });
     }
 
+    async checkUpdate() {
+        App.utils.writeMessage('Checking for updates...');
+        App.model.clicksActive = false;
+        App.utils.toggleSpinner(!App.model.clicksActive);
+        let os = await App.utils.getOS();
+        let currentVersion = App.model.appVersion;
+        let onlineVersion = "";
+
+        try {
+            const response = await fetch("https://www.copyman.it/download/build.json");
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            onlineVersion = data[os];
+
+            if (compareVersions(onlineVersion, currentVersion) > 0) {
+                App.utils.showAlert("An update v" +onlineVersion+ " is available for Copyman v"+currentVersion+".\nGo to Copyman Website to download it.");
+                App.utils.writeMessage("New version available: v" +onlineVersion+ " | Current version: v"+currentVersion);
+            } else {
+                App.utils.showAlert("Copyman is up to date.");
+                App.utils.writeMessage("Copyman is up to date.");
+            }
+        } catch (error) {
+            console.error("Error while checking update:", error);
+        }
+        App.model.clicksActive = true;
+        App.utils.toggleSpinner(!App.model.clicksActive);
+
+        function compareVersions(v1, v2) {
+            const parts1 = v1.split('.').map(Number);
+            const parts2 = v2.split('.').map(Number);
+            const maxLen = Math.max(parts1.length, parts2.length);
+
+            for (let i = 0; i < maxLen; i++) {
+                const num1 = parts1[i] || 0;
+                const num2 = parts2[i] || 0;
+                if (num1 > num2) {
+                    return 1;
+                } else if (num1 < num2) {
+                    return -1;
+                }
+            }
+            return 0;
+        }
+
+    }
 }
 
 module.exports = SysManager;

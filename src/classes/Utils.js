@@ -1,4 +1,6 @@
 // Utils.js
+const os = require("os");
+
 class Utils {
     constructor() {
     }
@@ -39,6 +41,17 @@ class Utils {
     async showConfirmWithReturn(message) {
         const confirmation = await ipcRenderer.invoke('show-confirm', message);
         return confirmation;
+    }
+
+    async getOS() {
+        const platform = await ipcRenderer.invoke('get-os-platform');
+        let plat = "win";
+        if (platform === "darwin") {
+            plat = "mac";
+        } else if (platform === "linux") {
+            plat = "linux";
+        }
+        return plat;
     }
 
     // Utils: date and size formatting
