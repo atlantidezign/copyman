@@ -43,6 +43,7 @@ class Utils {
         return confirmation;
     }
 
+    // Utils: get os name win|mac|linux
     async getOS() {
         const platform = await ipcRenderer.invoke('get-os-platform');
         let plat = "win";

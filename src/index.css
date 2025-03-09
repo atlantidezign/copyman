@@ -47,6 +47,7 @@ body {
 .text-right {
     text-align: right;
 }
+
 .btn-primary {
     --bs-btn-color: #fff;
     --bs-btn-bg: #6610f2;
@@ -92,7 +93,7 @@ body > div#div-controls {
 #div-tree {
     height: unset;
     min-height: 150px;
-    font-size: 0.9em;
+    font-size: 0.85em;
     background-color: rgba(0, 0, 0, 0.65);
     border-radius: 10px;
     flex-grow: 1;
@@ -103,10 +104,12 @@ body > div#div-controls {
     display: grid;
     grid-template-columns: 2fr 10px 1fr;
 }
+
 #file-tree, #dest-tree {
     padding: 10px;
     height: inherit;
 }
+
 .gutter-col {
     grid-row: 1/-1;
     cursor: col-resize;
@@ -133,19 +136,23 @@ body > div#div-controls {
     max-width: 65%;
     z-index: 1001; /* over #spinner-overlay but under bootrap modals */
 }
+
 .footer > div {
     position: relative;
 }
+
 #abortCopy {
     position: absolute;
     right: 0;
     z-index: 1099; /* over #spinner-overlay and over bootrap modals */
     min-width: 180px;
 }
+
 #previewCheckedContainer {
     display: inline-block;
     margin: 0 8px 0 0;
 }
+
 #previewCheckedContainer label {
     font-size: 0.85em;
 }
@@ -162,8 +169,7 @@ li {
 }
 
 #file-tree > ul, #file-tree > ul > li,
-#dest-tree > ul, #dest-tree > ul > li
-{
+#dest-tree > ul, #dest-tree > ul > li {
     padding-left: 0;
 }
 
@@ -188,9 +194,11 @@ li {
     color: #fff;
     font-size: 0.9em;
 }
+
 #file-tree .tree-folder-name {
     background: #620fe8;
 }
+
 #dest-tree .tree-folder-name {
     background: rgb(108, 117, 125);
 }
@@ -240,25 +248,31 @@ li {
 .snapshot-buttons {
     width: 90px;
 }
+
 .snapshot-explain {
     font-size: 0.85em;
     padding-bottom: 20px;
 }
-.snapshot-explain h5{
+
+.snapshot-explain h5 {
     margin-bottom: 10px;
     color: #8e48ff;
     font-size: 1.2em;
 }
-.snapshot-explain i{
+
+.snapshot-explain i {
     font-size: 0.85em;
 }
+
 #queueList {
     min-height: 30px;
     font-size: 0.80em;
 }
+
 #queueList p {
     color: #8510f2;
 }
+
 .queue-item {
     background: rgba(0, 0, 0, 0.3);
     display: flex;
@@ -267,14 +281,17 @@ li {
     margin-bottom: 2px !important;
     padding: 0 0 0 10px;
     border: 1px solid var(--bs-border-color);
-    border-radius:5px;
+    border-radius: 5px;
 }
+
 .queue-item span {
     flex: 1;
 }
+
 .queue-item button:nth-child(n+2) {
     margin-left: 1px !important;
 }
+
 #addToQueue {
     width: 97px;
 }
@@ -378,6 +395,7 @@ li {
     font-size: 0.80em;
     padding: 4px 4px 3px 4px;
 }
+
 .badge.badge-outer {
     font-size: 0.9em;
     padding: 4px 12px 5px 6px;
@@ -385,8 +403,11 @@ li {
 }
 
 #selectionStats {
+    display: inline-block;
     font-size: 0.80em;
     padding: 3px 5px;
+    min-width: 240px;
+    text-align: right;
 }
 
 /* Modals */
@@ -436,26 +457,31 @@ body > div#div-modals {
 #snapshotModal .modal-body {
     padding-bottom: 0;
 }
+
 .nav-link {
     display: block;
     padding: 5px 10px;
-    color: #8e48ff;
+    color: #9e68ff;
     text-decoration: none;
     background: 0 0;
     border: 0;
     transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out;
 }
+
 .nav-pills .nav-link {
     min-width: 110px;
     text-align: left;
 }
-.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
     color: #FFFFFF;
     background-color: #6610f2;
 }
+
 .nav-link:focus, .nav-link:hover {
-    color: #9d6bff;
+    color: #de88ff;
 }
+
 #v-pills-tabContent .form-check {
     min-width: 160px;
 }
@@ -506,6 +532,7 @@ body > div#div-modals {
 #listFooterTotal {
     font-size: 0.85em;
 }
+
 .verboseIcon {
     font-size: 4.5em;
     color: #ffffff;

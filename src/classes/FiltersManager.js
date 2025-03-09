@@ -223,6 +223,9 @@ class FiltersManager {
             checkboxes.forEach(checkbox => {
                 checkbox.checked = true;
             });
+            //update stats
+            App.selectionListManager.updateSelectionStats();
+
             App.utils.writeMessage('All items selected.');
         });
         document.getElementById('deselectAll').addEventListener('click', () => {
@@ -232,6 +235,9 @@ class FiltersManager {
                 return;
             }
             App.filtersManager.removeAllFilters();
+            //update stats
+            App.selectionListManager.updateSelectionStats();
+
             App.utils.writeMessage('All items deselected.');
         });
     }
@@ -357,7 +363,7 @@ class FiltersManager {
         }
 
         //update stats
-        App.selectionListManager.updatetSelectionStats();
+        App.selectionListManager.updateSelectionStats();
 
         App.utils.writeMessage('Filters updated.');
     }
@@ -367,6 +373,8 @@ class FiltersManager {
         checkboxes.forEach(checkbox => {
             checkbox.checked = false;
         });
+        //update stats
+        App.selectionListManager.updateSelectionStats();
     }
 
     removeNameFilters() {

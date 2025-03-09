@@ -4,12 +4,12 @@ Use the **Clear** buttons to remove the folder selections.
 
 You can also **Refresh Source Folder Tree**.
 
-In Destination folders list, you can *drag* elements (badges) over each other to change order.
+In Destination folders list, you can *drag* elements (badges) over each other to rearrange order.
 
 
 ---
 
-### Selection
+### Tree and Selection
 Within the **tree view**, you can **select** the items to copy (whether files or folders) using checkboxes (you can also click on names).
 
 You can navigate within the tree by **expanding** or **collapsing** branches.  
@@ -27,6 +27,13 @@ You can also choose the **Sort order** of the tree. Possible values are:
 - Type ASC
 - Type DESC
 
+In **tree view**, if the **Split Screen** option is enabled, the view is divided into two adjustable columns:
+- On the left side, we display the **Source Folder** Tree.
+- On the right side, we display the First **Destination Folder** Tree.
+
+The Destination tree is *aligned* with the Source tree. This means that for any item in the Source tree, if an item with same relative path exists also on the Destination Tree:
+- If the checkbox is selected or deselected, the corresponding checkbox in the Destination tree matches that state.
+- If a folder in the Source tree is expanded or collapsed, the corresponding folder in the Destination tree is also expanded or collapsed, respectively.
 
 ---
 
@@ -70,7 +77,7 @@ Accepts one or two numbers (expressed in Kb) as input, as file/folder size conta
 
 ### Actions
 There is a panel with action buttons:
-- **Swap** swaps Source and (first) Destination folders.
+- **Swap** swaps Source and First Destination folder.
 - **Selection List** Open Selection List panel.
 - **Snapshots** Open Snapshots panel.
 - **Options** Open Options panel.

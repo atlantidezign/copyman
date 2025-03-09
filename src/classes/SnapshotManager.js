@@ -304,7 +304,7 @@ class SnapshotManager {
             }
 
             //update stats
-            App.selectionListManager.updatetSelectionStats();
+            App.selectionListManager.updateSelectionStats();
 
             App.utils.writeMessage('Snapshot loaded.');
         } catch (error) {

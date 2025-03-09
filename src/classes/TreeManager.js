@@ -35,7 +35,10 @@ class TreeManager {
                 });
             }
 
-            expandAllFileTree()
+            expandAllFileTree();
+
+            //update secondary tree
+            App.treeManager.alignDestinationTree();
         });
         document.getElementById('collapseAll').addEventListener('click', () => {
             if (!App.model.sourceFolder) {
@@ -70,6 +73,9 @@ class TreeManager {
             }
 
             collapseAllFileTree();
+
+            //update secondary tree
+            App.treeManager.alignDestinationTree();
         });
         // Sort
         document.getElementById('sortOrderCombo').addEventListener('change', (e) => {
@@ -88,7 +94,7 @@ class TreeManager {
         });
     }
 
-    // Public. Tree update
+    // Public. Tree updates
     updateSourceTree() {
         App.model.clicksActive = false;
         App.utils.toggleSpinner(!App.model.clicksActive);
@@ -112,17 +118,80 @@ class TreeManager {
         }
     }
     alignDestinationTree() {
-        //TODO SPLIT SCREEN  update opened etc as in source tree
+        if (App.model.splitScreen === true) {
+            //if source tree and dest tree are both rendered: align open/close from source branch to same name dest branch, also align selection/deselection checkboxes from source
+
+            const sourceTree = document.getElementById('file-tree');
+            const destinationTree = document.getElementById('dest-tree');
+            if (!sourceTree || !destinationTree) {
+                return;
+            }
+            if (sourceTree.innerHTML === "" || destinationTree.innerHTML === "") {
+                return;
+            }
+            const sourceTreeUL = document.getElementById('file-tree').querySelector('ul');
+            const destinationTreeUL = document.getElementById('dest-tree').querySelector('ul');
+            if (!sourceTreeUL || !destinationTreeUL) {
+                return;
+            }
+            // Start recursive sync from the top UL level
+            syncTreeNodes(sourceTreeUL, destinationTreeUL);
+        }
+
+        function syncTreeNodes(sourceParent, destParent) {
+            const sourceLis = Array.from(sourceParent.children).filter(el => el.tagName.toUpperCase() === 'LI');
+            const destLis = Array.from(destParent.children).filter(el => el.tagName.toUpperCase() === 'LI');
+            sourceLis.forEach(sourceLi => {
+                const sourceCheckbox = sourceLi.querySelector('input[type="checkbox"]');
+                if (!sourceCheckbox) return;
+                const filePath = sourceCheckbox.dataset.filePath;
+                // find corresponding node using filePath
+                const destLi = destLis.find(li => {
+                    const checkbox = li.querySelector('input[type="checkbox"]');
+                    if (checkbox) {
+                        const destFilePath = checkbox.dataset.filePath;
+                        if (destFilePath === filePath) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+
+                if (destLi) {
+                    const destCheckbox = destLi.querySelector('input[type="checkbox"]');
+                    if (destCheckbox) {
+                        destCheckbox.checked = sourceCheckbox.checked;
+                    }
+                    // if node is directory, sync also open/close state
+                    if (sourceCheckbox.dataset.isDirectory === "1") {
+                        const sourceChildUl = sourceLi.querySelector('ul');
+                        const destChildUl = destLi.querySelector('ul');
+                        if (sourceChildUl && destChildUl) {
+                            const computedStyle = window.getComputedStyle(sourceChildUl);
+                            const isOpen = computedStyle.display !== 'none';
+                            destChildUl.style.display = isOpen ? 'block' : 'none';
+                            // update toggle icon
+                            const destToggleIcon = destLi.querySelector('span span:first-child');
+                            if (destToggleIcon) {
+                                destToggleIcon.textContent = isOpen ? '▼' : '▷';
+                            }
+                            // recursively for children
+                            syncTreeNodes(sourceChildUl, destChildUl);
+                        }
+                    }
+                }
+            });
+        }
     }
+
 
     // Inner - common. Tree rendering
     renderFileTree(treeData, container, isSource) {
-        console.log("%%%%%%%%%%% renderFileTree", treeData, container, isSource);
         container.innerHTML = '';
         if (isSource) {
-            container.innerHTML += '<div class="tree-folder-name">Source: <b>'+App.model.sourceFolder +'</b></div>';
+            container.innerHTML += '<div class="tree-folder-name">Source: <b>' + App.model.sourceFolder + '</b></div>';
         } else {
-            container.innerHTML += '<div class="tree-folder-name">Destination #1: <b>'+App.model.destinationFolders[0] +'</b></div>';
+            container.innerHTML += '<div class="tree-folder-name">Destination #1: <b>' + App.model.destinationFolders[0] + '</b></div>';
         }
         const ul = document.createElement('ul');
         treeData.forEach(node => {
@@ -140,20 +209,18 @@ class TreeManager {
         const labelContainer = document.createElement('span');
 
         let childUl = null; // created if directory
-        let checkbox = null;
 
-        if (isSource) {
             // checkbox, for file or directory
-            checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.dataset.filePath = node.path;
-            checkbox.dataset.nodeName = node.name;
-            checkbox.dataset.nodeSize = node.sizeRaw;
-            checkbox.dataset.nodeModified = node.modifiedRaw;
-            checkbox.dataset.nodeMS = node.modifiedMs;
-            checkbox.dataset.isDirectory = (node.type === 'directory') ? "1" : "0";
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.dataset.filePath = node.path;
+        checkbox.dataset.nodeName = node.name;
+        checkbox.dataset.nodeSize = node.sizeRaw;
+        checkbox.dataset.nodeModified = node.modifiedRaw;
+        checkbox.dataset.nodeMS = node.modifiedMs;
+        checkbox.dataset.isDirectory = (node.type === 'directory') ? "1" : "0";
             checkbox.classList.add('form-check-input');
-
+        if (isSource) {
             // listener for state change
             checkbox.addEventListener('change', (e) => {
                 const isChecked = e.target.checked;
@@ -162,16 +229,17 @@ class TreeManager {
                 if (currentLi.querySelector("ul")) {
                     if (App.model.propagateSelections) App.treeManager.propagateDown(currentLi, isChecked);
                 }
-                // if checkbox selected, update all parents too
+                // if checkbox selected, update all parents too, if unchecked, no on-parents propagation
                 if (isChecked) {
                     if (App.model.propagateSelections) App.treeManager.propagateUp(currentLi);
                 }
-                // if unchecked, no on-parents propagation
-
                 //update stats
-                App.selectionListManager.updatetSelectionStats();
+                App.selectionListManager.updateSelectionStats();
             });
+        } else {
+            checkbox.disabled = true;
         }
+
         if (node.type === 'directory') {
             // icon toggle (collapsed)
             const toggleIcon = document.createElement('span');
@@ -181,7 +249,7 @@ class TreeManager {
             labelContainer.appendChild(toggleIcon);
 
             // add checkbox
-            if (isSource) labelContainer.appendChild(checkbox);
+            labelContainer.appendChild(checkbox);
 
             // label
             const label = document.createElement('span');
@@ -237,6 +305,10 @@ class TreeManager {
                     childUl.style.display = 'none';
                     toggleIcon.textContent = '▷';
                 }
+                if (isSource) {
+                    //update secondary tree
+                    App.treeManager.alignDestinationTree();
+                }
             });
         } else {
             // Node is file: spacer for align
@@ -245,7 +317,7 @@ class TreeManager {
             labelContainer.appendChild(spacer);
 
             // checkbox for file
-            if (isSource) labelContainer.appendChild(checkbox);
+            labelContainer.appendChild(checkbox);
 
             // label
             const label = document.createElement('span');

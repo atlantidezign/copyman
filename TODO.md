@@ -3,13 +3,6 @@
 ## NOW
 snapshots: info window for the shapshots to load
 
-ui: better tree view, with split screen (as an option) for source and destination #1;
-then, when you open a source branch, open the same branch in the destination/s automatically.
-- render> done : App.treeManager.renderDestinationTree()
-- render> update: ok 2nd tree on choose first dest, ok load snapshot with first dest, ok swap dests with change of first, ok clear destinations, ok remove single dest, ok options splitscreen change
-- update> to do: App.treeManager.alignDestinationTree()
-- update> to update:  on expand/collapse/select in the first tree, expand/collapse all
-
 --- 
 
 ## NEXT

@@ -204,11 +204,10 @@ class CopyManager {
                 listItemInner.appendChild(removeButton);
                 listItem.appendChild(listItemInner);
                 listContainer.appendChild(listItem);
-
-                if (index == 0) {
-                    App.treeManager.renderDestinationTree();
-                }
             });
+        }
+        if (App.model.destinationFolders.length > 0) {
+            App.treeManager.renderDestinationTree();
         }
         if (App.model.destinationFolders.length > 1) {
             addDraggableToDestinationFolders();

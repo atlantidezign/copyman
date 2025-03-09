@@ -93,7 +93,7 @@ class SelectionListManager {
     }
 
     // Update selection stats
-    updatetSelectionStats() {
+    updateSelectionStats() {
         const fileTree = document.getElementById('file-tree');
         const checkedCheckboxes = fileTree.querySelectorAll('input[type="checkbox"]:checked');
         const selectedItems = Array.from(checkedCheckboxes).map(checkbox => ({
@@ -117,6 +117,9 @@ class SelectionListManager {
             selectionString = this.getSelectionCountString(countFiles, countFolders, totalSize);
         }
         document.getElementById('selectionStats').innerHTML = selectionString;
+
+        //update secondary tree
+        App.treeManager.alignDestinationTree();
     }
 }
 
