@@ -12,7 +12,8 @@ class Model {
 
     // Business vars
     clicksActive = true; //system: to deactivate clicks while copying
-    fileTreeData = []; // system: tree data
+    fileTreeData = []; // system: source tree data
+    destTreeData = []; // system: destination [0] tree data
 
     copyingReport = [];
     itemsCopied = [];
@@ -61,6 +62,7 @@ class Model {
     relationshipORDefault = true;
     sortOrderDefault = this.sortOrderList[0];
     maintainLogsDefault = false;
+    splitScreenDefault = false;
     saveSelectionDefault = true;
 
     // User Options
@@ -74,6 +76,7 @@ class Model {
     relationshipOR = this.relationshipORDefault;
     sortOrder = this.sortOrderDefault;
     maintainLogs = this.maintainLogsDefault;
+    splitScreen = this.splitScreenDefault;
     saveSelection = this.saveSelectionDefault;
 
     // Components

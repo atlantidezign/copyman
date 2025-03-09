@@ -124,6 +124,7 @@ class SnapshotManager {
             relationshipOR: App.model.relationshipOR,
             sortOrder: App.model.sortOrder,
             maintainLogs: App.model.maintainLogs,
+            splitScreen: App.model.splitScreen,
             saveSelection: App.model.saveSelection,
             // filters
             filtersNamePlus: App.model.filtersNamePlus,
@@ -267,6 +268,7 @@ class SnapshotManager {
             App.model.clickOnNamesToSelect = (typeof settings.clickOnNamesToSelect === 'boolean') ? settings.clickOnNamesToSelect : App.model.clickOnNamesToSelectDefault;
             App.model.relationshipOR = (typeof settings.relationshipOR === 'boolean') ? settings.relationshipOR : App.model.relationshipORDefault;
             App.model.maintainLogs = (typeof settings.maintainLogs === 'boolean') ? settings.maintainLogs : App.model.maintainLogsDefault;
+            App.model.splitScreen = (typeof settings.splitScreen === 'boolean') ? settings.splitScreen : App.model.splitScreenDefault;
             App.model.saveSelection = (typeof settings.saveSelection === 'boolean') ? settings.saveSelection : App.model.saveSelectionDefault;
             App.model.sortOrder = (typeof settings.sortOrder === 'string') ? settings.sortOrder : App.model.sortOrderDefault;
             App.model.filtersNamePlus = settings.filtersNamePlus || [];
@@ -277,9 +279,10 @@ class SnapshotManager {
             App.model.filtersSizeMinus = settings.filtersSizeMinus || [];
 
             App.optionsManager.updateOptionsUI();
+            App.uiManager.updateSplitScreen();
 
             document.getElementById('sourcePath').textContent = App.model.sourceFolder;
-            App.treeManager.updateTree();
+            App.treeManager.updateSourceTree();
 
             App.copyManager.updateDestinationList();
 

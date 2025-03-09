@@ -55,6 +55,12 @@ class OptionsManager {
             App.optionsManager.saveOptions();
             App.utils.writeMessage('Maintain Logs setting is now ' + App.model.maintainLogs);
         });
+        document.getElementById("splitScreenChecked").addEventListener("change", function () {
+            App.model.splitScreen = this.checked;
+            App.optionsManager.saveOptions();
+            App.utils.writeMessage('Split Screen setting is now ' + App.model.splitScreen);
+            App.uiManager.updateSplitScreen();
+        });
         document.getElementById("saveSelectionChecked").addEventListener("change", function () {
             App.model.saveSelection = this.checked;
             App.optionsManager.saveOptions();
@@ -101,26 +107,20 @@ class OptionsManager {
             model.relationshipOR = options.relationshipOR;
             model.sortOrder = options.sortOrder;
             model.maintainLogs = options.maintainLogs;
+            model.splitScreen = options.splitScreen;
             model.saveSelection = options.saveSelection;
         } else {
-            const saveOptions = {
-                propagateSelections: model.propagateSelections,
-                clickOnNamesToSelect: model.clickOnNamesToSelect,
-                fileOverwrite: model.fileOverwrite,
-                copyVerbose: model.copyVerbose,
-                copyReport: model.copyReport,
-                abortFullQueue: model.abortFullQueue,
-                dontConfirmQueue: model.dontConfirmQueue,
-                relationshipOR: model.relationshipOR,
-                sortOrder: model.sortOrder,
-                maintainLogs: model.maintainLogs,
-                saveSelection: model.saveSelection,
-            };
+            const saveOptions = this.getOptionsItem();
             localStorage.setItem('options', JSON.stringify(saveOptions));
         }
         this.updateOptionsUI();
+        App.uiManager.updateSplitScreen();
     }
     saveOptions() {
+        const saveOptions = this.getOptionsItem()
+        localStorage.setItem('options', JSON.stringify(saveOptions));
+    }
+    getOptionsItem() {
         let model = App.model;
         const saveOptions = {
             propagateSelections: model.propagateSelections,
@@ -133,9 +133,10 @@ class OptionsManager {
             relationshipOR: model.relationshipOR,
             sortOrder: model.sortOrder,
             maintainLogs: model.maintainLogs,
+            splitScreen: model.splitScreen,
             saveSelection: model.saveSelection,
         };
-        localStorage.setItem('options', JSON.stringify(saveOptions));
+        return saveOptions;
     }
     resetOptions() {
         let model = App.model;
@@ -149,9 +150,11 @@ class OptionsManager {
         model.relationshipOR = model.relationshipORDefault;
         model.sortOrder = model.sortOrderDefault;
         model.maintainLogs = model.maintainLogsDefault;
+        model.splitScreen = model.splitScreenDefault;
         model.saveSelection = model.saveSelectionDefault;
         this.saveOptions();
         this.updateOptionsUI();
+        App.uiManager.updateSplitScreen();
         App.filtersManager.applyAllFilters();
     }
     updateOptionsUI() {
@@ -170,6 +173,7 @@ class OptionsManager {
         document.getElementById("clickOnNamesChecked").checked = App.model.clickOnNamesToSelect;
         document.getElementById("relationshipORChecked").checked = App.model.relationshipOR;
         document.getElementById("maintainLogsChecked").checked = App.model.maintainLogs;
+        document.getElementById("splitScreenChecked").checked = App.model.splitScreen;
         document.getElementById("saveSelectionChecked").checked = App.model.saveSelection;
         document.getElementById("sortOrderCombo").value = App.model.sortOrder;
     }

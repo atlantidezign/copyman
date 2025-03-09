@@ -1,11 +1,14 @@
 # TODO
 
 ## NOW
-test: new refactored codebase, especially date/size filters
-
-copy: new copy mode -> if selected something only on leaf or descending trees (ignoring when folder selection is just to reach the leaf path - no other selection in the descending ones) it syncs just starting from that ones
-
 snapshots: info window for the shapshots to load
+
+ui: better tree view, with split screen (as an option) for source and destination #1;
+then, when you open a source branch, open the same branch in the destination/s automatically.
+- render> done : App.treeManager.renderDestinationTree()
+- render> update: ok 2nd tree on choose first dest, ok load snapshot with first dest, ok swap dests with change of first, ok clear destinations, ok remove single dest, ok options splitscreen change
+- update> to do: App.treeManager.alignDestinationTree()
+- update> to update:  on expand/collapse/select in the first tree, expand/collapse all
 
 --- 
 
@@ -14,6 +17,8 @@ queue: multiple queues with load/save/export/import for singles and for all.
 
 copy: in verbose mode, using selectedNodes, include info on file sizes/date, and elapsed, and progress?, for each single file
       and better verbose and progress in case of small files
+copy: new copy mode -> if selected something only on leaf or descending trees (ignoring when folder selection is just to reach the leaf path - no other selection in the descending ones) it syncs just starting from that ones
+copy: new feature copy to archive -> not copy single files/folder, but produce a zip archive to be moved to destinations, and a descriptor txt/json with list of files/dates that can be used for searching/history
 
 ---
 
@@ -28,17 +33,12 @@ electron: notifications? create a dedicated modal for listing/reading and add a 
 
 ui: alerts and confirms not using native dialogs but using html modals.
 ui: collapsable folders/filters panels or all separated panels using floating windows?
-ui: better tree view, with multiple columns for source (like mac) and/or even show the destinations?
-    if show destinations: create a tree for the various destinations as well, in split screen with tabs; 
-    then, when you open a source branch, open the same branch in the destination/s automatically.
 
 sys: rewrite all in TypeScript
-sys: extensive testing
+sys: extensive testing, especially date/size filters and copymodes
 
 ext: better Google Copyman account and GitHub profile
 ext: in website add robots.txt and better SEO (and add to Google search)
-
-copy: new feature copy to archive -> not copy single files/folder, but produce a zip archive to be moved to destinations, and a descriptor txt/json with list of files/dates that can be used for searching/history
 
 ---
 

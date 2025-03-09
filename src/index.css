@@ -1,3 +1,4 @@
+/* General */
 * {
     box-sizing: border-box;
 }
@@ -46,7 +47,24 @@ body {
 .text-right {
     text-align: right;
 }
+.btn-primary {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #6610f2;
+    --bs-btn-border-color: #6610f2;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #620fe8;
+    --bs-btn-hover-border-color: #620fe8;
+    --bs-btn-focus-shadow-rgb: 49, 132, 253;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #620fe8;
+    --bs-btn-active-border-color: #620fe8;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #6610f2;
+    --bs-btn-disabled-border-color: #6610f2;
+}
 
+/* First level layouting */
 body > div {
     flex-shrink: 0; /* to not shrink */
     margin: 0;
@@ -71,7 +89,7 @@ body > div#div-controls {
     padding-top: 0;
 }
 
-#file-tree {
+#div-tree {
     height: unset;
     min-height: 150px;
     font-size: 0.9em;
@@ -79,9 +97,27 @@ body > div#div-controls {
     border-radius: 10px;
     flex-grow: 1;
     margin: 0 10px 10px 10px;
-    padding: 10px;
+    padding: 0;
     overflow: auto;
     max-height: calc(100vh - 295px);
+    display: grid;
+    grid-template-columns: 2fr 10px 1fr;
+}
+#file-tree, #dest-tree {
+    padding: 10px;
+    height: inherit;
+}
+.gutter-col {
+    grid-row: 1/-1;
+    cursor: col-resize;
+    background-image: url(./images/vertical.png);
+    background-color: #333;
+    background-repeat: no-repeat;
+    background-position: 50%;
+}
+
+.gutter-col-1 {
+    grid-column: 2;
 }
 
 .footer {
@@ -89,6 +125,7 @@ body > div#div-controls {
     justify-content: space-between;
 }
 
+/* Footer */
 #status {
     color: #aaaaaa;
     font-size: 0.75em;
@@ -112,6 +149,8 @@ body > div#div-controls {
 #previewCheckedContainer label {
     font-size: 0.85em;
 }
+
+/* Tree */
 ul {
     list-style: none;
     padding-left: 20px;
@@ -122,48 +161,51 @@ li {
     padding-left: 20px;
 }
 
-#file-tree > ul, #file-tree > ul > li {
+#file-tree > ul, #file-tree > ul > li,
+#dest-tree > ul, #dest-tree > ul > li
+{
     padding-left: 0;
 }
 
-#file-tree .label-extras-date {
+#file-tree .label-extras-date,
+#dest-tree .label-extras-date {
     margin-left: 10px;
     font-size: 0.8em;
     color: var(--bs-primary);
 }
 
-#file-tree .label-extras-size {
+#file-tree .label-extras-size,
+#dest-tree .label-extras-size {
     margin-left: 5px;
     font-size: 0.8em;
     color: #2e10f2;
 }
 
+.tree-folder-name {
+    display: inline-block;
+    border-radius: 5px;
+    padding: 1px 8px;
+    color: #fff;
+    font-size: 0.9em;
+}
+#file-tree .tree-folder-name {
+    background: #620fe8;
+}
+#dest-tree .tree-folder-name {
+    background: rgb(108, 117, 125);
+}
+
+/* Actions */
 .controls {
     padding: 0;
     display: flex;
     justify-content: space-between;
 }
 
+/* Folders */
 .folder-selection a.first-col {
     width: 110px;
     text-align: left;
-}
-
-.btn-primary {
-    --bs-btn-color: #fff;
-    --bs-btn-bg: #6610f2;
-    --bs-btn-border-color: #6610f2;
-    --bs-btn-hover-color: #fff;
-    --bs-btn-hover-bg: #620fe8;
-    --bs-btn-hover-border-color: #620fe8;
-    --bs-btn-focus-shadow-rgb: 49, 132, 253;
-    --bs-btn-active-color: #fff;
-    --bs-btn-active-bg: #620fe8;
-    --bs-btn-active-border-color: #620fe8;
-    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-    --bs-btn-disabled-color: #fff;
-    --bs-btn-disabled-bg: #6610f2;
-    --bs-btn-disabled-border-color: #6610f2;
 }
 
 .form-check-input:checked {
@@ -187,12 +229,14 @@ li {
     opacity: 1; /* Firefox */
 }
 
+/* Button group margin */
 #addNamePlusFilter, #addNameMinusFilter, #addDatePlusFilter, #addDateMinusFilter,
 #addSizePlusFilter, #addSizeMinusFilter, #deselectAll, #collapseAll,
 #exportSnapshot, #clearSource {
     margin-left: 1px;
 }
 
+/* Automation Modal */
 .snapshot-buttons {
     width: 90px;
 }
@@ -234,6 +278,8 @@ li {
 #addToQueue {
     width: 97px;
 }
+
+/* Form elements */
 .span-actions {
     flex-grow: 1;
     text-align: center;
@@ -280,7 +326,6 @@ li {
     flex: 0 1 auto;
     appearance: auto;
 }
-
 
 #filterDateInput {
     width: 220px;
@@ -381,7 +426,7 @@ body > div#div-modals {
 }
 
 #optionsModal .container-fluid {
-    margin-bottom: 1.5rem;
+    padding-left: 0;
 }
 
 #snapshotModal .input-group {

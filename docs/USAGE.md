@@ -4,7 +4,7 @@ Use the **Clear** buttons to remove the folder selections.
 
 You can also **Refresh Source Folder Tree**.
 
-In Destination folders list, you can *drag* elements over each other to change order.
+In Destination folders list, you can *drag* elements (badges) over each other to change order.
 
 
 ---
@@ -107,8 +107,8 @@ It can be:
 - **Relationship OR** to choose the kind of relationship between filter groups, OR (checked) or AND (unchecked). Default true (OR).
 
 #### System
-- **Maintain Logs** to choose if to record application logs in memory. Can be exported to file with **Export Logs**, and cleaned with **Clear Logs**.
-
+- **Maintain Logs** to choose if to record application logs in memory. Can be exported to file with **Export Logs** button, and cleaned with **Clear Logs** button. Default false.
+- **Split Screen** to add a tree view also for first Desination folder (remember: you can change order of destinations folders, and set what's the first one, by dragging the badges in the Destination Folders List). Default false.
 
 ---
 
@@ -154,6 +154,6 @@ With **Preview** switch you can enable/disable *Preview Mode*: Copying is not pe
 Trough the **contextual menu** (right click) you have shortcuts to the main features of the application.
 
 The **main menu** contains classical *View* actions, for  **Reload**, **Zoom** levels, **Full Screen** and **Minimize** switches; 
-it also contains the *Help* submenu, with links to **About** panel, to **Usage** panel (with instructions), and to **Website**.
+it also contains the *Help* submenu, with links to **About** panel, to **Instructions** panel, to **Copyman Website** and to **Atlantide Design Website**.
 
 There is also the **tray** icon and its minimal menu, with **Quit** button.

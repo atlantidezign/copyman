@@ -37,7 +37,7 @@ class CopyManager {
                 App.model.sourceFolder = folder;
                 document.getElementById('sourcePath').textContent = folder;
                 // build tree
-                App.treeManager.updateTree();
+                App.treeManager.updateSourceTree();
                 App.utils.writeMessage('Source Folder rendered.');
             } else {
                 App.utils.writeMessage('No Source folder selected.');
@@ -61,7 +61,7 @@ class CopyManager {
                 return;
             }
             // rebuild tree
-            App.treeManager.updateTree();
+            App.treeManager.updateSourceTree();
             App.utils.writeMessage('Source Folder refreshed.');
         });
         document.getElementById('buttonSwap').addEventListener('click', this.swapSourceAndDestination.bind(this));
@@ -172,7 +172,7 @@ class CopyManager {
         App.model.sourceFolder = App.model.destinationFolders[0];
         App.model.destinationFolders[0] = oldSource;
         document.getElementById('sourcePath').textContent = App.model.sourceFolder;
-        App.treeManager.updateTree();
+        App.treeManager.updateSourceTree();
         this.updateDestinationList();
         App.filtersManager.applyAllFilters();
         App.utils.writeMessage('Source / Destination Folders swapped.');
@@ -181,8 +181,10 @@ class CopyManager {
     updateDestinationList() {
         const listContainer = document.getElementById('destinationList');
         listContainer.innerHTML = ''; // empty list
+        App.uiManager.cleanDestinationTree();
         if (App.model.destinationFolders.length === 0) {
             listContainer.innerHTML = 'Add Destination Folder';
+            App.model.destTreeData = [];
         } else {
             App.model.destinationFolders.forEach((folder, index) => {
                 const listItem = document.createElement('span');
@@ -202,6 +204,10 @@ class CopyManager {
                 listItemInner.appendChild(removeButton);
                 listItem.appendChild(listItemInner);
                 listContainer.appendChild(listItem);
+
+                if (index == 0) {
+                    App.treeManager.renderDestinationTree();
+                }
             });
         }
         if (App.model.destinationFolders.length > 1) {
@@ -209,7 +215,6 @@ class CopyManager {
         }
 
         function addDraggableToDestinationFolders() {
-
             const destinationList = document.getElementById('destinationList');
             let badges = Array.from(destinationList.querySelectorAll('.badge-outer'));
 
@@ -267,6 +272,7 @@ class CopyManager {
                             let removeButton = badge.querySelector('a');
                             removeButton.dataset.index = index;
                         })
+                        App.treeManager.renderDestinationTree();
                         App.utils.writeMessage('Destination Folders List updated!'); // + App.model.destinationFolders.join(","));
                     }
                     draggedIndex = null;
@@ -286,7 +292,6 @@ class CopyManager {
                     //console.log('Drop not valid: release over another item.');
                 }
             });
-
 
         }
 

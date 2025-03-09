@@ -231,6 +231,36 @@ Source code available on <a href="https://github.com/atlantidezign/copyman"><i c
         }
     }
 
+    splitted = false;
+    updateSplitScreen() {
+        if (App.model.splitScreen === true) {
+            if (!this.splitted) {
+                this.splitted = true;
+                // Split
+                window.Split({
+                    snapOffset: 90,
+                    columnGutters: [{
+                        track: 1,
+                        element: document.querySelector('.gutter-col-1'),
+                    }],
+                })
+                document.querySelector('.gutter-col').classList.remove('hidden');
+                document.querySelector('#dest-tree').classList.remove('hidden');
+                App.copyManager.updateDestinationList();
+            }
+        } else {
+            this.splitted = false;
+            this.cleanDestinationTree();
+            document.querySelector('.gutter-col').classList.add('hidden');
+            document.querySelector('#dest-tree').classList.add('hidden');
+        }
+    }
+
+
+    cleanDestinationTree() {
+        const container = document.getElementById('dest-tree');
+        container.innerHTML = '';
+    }
 }
 
 module.exports = UIManager;

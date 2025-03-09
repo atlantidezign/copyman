@@ -244,7 +244,7 @@ app.whenReady().then(() => {
                         win.webContents.send('main-menu-command', 'menu-about')
                     }
                 },{
-                    label: 'Usage',
+                    label: 'Instructions',
                     click: () => {
                         win.webContents.send('main-menu-command', 'menu-help')
                     }
@@ -256,10 +256,17 @@ app.whenReady().then(() => {
                     }
                 },
                 {
-                    label: 'Website',
+                    label: 'Copyman Website',
                     click: async () => {
                         const {shell} = require('electron')
                         await shell.openExternal('https://www.copyman.it')
+                    }
+                },
+                {
+                    label: 'Atlantide Design Website',
+                    click: async () => {
+                        const {shell} = require('electron')
+                        await shell.openExternal('https://www.atlantide-design.it')
                     }
                 }
             ]
