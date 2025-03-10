@@ -271,66 +271,16 @@ class SnapshotManager {
         }
         let settings = this.getSnapshotFromStorage(useName);
         if (settings) {
-            let orString = "[OR]";
-            if (!settings.relationshipOR) orString = "[AND]";
-            let useContentHtml = `<div><b>Source:</b> ${settings.sourceFolder}</div>
-<div><b>Destinations:</b> ${settings.destinationFolders.join(", ")}</div>
-<div><b>Selected:</b> ${settings.selectionList? settings.selectionList.length: "0"}</div>
-<div><b>Copy Mode:</b> ${App.utils.formatOverwriteMode(settings.fileOverwrite)}</div>
-${(settings.filtersNamePlus.length > 0 || settings.filtersNameMinus.length > 0) ? `
-  <div>
-    <b>Filter Name:</b> ${orString}
-    ${settings.filtersNamePlus.length > 0 ? ` (OR ${settings.filtersNamePlus.join(",")})` : ""}
-    ${settings.filtersNameMinus.length > 0 ? ` (NOT ${settings.filtersNameMinus.join(",")})` : ""}
-  </div>
-` : ""}
-
-${(settings.filtersDatePlus.length > 0 || settings.filtersDateMinus.length > 0) ? `
-  <div>
-    <b>Filter Date:</b> ${orString}
-    ${settings.filtersDatePlus.length > 0 ? ` (OR ${settings.filtersDatePlus.join(",")})` : ""}
-    ${settings.filtersDateMinus.length > 0 ? ` (NOT ${settings.filtersDateMinus.join(",")})` : ""}
-  </div>
-` : ""}
-
-${(settings.filtersSizePlus.length > 0 || settings.filtersSizeMinus.length > 0) ? `
-  <div>
-    <b>Filter Size:</b> ${orString}
-    ${settings.filtersSizePlus.length > 0 ? ` (OR ${settings.filtersSizePlus.join(",")})` : ""}
-    ${settings.filtersSizeMinus.length > 0 ? ` (NOT ${settings.filtersSizeMinus.join(",")})` : ""}
-  </div>
-` : ""}
-
-${(() => {
-                const trueOptions = [
-                    settings.copyVerbose && "Verbose Progress",
-                    settings.copyReport && "Copying Report",
-                    settings.abortFullQueue && "Abort Queue",
-                    settings.dontConfirmQueue && "Don't Confirm Queue Steps",
-                    settings.propagateSelections && "Propagate Selection",
-                    settings.clickOnNamesToSelect && "Click On Names To Select",
-                    settings.sortOrder!="" && "Sort Order: '" + settings.sortOrder+"'",
-                    settings.maintainLogs && "Maintain Logs",
-                    settings.splitScreen && "Split Screen",
-                    //settings.saveSelection && "Save Selection",
-                ].filter(Boolean);
-
-                return trueOptions.length > 0
-                    ? `<div><b>Options:</b> ${trueOptions.join(", ")}</div>`
-                    : "";
-            })()}
-
-
-`;
-
+            let htmlContent = this.generateHTMLInfoForSnapshot(settings);
             App.uiManager.popoverInfoSnapshot.setContent({
                 '.popover-header': useName,
-                '.popover-body': useContentHtml
-            })
+                '.popover-body': htmlContent
+            });
+            App.utils.writeMessage("Info of Snapshot '"+useName+"' displayed.");
         }
     }
 
-    // Snapshot utils
+    // Utils: create snapshot object from current model and assign name
     createSnapshotObject(useName) {
         let newSettings = {
             name: useName,
@@ -365,11 +315,15 @@ ${(() => {
         }
         return newSettings
     }
+
+    //Utils: get selection list
     getListOfSelectedItemsForSnapshot() {
         const fileTree = document.getElementById('file-tree');
         const checkedCheckboxes = fileTree.querySelectorAll('input[type="checkbox"]:checked');
         return Array.from(checkedCheckboxes).map(item => item.dataset.filePath);
     }
+
+    //Utils: load snapshot by name from storage
     getSnapshotFromStorage(useName) {
         if (!useName) {
             App.utils.showAlert('Please enter a name for Snapshot to load.');
@@ -387,6 +341,62 @@ ${(() => {
             return null;
         }
         return settings;
+    }
+
+    //Utils: generate html info from snapshot data
+    generateHTMLInfoForSnapshot(settings) {
+        let orString = "[OR]";
+        if (!settings.relationshipOR) orString = "[AND]";
+        let useContentHtml = `<div><b>Source:</b> ${settings.sourceFolder}</div>
+    <div><b>Destinations:</b> ${settings.destinationFolders.join(", ")}</div>
+    <div><b>Selected:</b> ${settings.selectionList? settings.selectionList.length: "0"}</div>
+    <div><b>Copy Mode:</b> ${App.utils.formatOverwriteMode(settings.fileOverwrite)}</div>
+    ${(settings.filtersNamePlus.length > 0 || settings.filtersNameMinus.length > 0) ? `
+      <div>
+        <b>Filter Name:</b> ${orString}
+        ${settings.filtersNamePlus.length > 0 ? ` (OR ${settings.filtersNamePlus.join(",")})` : ""}
+        ${settings.filtersNameMinus.length > 0 ? ` (NOT ${settings.filtersNameMinus.join(",")})` : ""}
+      </div>
+    ` : ""}
+    
+    ${(settings.filtersDatePlus.length > 0 || settings.filtersDateMinus.length > 0) ? `
+      <div>
+        <b>Filter Date:</b> ${orString}
+        ${settings.filtersDatePlus.length > 0 ? ` (OR ${settings.filtersDatePlus.join(",")})` : ""}
+        ${settings.filtersDateMinus.length > 0 ? ` (NOT ${settings.filtersDateMinus.join(",")})` : ""}
+      </div>
+    ` : ""}
+    
+    ${(settings.filtersSizePlus.length > 0 || settings.filtersSizeMinus.length > 0) ? `
+      <div>
+        <b>Filter Size:</b> ${orString}
+        ${settings.filtersSizePlus.length > 0 ? ` (OR ${settings.filtersSizePlus.join(",")})` : ""}
+        ${settings.filtersSizeMinus.length > 0 ? ` (NOT ${settings.filtersSizeMinus.join(",")})` : ""}
+      </div>
+    ` : ""}
+    
+    ${(() => {
+            const trueOptions = [
+                settings.copyVerbose && "Verbose Progress",
+                settings.copyReport && "Copying Report",
+                settings.abortFullQueue && "Abort Queue",
+                settings.dontConfirmQueue && "Don't Confirm Queue Steps",
+                settings.propagateSelections && "Propagate Selection",
+                settings.clickOnNamesToSelect && "Click On Names To Select",
+                settings.sortOrder!="" && "Sort Order: '" + settings.sortOrder+"'",
+                settings.maintainLogs && "Maintain Logs",
+                settings.splitScreen && "Split Screen",
+                //settings.saveSelection && "Save Selection",
+            ].filter(Boolean);
+    
+            return trueOptions.length > 0
+                ? `<div><b>Options:</b> ${trueOptions.join(", ")}</div>`
+                : "";
+        })()}
+    
+    
+    `;
+        return useContentHtml;
     }
 
     // Queue
