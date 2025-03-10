@@ -42,7 +42,7 @@ To assist with **selection**, you can use the **Filters**.
 There are filters for file and folder **Name**, file and folder **Date** and file **Size**.
 
 For each group, we have **Addictive** (+) filters, and **Subtractive** (-) filters.
-**Addictive Filters** of each group are in **OR** condition. Eg. with 2 different strings for Addictives Name Filters, will be selected every item matches string1 or string2.
+**Addictive Filters** of each group are in **OR** condition. Eg: with 2 different strings for Addictives Name Filters, will be selected every item matches string1 or string2.
 A **Substractive Filter** removes from selection every item matches, as a **NOT** condition.
 
 **Relationship** between Addictive filters of different groups can be an **OR** or **AND** condition, according to options.
@@ -91,10 +91,10 @@ The **Options** panel affects copying and selecting behaviours.
 Has an autosave behaviour, and can be **Reset** to defaults. 
 
 #### Copying
-- **Verbose Progress** to choose if have a window with verborse progress during copying phase. Default false.
-- **Copying Report** to choose if have a window with report at the end of the copying phase. Default true.
+- **Verbose Progress** to choose if to have a window with verborse progress during copying phase. Default false.
+- **Copying Report** to choose if to have a window with report at the end of the copying phase. Default true.
 - **Abort Queue** to choose if the *Abort Copying* command affects full Queue or just current Queue Item. Default true.
-- **Don't Confirm Queue Steps** to choose if confirm or not every Queue Step start copying. Default false.
+- **Don't Confirm Queue Steps** to choose if to confirm or not every Queue Step start copying. Default false.
 - **Overwrite Existing** to choose the overwrite mode if a file/folder already exist. Default Always.
 It can be: 
   - *Always* Always Overwrite;
@@ -109,13 +109,11 @@ It can be:
 #### Selecting
 - **Propagate Selection** to choose if propagate (checked) or not (unchecked) the selection/deselection click of an item to parent and childen elements. Default true.
 - **Click on Names to Select**  to choose if also clicks on files/folders names can Select/Deselect the item. Default true.
-
-#### Filtering
-- **Relationship OR** to choose the kind of relationship between filter groups, OR (checked) or AND (unchecked). Default true (OR).
+- **Filters Relationship OR** to choose the kind of relationship between filter groups, OR (checked) or AND (unchecked). Default true (OR).
 
 #### System
+- **Split Screen** to add a tree view also for first Destination folder (remember: you can change order of destinations folders, and set what's the first one, by dragging the badges in the Destination Folders List). Default false.
 - **Maintain Logs** to choose if to record application logs in memory. Can be exported to file with **Export Logs** button, and cleaned with **Clear Logs** button. Default false.
-- **Split Screen** to add a tree view also for first Desination folder (remember: you can change order of destinations folders, and set what's the first one, by dragging the badges in the Destination Folders List). Default false.
 
 ---
 
@@ -158,7 +156,7 @@ With **Preview** switch you can enable/disable *Preview Mode*: Copying is not pe
 ---
 
 ### Menus
-Trough the **contextual menu** (right click) you have shortcuts to the main features of the application.
+Through the **contextual menu** (right click) you have shortcuts to the main features of the application.
 
 The **main menu** contains classical *View* actions, for  **Reload**, **Zoom** levels, **Full Screen** and **Minimize** switches; 
 it also contains the *Help* submenu, with links to **About** panel, to **Instructions** panel, to **Copyman Website** and to **Atlantide Design Website**.
