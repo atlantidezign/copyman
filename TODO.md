@@ -11,7 +11,8 @@ queue: multiple queues with load/save/export/import for singles and for all.
 copy: in verbose mode, using selectedNodes, include info on file sizes/date, and elapsed, and progress?, for each single file
       and better verbose and progress in case of small files
 copy: new copy mode -> if selected something only on leaf or descending trees (ignoring when folder selection is just to reach the leaf path - no other selection in the descending ones) it syncs just starting from that ones
-copy: new feature copy to archive -> not copy single files/folder, but produce a zip archive to be moved to destinations, and a descriptor txt/json with list of files/dates that can be used for searching/history
+copy: new feature 'copy to zip archive' -> not copy single files/folder, but produce a zip archive to be moved to destinations, 
+      and a descriptor txt/json with list of files/dates that can be used for searching/history
 
 ---
 
@@ -25,9 +26,8 @@ electron: splash with logo?
 electron: notifications? create a dedicated modal for listing/reading and add a spinning icon
 
 ui: alerts and confirms not using native dialogs but using html modals.
-ui: collapsable folders/filters panels or all separated panels using floating windows?
+ui: collapsable folders and filters panels or all separated panels using floating windows?
 
-sys: rewrite all in TypeScript
 sys: extensive testing, especially date/size filters and copymodes
 
 ext: better Google Copyman account and GitHub profile
@@ -36,6 +36,8 @@ ext: in website add robots.txt and better SEO (and add to Google search)
 ---
 
 ## NEVER?
+sys: rewrite all in TypeScript?
+
 electron: signed build for win and mac (requires a paid  for win, for mac?) 
 electron: check update (requires the above and third-party services)
 
