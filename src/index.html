@@ -405,20 +405,19 @@
                                     <hr/>
                                     <div>
                                         <div class="ps-3 mt-2"><label class="form-check-label"
-                                                                      title="Set Overwrite conditions for files and folders, during copying, if they already exist">Overwrite
-                                            Existing</label></div>
+                                                                      title="Set Copy Mode conditions for files and folders, during copying, if they already exist">Copy Mode</label></div>
                                         <div class="form-check form-check-inline" title="Always Overwrite">
                                             <input class="form-check-input" type="radio" name="overwriteChecked"
                                                    id="overwriteChecked1" value="1" title="Always Overwrite" checked>
                                             <label class="form-check-label" for="overwriteChecked1">
-                                                Always
+                                                Always Overwrite
                                             </label>
                                         </div>
                                         <div class="form-check form-check-inline" title="Never Overwrite">
                                             <input class="form-check-input" type="radio" name="overwriteChecked"
                                                    id="overwriteChecked4" value="4" title="Never Overwrite">
                                             <label class="form-check-label" for="overwriteChecked4">
-                                                Never
+                                                Never Overwrite
                                             </label>
                                         </div>
 
@@ -426,14 +425,14 @@
                                             <input class="form-check-input" type="radio" name="overwriteChecked"
                                                    id="overwriteChecked2" value="2" title="Overwrite if Newer">
                                             <label class="form-check-label" for="overwriteChecked2">
-                                                If Newer
+                                                Overwrite if Newer
                                             </label>
                                         </div>
                                         <div class="form-check form-check-inline" title="Overwrite if Different Size">
                                             <input class="form-check-input" type="radio" name="overwriteChecked"
                                                    id="overwriteChecked3" value="3" title="Overwrite if Different Size">
                                             <label class="form-check-label" for="overwriteChecked3">
-                                                If Different Size
+                                                Overwrite if Different Size
                                             </label>
                                         </div>
 
@@ -471,7 +470,7 @@
                                                    id="overwriteChecked5" value="5"
                                                    title="Keep existing file using a new name for copy">
                                             <label class="form-check-label" for="overwriteChecked5">
-                                                Keep
+                                                Keep Existing
                                             </label>
                                         </div>
                                     </div>
@@ -585,13 +584,11 @@
                             <input type="text" class="form-control" id="saveSnapshotInput"
                                    title="Name of the Snapshot to save"
                                    placeholder="Name of Snapshot"/>
-                            <button id="saveSnapshot" type="button" class="btn btn-primary btn-sm snapshot-buttons"><i
+                            <button id="saveSnapshot" type="button" class="btn btn-primary btn-sm snapshot-buttons" title="Save Snapshot"><i
                                     class="bi bi-box-arrow-down" title="Save Snapshot"></i>
-                                Save
                             </button>
-                            <button id="exportSnapshot" type="button" class="btn btn-primary btn-sm snapshot-buttons"><i
+                            <button id="exportSnapshot" type="button" class="btn btn-primary btn-sm snapshot-buttons" title="Export Snapshot to file"><i
                                     class="bi bi-box-arrow-in-down" title="Export Snapshot to file"></i>
-                                Export
                             </button>
                         </div>
                         <div class="input-group">
@@ -599,23 +596,29 @@
                                     title="Choose a Snapshot to load"
                                     id="loadSnapshotInput">
                             </select>
-                            <button id="loadSnapshot" type="button" class="btn btn-primary btn-sm snapshot-buttons"><i
+                            <button id="loadSnapshot" type="button" class="btn btn-primary btn-sm snapshot-buttons2" title="Load Saved Snapshot"><i
                                     class="bi bi-box-arrow-up" title="Load Saved Snapshot"></i>
-                                Load
+
                             </button>
-                            <button id="cleanSnapshot" type="button" class="btn btn-primary btn-sm snapshot-buttons"><i
+                            <button id="cleanSnapshot" type="button" class="btn btn-primary btn-sm snapshot-buttons2" title="Remove Saved Snapshot"><i
                                     class="bi bi-trash" title="Remove Saved Snapshot"></i>
-                                Clear
+
                             </button>
+                            <a id="infoSnapshot" tabindex="0" data-bs-trigger="focus"  class="btn btn-primary btn-sm snapshot-buttons2" title="Info on Snapshot"
+                               role="button" data-bs-toggle="popover" data-bs-placement="left" data-bs-custom-class="custom-popover"
+                               data-bs-title="Copyman" data-bs-content="..."
+                               onclick="App.snapshotManager.updateInfoSnapshotPopover();"><i
+                                    class="bi bi-eye" title="Info on Snapshot" ></i>
+                            </a>
                         </div>
 
                         <div>
-                            <button id="importSnapshot" type="button" class="btn btn-primary btn-sm snapshot-buttons"><i
+                            <button id="importSnapshot" type="button" class="btn btn-primary btn-sm"  title="Import Snapshot from file"><i
                                     class="bi bi-box-arrow-in-up" title="Import Snapshot from file"></i>
                                 Import
                             </button>
                             <button id="cleanAllSnapshots" type="button"
-                                    class="btn btn-primary btn-sm snapshot-buttons"><i
+                                    class="btn btn-primary btn-sm"  title="Clear All saved Snapshots"><i
                                     class="bi bi-trash" title="Clear All saved Snapshots"></i>
                                 Clear All
                             </button>

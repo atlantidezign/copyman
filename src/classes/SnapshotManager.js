@@ -18,6 +18,7 @@ class SnapshotManager {
         this.setupexecuteQueue();
     }
 
+    // Shapshots crud
     listSnapshots() {
         let selectEl = document.getElementById('loadSnapshotInput');
         selectEl.innerHTML = '';
@@ -45,7 +46,6 @@ class SnapshotManager {
         }
         this.listQueue(snapshotsList);
     }
-
     async saveSnapshot() {
         let useName = document.getElementById('saveSnapshotInput').value.trim().toLowerCase();
         if (!useName) {
@@ -85,61 +85,13 @@ class SnapshotManager {
         this.listSnapshots();
         App.utils.writeMessage('Snapshot "' + useName + '" saved.');
     }
-
     loadSnapshot() {
         App.utils.writeMessage('Loading Snapshot...');
         let useName = document.getElementById('loadSnapshotInput').value.trim().toLowerCase();
-        if (!useName) {
-            App.utils.showAlert('Please enter a name for Snapshot to load.');
-            return;
+        let settings = this.getSnapshotFromStorage(useName);
+        if (settings) {
+            this.setFromSnapshot(settings);
         }
-        // get from localStorage
-        let useSettings = [];
-        const settingsStr = localStorage.getItem('snapshots');
-        if (settingsStr) {
-            useSettings = JSON.parse(settingsStr);
-        }
-        let settings = useSettings.find((setting) => setting.name === useName);
-        if (!settings) {
-            App.utils.writeMessage('No saved Snapshot found with name "' + useName + '"');
-            return;
-        }
-        this.setFromSnapshot(settings);
-    }
-
-    createSnapshotObject(useName) {
-        let newSettings = {
-            name: useName,
-            // source and destinations folders
-            sourceFolder: App.model.sourceFolder,
-            destinationFolders: App.model.destinationFolders,
-            // user settings
-            fileOverwrite: App.model.fileOverwrite,
-            copyVerbose: App.model.copyVerbose,
-            copyReport: App.model.copyReport,
-            abortFullQueue: App.model.abortFullQueue,
-            dontConfirmQueue: App.model.dontConfirmQueue,
-            propagateSelections: App.model.propagateSelections,
-            clickOnNamesToSelect: App.model.clickOnNamesToSelect,
-            relationshipOR: App.model.relationshipOR,
-            sortOrder: App.model.sortOrder,
-            maintainLogs: App.model.maintainLogs,
-            splitScreen: App.model.splitScreen,
-            saveSelection: App.model.saveSelection,
-            // filters
-            filtersNamePlus: App.model.filtersNamePlus,
-            filtersNameMinus: App.model.filtersNameMinus,
-            filtersDatePlus: App.model.filtersDatePlus,
-            filtersDateMinus: App.model.filtersDateMinus,
-            filtersSizePlus: App.model.filtersSizePlus,
-            filtersSizeMinus: App.model.filtersSizeMinus,
-            // selection list
-            selectionList: []
-        }
-        if (App.model.saveSelection) {
-            newSettings.selectionList = App.snapshotManager.getListOfSelectedItemsForSnapshot();
-        }
-        return newSettings
     }
     async cleanSnapshot() {
         let useName = document.getElementById('loadSnapshotInput').value.trim().toLowerCase();
@@ -173,7 +125,6 @@ class SnapshotManager {
             App.utils.writeMessage(`No Snapshot with name "${useName}".`);
         }
     }
-
     async cleanAllSnapshots() {
         let confirmation = await App.utils.showConfirmWithReturn('Are you sure you want to Clean all saved Snapshots? It will also clear the Queue.');
         if (confirmation) {
@@ -184,7 +135,6 @@ class SnapshotManager {
             App.utils.writeMessage('Snapshots cleaned.');
         }
     }
-
     async exportSnapshot() {
         let useName = document.getElementById('saveSnapshotInput').value.trim().toLowerCase();
         if (!useName) {
@@ -213,7 +163,6 @@ class SnapshotManager {
         App.model.clicksActive = true;
         App.utils.toggleSpinner(!App.model.clicksActive);
     }
-
     async importSnapshot() {
         App.utils.writeMessage('Choose Snapshot JSON file for Import.');
         App.model.clicksActive = false;
@@ -252,6 +201,7 @@ class SnapshotManager {
         }
     }
 
+    // Apply snapshot
     setFromSnapshot(settings) {
         try {
             App.filtersManager.removeAllFilters();
@@ -313,10 +263,130 @@ class SnapshotManager {
         }
     }
 
+    // Info popover
+    updateInfoSnapshotPopover() {
+        let useName = document.getElementById('loadSnapshotInput').value.trim().toLowerCase();
+        if (!useName) {
+            return;
+        }
+        let settings = this.getSnapshotFromStorage(useName);
+        if (settings) {
+            let orString = "[OR]";
+            if (!settings.relationshipOR) orString = "[AND]";
+            let useContentHtml = `<div><b>Source:</b> ${settings.sourceFolder}</div>
+<div><b>Destinations:</b> ${settings.destinationFolders.join(", ")}</div>
+<div><b>Selected:</b> ${settings.selectionList? settings.selectionList.length: "0"}</div>
+<div><b>Copy Mode:</b> ${App.utils.formatOverwriteMode(settings.fileOverwrite)}</div>
+${(settings.filtersNamePlus.length > 0 || settings.filtersNameMinus.length > 0) ? `
+  <div>
+    <b>Filter Name:</b> ${orString}
+    ${settings.filtersNamePlus.length > 0 ? ` (OR ${settings.filtersNamePlus.join(",")})` : ""}
+    ${settings.filtersNameMinus.length > 0 ? ` (NOT ${settings.filtersNameMinus.join(",")})` : ""}
+  </div>
+` : ""}
+
+${(settings.filtersDatePlus.length > 0 || settings.filtersDateMinus.length > 0) ? `
+  <div>
+    <b>Filter Date:</b> ${orString}
+    ${settings.filtersDatePlus.length > 0 ? ` (OR ${settings.filtersDatePlus.join(",")})` : ""}
+    ${settings.filtersDateMinus.length > 0 ? ` (NOT ${settings.filtersDateMinus.join(",")})` : ""}
+  </div>
+` : ""}
+
+${(settings.filtersSizePlus.length > 0 || settings.filtersSizeMinus.length > 0) ? `
+  <div>
+    <b>Filter Size:</b> ${orString}
+    ${settings.filtersSizePlus.length > 0 ? ` (OR ${settings.filtersSizePlus.join(",")})` : ""}
+    ${settings.filtersSizeMinus.length > 0 ? ` (NOT ${settings.filtersSizeMinus.join(",")})` : ""}
+  </div>
+` : ""}
+
+${(() => {
+                const trueOptions = [
+                    settings.copyVerbose && "Verbose Progress",
+                    settings.copyReport && "Copying Report",
+                    settings.abortFullQueue && "Abort Queue",
+                    settings.dontConfirmQueue && "Don't Confirm Queue Steps",
+                    settings.propagateSelections && "Propagate Selection",
+                    settings.clickOnNamesToSelect && "Click On Names To Select",
+                    settings.sortOrder!="" && "Sort Order: '" + settings.sortOrder+"'",
+                    settings.maintainLogs && "Maintain Logs",
+                    settings.splitScreen && "Split Screen",
+                    //settings.saveSelection && "Save Selection",
+                ].filter(Boolean);
+
+                return trueOptions.length > 0
+                    ? `<div><b>Options:</b> ${trueOptions.join(", ")}</div>`
+                    : "";
+            })()}
+
+
+`;
+
+            App.uiManager.popoverInfoSnapshot.setContent({
+                '.popover-header': useName,
+                '.popover-body': useContentHtml
+            })
+        }
+    }
+
+    // Snapshot utils
+    createSnapshotObject(useName) {
+        let newSettings = {
+            name: useName,
+            // source and destinations folders
+            sourceFolder: App.model.sourceFolder,
+            destinationFolders: App.model.destinationFolders,
+            // user settings
+            fileOverwrite: App.model.fileOverwrite,
+            copyVerbose: App.model.copyVerbose,
+            copyReport: App.model.copyReport,
+            abortFullQueue: App.model.abortFullQueue,
+            dontConfirmQueue: App.model.dontConfirmQueue,
+            propagateSelections: App.model.propagateSelections,
+            clickOnNamesToSelect: App.model.clickOnNamesToSelect,
+            relationshipOR: App.model.relationshipOR,
+            sortOrder: App.model.sortOrder,
+            maintainLogs: App.model.maintainLogs,
+            splitScreen: App.model.splitScreen,
+            saveSelection: App.model.saveSelection,
+            // filters
+            filtersNamePlus: App.model.filtersNamePlus,
+            filtersNameMinus: App.model.filtersNameMinus,
+            filtersDatePlus: App.model.filtersDatePlus,
+            filtersDateMinus: App.model.filtersDateMinus,
+            filtersSizePlus: App.model.filtersSizePlus,
+            filtersSizeMinus: App.model.filtersSizeMinus,
+            // selection list
+            selectionList: []
+        }
+        if (App.model.saveSelection) {
+            newSettings.selectionList = App.snapshotManager.getListOfSelectedItemsForSnapshot();
+        }
+        return newSettings
+    }
     getListOfSelectedItemsForSnapshot() {
         const fileTree = document.getElementById('file-tree');
         const checkedCheckboxes = fileTree.querySelectorAll('input[type="checkbox"]:checked');
         return Array.from(checkedCheckboxes).map(item => item.dataset.filePath);
+    }
+    getSnapshotFromStorage(useName) {
+        if (!useName) {
+            App.utils.showAlert('Please enter a name for Snapshot to load.');
+            return null;
+        }
+        // get from localStorage
+        let useSettings = [];
+        const settingsStr = localStorage.getItem('snapshots');
+        if (settingsStr) {
+            useSettings = JSON.parse(settingsStr);
+        }
+        let settings = useSettings.find((setting) => setting.name === useName);
+        if (!settings) {
+            App.utils.writeMessage('No saved Snapshot found with name "' + useName + '"');
+            return null;
+        }
+        return settings;
     }
 
     // Queue
@@ -435,7 +505,7 @@ class SnapshotManager {
         });
     }
 
-    // Handle addition of a new item (prevents duplicate items)
+    // Handle addition of a new item (prevents duplicate items) to queue
     setupaddToQueue() {
         const addToQueueBtn = document.getElementById('addToQueue');
         const selectElement = document.getElementById('queueSelect');
@@ -498,7 +568,6 @@ class SnapshotManager {
             }
         })
     }
-
     executeNextQueue() {
         let useName = App.model.queueToExecute[0];
         // get from localStorage

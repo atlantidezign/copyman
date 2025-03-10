@@ -62,6 +62,7 @@ Source code available on <a href="https://github.com/atlantidezign/copyman"><i c
     //Components
     rangePicker = null;
     rangeSlider = null;
+    popoverInfoSnapshot = null;
     initializeComponents() {
         if (navigator.language && navigator.language.toLowerCase().startsWith('it')) {
             App.model.dateFormat = 'dd/mm/yyyy';
@@ -229,6 +230,13 @@ Source code available on <a href="https://github.com/atlantidezign/copyman"><i c
 
             return outputString;
         }
+
+        // Popover Info Snapshot
+        let popoverEl = document.getElementById('infoSnapshot');
+        this.popoverInfoSnapshot = new bootstrap.Popover(popoverEl, {
+            trigger: 'focus',
+            html: true
+        })
     }
 
     splitted = false;

@@ -95,16 +95,16 @@ Has an autosave behaviour, and can be **Reset** to defaults.
 - **Copying Report** to choose if to have a window with report at the end of the copying phase. Default true.
 - **Abort Queue** to choose if the *Abort Copying* command affects full Queue or just current Queue Item. Default true.
 - **Don't Confirm Queue Steps** to choose if to confirm or not every Queue Step start copying. Default false.
-- **Overwrite Existing** to choose the overwrite mode if a file/folder already exist. Default Always.
+- **Copy Mode** to choose the copy mode, eg: overwrite if a file/folder already exist, sync, etc. Default Always.
 It can be: 
-  - *Always* Always Overwrite;
-  - *Never* Never Overwrite; 
-  - *If Different Size* Overwrite if Different Size;
-  - *If Newer* Overwrite if Newer; 
+  - *Always Overwrite* Always Overwrite;
+  - *Never Overwrite* Never Overwrite; 
+  - *Overwrite if Different Size* Overwrite if Different Size;
+  - *Overwrite if Newer* Overwrite if Newer; 
   - *Sync1* Clean files in folders with at least a selected file (not folder) inside;
   - *Sync2* Clean files in folders with at least a selected file or folder inside;
   - *Brute* Clean files and folders recursively in folders with at least a selected file or folder inside;
-  - *Keep* Keep existing file using a new name for copy.
+  - *Keep Existing* Keep existing file using a new name for copy.
 
 #### Selecting
 - **Propagate Selection** to choose if propagate (checked) or not (unchecked) the selection/deselection click of an item to parent and childen elements. Default true.
@@ -125,6 +125,7 @@ In this panel, you can manage saving, loading, clearing, and exporting snapshots
 - **Export Shapshot** to export current snapshot to a json file, with a name.
 - **Load Shapshot** to load saved snapshot by selected name.
 - **Clear Shapshot** to remove saved snapshot by selected name.
+- **Info Shapshot** to get info on saved snapshot by selected name.
 - **Import Shapshot** to import snapshot from json file.
 - **Clear All Shapshots** to remove all saved snapshots.
 

@@ -119,19 +119,19 @@ class Utils {
         let enumToStr = '';
         switch (fileOverwrite) {
             case App.model.fileOverwriteEnum.always:
-                enumToStr = '"Always"';
+                enumToStr = '"Always Overwrite"';
                 break;
             case App.model.fileOverwriteEnum.never:
-                enumToStr = '"Never"';
+                enumToStr = '"Never Overwrite"';
                 break;
             case App.model.fileOverwriteEnum.if_different:
-                enumToStr = '"If Different Size"';
+                enumToStr = '"Overwrite if Different Size"';
                 break;
             case App.model.fileOverwriteEnum.if_newer:
-                enumToStr = '"If Newer"';
+                enumToStr = '"Overwrite if Newer"';
                 break;
             case App.model.fileOverwriteEnum.keep:
-                enumToStr = '"Keep"';
+                enumToStr = '"Keep Existing"';
                 break;
             case App.model.fileOverwriteEnum.sync:
                 enumToStr = '"Sync1"';

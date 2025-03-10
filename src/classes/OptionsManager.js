@@ -11,7 +11,7 @@ class OptionsManager {
             radio.addEventListener("change", function () {
                 App.model.fileOverwrite = Number(this.value);
                 App.optionsManager.saveOptions();
-                App.utils.writeMessage('Overwrite Existing setting is now ' + App.utils.formatOverwriteMode(App.model.fileOverwrite));
+                App.utils.writeMessage('Copy Mode setting is now ' + App.utils.formatOverwriteMode(App.model.fileOverwrite));
             });
         });
         document.getElementById("verboseChecked").addEventListener("change", function () {

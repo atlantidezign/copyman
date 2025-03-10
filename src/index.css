@@ -250,9 +250,27 @@ li {
 
 /* Automation Modal */
 .snapshot-buttons {
-    width: 90px;
+    width: 48px;
 }
-
+.snapshot-buttons2 {
+    width: 32px;
+}
+.custom-popover {
+    --bs-popover-max-width: 400px;
+    --bs-popover-border-color: #6610f2;
+    --bs-popover-header-bg: #6610f2;
+    --bs-popover-header-color: #FFFFFF;
+    --bs-popover-body-padding-x: 1rem;
+    --bs-popover-body-padding-y: .5rem;
+    --bs-popover-header-padding-x: 0.5rem;
+    --bs-popover-header-padding-y: .5rem;
+    --bs-popover-header-font-size: 0.75rem;
+    font-size: 0.75em;
+    padding: 0;
+}
+.custom-popover b {
+    color: #863efa;
+}
 .snapshot-explain {
     font-size: 0.85em;
     padding-bottom: 20px;
@@ -513,7 +531,7 @@ body > div#div-modals {
     visibility: visible;
 }
 
-#cleanSnapshot {
+#cleanSnapshot, #infoSnapshot {
     margin-left: 1px
 }
 

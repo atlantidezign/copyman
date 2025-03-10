@@ -1,8 +1,6 @@
 # TODO
 
 ## NOW
-snapshots: info window for the shapshots to load
-
 queue: multiple queues with load/save/export/import for singles and for all.
 
 ui: better text wrap on trees
