@@ -188,7 +188,7 @@ class CopyManager {
         } else {
             App.model.destinationFolders.forEach((folder, index) => {
                 const listItem = document.createElement('span');
-                listItem.classList.add('badge', 'badge-outer', 'text-bg-secondary', 'position-relative', 'me-3');
+                listItem.classList.add('badge', 'badge-outer', 'text-bg-secondary', 'badge-dest', 'position-relative', 'me-3');
                 listItem.title = folder;
                 listItem.textContent = getLastTwoElements(folder);
                 const listItemInner = document.createElement('span');

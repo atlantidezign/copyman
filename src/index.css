@@ -200,7 +200,11 @@ li {
 }
 
 #dest-tree .tree-folder-name {
-    background: rgb(108, 117, 125);
+    background: #8510f2;
+}
+
+.badge-dest:first-of-type {
+    background: #8510f2 !important;
 }
 
 /* Actions */
@@ -481,15 +485,19 @@ body > div#div-modals {
 .nav-link:focus, .nav-link:hover {
     color: #de88ff;
 }
+
 #v-pills-tab {
     width: 120px;
 }
+
 #v-pills-tabContent {
     width: calc(100% - 120px);
 }
+
 #v-pills-tabContent .form-check {
     min-width: 160px;
 }
+
 .consistent-height.tab-content {
     display: flex;
 }
@@ -504,9 +512,11 @@ body > div#div-modals {
 .consistent-height.tab-content > .active {
     visibility: visible;
 }
+
 #cleanSnapshot {
     margin-left: 1px
 }
+
 #helpContentMD, #aboutContentMD, #listContentMD {
     font-size: 0.85em;
 }
