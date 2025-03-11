@@ -420,6 +420,7 @@ class FiltersManager {
                 // remove single
                 const removeButton = document.createElement('a');
                 removeButton.innerHTML = '<i class="bi bi-x-lg"></i>';
+                removeButton.title = 'Remove Filter';
                 removeButton.addEventListener('click', () => {
                     App.filtersManager.removeSingleNameFilter(index, filterKind);
                 });
@@ -535,6 +536,7 @@ class FiltersManager {
                 // remove single item
                 const removeButton = document.createElement('a');
                 removeButton.innerHTML = '<i class="bi bi-x-lg"></i>';
+                removeButton.title = 'Remove Filter';
                 removeButton.addEventListener('click', () => {
                     App.filtersManager.removeSingleDateFilter(index, filterKind);
                 });
@@ -695,6 +697,7 @@ class FiltersManager {
                 // remove single item
                 const removeButton = document.createElement('a');
                 removeButton.innerHTML = '<i class="bi bi-x-lg"></i>';
+                removeButton.title = 'Remove Filter';
                 removeButton.addEventListener('click', () => {
                     App.filtersManager.removeSingleSizeFilter(index, filterKind);
                 });

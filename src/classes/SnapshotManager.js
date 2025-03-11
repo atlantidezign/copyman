@@ -49,7 +49,7 @@ class SnapshotManager {
     async saveSnapshot() {
         let useName = document.getElementById('saveSnapshotInput').value.trim().toLowerCase();
         if (!useName) {
-            App.utils.showAlert('Please enter a name for Snapshot to save.');
+            App.utils.showAlert('Please enter a name for Task to save.');
             return;
         }
         document.getElementById('saveSnapshotInput').value = useName;
@@ -68,12 +68,12 @@ class SnapshotManager {
 
         const index = useSettings.findIndex(setting => setting.name === useName);
         if (index !== -1) {
-            let confirmation = await App.utils.showConfirmWithReturn('A Snapshot with name "' + useName + '" already exists. Do you want to overwrite it?');
+            let confirmation = await App.utils.showConfirmWithReturn('A Task with name "' + useName + '" already exists. Do you want to overwrite it?');
             if (confirmation) {
                 useSettings.splice(index, 1);
-                App.utils.writeMessage(`Old Snapshot named "${useName}" removed.`);
+                App.utils.writeMessage(`Old Task named "${useName}" removed.`);
             } else {
-                App.utils.writeMessage('Snapshot "' + useName + '" not saved.');
+                App.utils.writeMessage('Task "' + useName + '" not saved.');
                 return;
             }
         }
@@ -83,10 +83,10 @@ class SnapshotManager {
         // serialize and save in localStorage
         localStorage.setItem('snapshots', JSON.stringify(useSettings));
         this.listSnapshots();
-        App.utils.writeMessage('Snapshot "' + useName + '" saved.');
+        App.utils.writeMessage('Task "' + useName + '" saved.');
     }
     loadSnapshot() {
-        App.utils.writeMessage('Loading Snapshot...');
+        App.utils.writeMessage('Loading Task...');
         let useName = document.getElementById('loadSnapshotInput').value.trim().toLowerCase();
         let settings = this.getSnapshotFromStorage(useName);
         if (settings) {
@@ -96,7 +96,7 @@ class SnapshotManager {
     async cleanSnapshot() {
         let useName = document.getElementById('loadSnapshotInput').value.trim().toLowerCase();
         if (!useName) {
-            App.utils.showAlert('Please enter a name for Snapshot to remove.');
+            App.utils.showAlert('Please enter a name for Task to remove.');
             return;
         }
 
@@ -110,7 +110,7 @@ class SnapshotManager {
         if (index !== -1) {
             let queueText = '';
             if (App.model.queue.indexOf(useName) >= 0) { queueText = ' It will be removed also from Queue.'}
-            let confirmation = await App.utils.showConfirmWithReturn('Are you sure you want to remove Saved Snapshot named ' + useName + '?' + queueText);
+            let confirmation = await App.utils.showConfirmWithReturn('Are you sure you want to remove Saved Task named ' + useName + '?' + queueText);
             if (confirmation) {
                 useSettings.splice(index, 1);
 
@@ -119,26 +119,26 @@ class SnapshotManager {
 
                 localStorage.setItem('snapshots', JSON.stringify(useSettings));
                 this.listSnapshots();
-                App.utils.writeMessage(`Snapshot named "${useName}" removed.`);
+                App.utils.writeMessage(`Task named "${useName}" removed.`);
             }
         } else {
-            App.utils.writeMessage(`No Snapshot with name "${useName}".`);
+            App.utils.writeMessage(`No Task with name "${useName}".`);
         }
     }
     async cleanAllSnapshots() {
-        let confirmation = await App.utils.showConfirmWithReturn('Are you sure you want to Clean all saved Snapshots? It will also clear the Queue.');
+        let confirmation = await App.utils.showConfirmWithReturn('Are you sure you want to Clean all saved Tasks? It will also clear the Queue.');
         if (confirmation) {
             App.model.queue = [];
             App.snapshotManager.saveQueue();
             localStorage.removeItem('snapshots');
             this.listSnapshots();
-            App.utils.writeMessage('Snapshots cleaned.');
+            App.utils.writeMessage('Tasks cleaned.');
         }
     }
     async exportSnapshot() {
         let useName = document.getElementById('saveSnapshotInput').value.trim().toLowerCase();
         if (!useName) {
-            App.utils.showAlert('Please enter a name for Snapshot to export.');
+            App.utils.showAlert('Please enter a name for Task to export.');
             return;
         }
         document.getElementById('saveSnapshotInput').value = useName;
@@ -151,25 +151,25 @@ class SnapshotManager {
 
         let newSettings = this.createSnapshotObject(useName);
 
-        App.utils.writeMessage('Choose Snapshot JSON file for Export.');
+        App.utils.writeMessage('Choose Task JSON file for Export.');
         App.model.clicksActive = false;
         App.utils.toggleSpinner(!App.model.clicksActive);
         const saved = await ipcRenderer.invoke('select-export-snapshot-file', newSettings);
         if (saved) {
-            App.utils.writeMessage('Snapshot exported successfully.');
+            App.utils.writeMessage('Task exported successfully.');
         } else {
-            App.utils.writeMessage('Snapshot not exported.');
+            App.utils.writeMessage('Task not exported.');
         }
         App.model.clicksActive = true;
         App.utils.toggleSpinner(!App.model.clicksActive);
     }
     async importSnapshot() {
-        App.utils.writeMessage('Choose Snapshot JSON file for Import.');
+        App.utils.writeMessage('Choose Task JSON file for Import.');
         App.model.clicksActive = false;
         App.utils.toggleSpinner(!App.model.clicksActive);
-        const filePath = await ipcRenderer.invoke('select-import-snapshot-file', 'Select Snapshot File to Import');
+        const filePath = await ipcRenderer.invoke('select-import-snapshot-file', 'Select Task File to Import');
         if (!filePath) {
-            App.utils.showAlert('No file selected for Snapshot import.');
+            App.utils.showAlert('No file selected for Task import.');
             App.model.clicksActive = true;
             App.utils.toggleSpinner(!App.model.clicksActive);
             return;
@@ -179,8 +179,8 @@ class SnapshotManager {
         try {
             fileContent = fs.readFileSync(filePath, 'utf8');
         } catch (error) {
-            console.error(`Error reading JSON Snapshot file ${filePath}: ${error.message}`);
-            App.utils.writeMessage(`Error reading JSON Snapshot file.`);
+            console.error(`Error reading JSON Task file ${filePath}: ${error.message}`);
+            App.utils.writeMessage(`Error reading JSON Task file.`);
             App.model.clicksActive = true;
             App.utils.toggleSpinner(!App.model.clicksActive);
             return;
@@ -193,8 +193,8 @@ class SnapshotManager {
             App.model.clicksActive = true;
             App.utils.toggleSpinner(!App.model.clicksActive);
         } catch (error) {
-            console.error(`Error on JSON Snapshot file parsing: ${error.message}`);
-            App.utils.writeMessage(`Error on JSON Snapshot file parsing.`);
+            console.error(`Error on JSON Task file parsing: ${error.message}`);
+            App.utils.writeMessage(`Error on JSON Task file parsing.`);
             App.model.clicksActive = true;
             App.utils.toggleSpinner(!App.model.clicksActive);
             return;
@@ -258,8 +258,8 @@ class SnapshotManager {
 
             App.utils.writeMessage('Snapshot loaded.');
         } catch (error) {
-            console.error("Error during loading of Snapshot " + settings.name + ":", error);
-            App.utils.writeMessage("Error during loading of Snapshot " + settings.name + ".");
+            console.error("Error during loading of Task " + settings.name + ":", error);
+            App.utils.writeMessage("Error during loading of Task " + settings.name + ".");
         }
     }
 
@@ -276,7 +276,7 @@ class SnapshotManager {
                 '.popover-header': useName,
                 '.popover-body': htmlContent
             });
-            App.utils.writeMessage("Info of Snapshot '"+useName+"' displayed.");
+            App.utils.writeMessage("Info of Task '"+useName+"' displayed.");
         }
     }
 
@@ -326,7 +326,7 @@ class SnapshotManager {
     //Utils: load snapshot by name from storage
     getSnapshotFromStorage(useName) {
         if (!useName) {
-            App.utils.showAlert('Please enter a name for Snapshot to load.');
+            App.utils.showAlert('Please enter a name for Task to load.');
             return null;
         }
         // get from localStorage
@@ -337,7 +337,7 @@ class SnapshotManager {
         }
         let settings = useSettings.find((setting) => setting.name === useName);
         if (!settings) {
-            App.utils.writeMessage('No saved Snapshot found with name "' + useName + '"');
+            App.utils.writeMessage('No saved Task found with name "' + useName + '"');
             return null;
         }
         return settings;
@@ -476,6 +476,7 @@ class SnapshotManager {
             const btnUp = document.createElement('button');
             btnUp.classList.add('btn', 'btn-primary', 'btn-sm');
             btnUp.innerHTML = '<i class="bi bi-arrow-up-short"></i>';
+            btnUp.title = 'Move Item Up';
             btnUp.addEventListener('click', () => {
                 if (index > 0) {
                     // Swap with the previous element
@@ -490,6 +491,7 @@ class SnapshotManager {
             const btnDown = document.createElement('button');
             btnDown.classList.add('btn', 'btn-primary', 'btn-sm');
             btnDown.innerHTML = '<i class="bi bi-arrow-down-short"></i>';
+            btnDown.title = 'Move Item Down';
             btnDown.addEventListener('click', () => {
                 if (index < App.model.queue.length - 1) {
                     // Swap with the next element
@@ -504,6 +506,7 @@ class SnapshotManager {
             const btnDelete = document.createElement('button');
             btnDelete.classList.add('btn', 'btn-primary', 'btn-sm');
             btnDelete.innerHTML = '<i class="bi bi-trash"></i>';
+            btnDelete.title = 'Remove Item';
             btnDelete.addEventListener('click', () => {
                 App.model.queue.splice(index, 1);
                 App.snapshotManager.saveQueue();
@@ -588,7 +591,7 @@ class SnapshotManager {
         }
         let settings = useSettings.find((setting) => setting.name === useName);
         if (!settings) {
-            App.utils.writeMessage('Queue processing: No saved Snapshot found with name "' + useName + '"');
+            App.utils.writeMessage('Queue processing: No saved Task found with name "' + useName + '"');
             if (App.model.queueToExecute.length > 0 ) {
                 App.model.queueToExecute.shift();
                 this.executeNextQueue();
@@ -599,7 +602,7 @@ class SnapshotManager {
         }
 
         if (!settings.sourceFolder || settings.destinationFolders.length === 0 || settings.selectionList.length === 0 || settings.destinationFolders.includes(settings.sourceFolder)) {
-            App.utils.writeMessage('Queue processing: Snapshot with name "' + useName + '" is invalid.');
+            App.utils.writeMessage('Queue processing: Task with name "' + useName + '" is invalid.');
             if (App.model.queueToExecute.length > 0 ) {
                 App.model.queueToExecute.shift();
                 this.executeNextQueue();
@@ -609,7 +612,7 @@ class SnapshotManager {
             return;
         }
 
-        App.utils.writeMessage('Queue processing: Executing Snapshot "' + useName + '"');
+        App.utils.writeMessage('Queue processing: Executing Task "' + useName + '"');
         this.setFromSnapshot(settings);
 
         // trigger start copy

@@ -134,7 +134,7 @@
                data-bs-target="#listModal"><i class="bi bi-list-check"></i>
             </a>
             <a type="button" id="modalSnapshotTrigger" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-               title="Open Automation (Snapshots and Queue) panel"
+               title="Open Automation (Tasks and Queue) panel"
                data-bs-target="#snapshotModal"><i class="bi bi-star-fill"></i>
             </a>
             <a type="button" id="modalOptionsTrigger" class="btn btn-primary btn-sm" data-bs-toggle="modal"
@@ -357,7 +357,7 @@
                                 </button>
                                 <button class="nav-link btn-sm hidden" id="v-pills-99-tab" data-bs-toggle="pill"
                                         data-bs-target="#v-pills-99" type="button" role="tab" aria-controls="v-pills-99"
-                                        aria-selected="false" disabled><i class="bi bi-floppy2"></i> Snapshots
+                                        aria-selected="false" disabled><i class="bi bi-floppy2"></i> Tasks
                                 </button>
                             </div>
                             <div class="tab-content consistent-height" id="v-pills-tabContent">
@@ -532,9 +532,9 @@
                                         </div>
                                     </div>
                                     <div>
-                                        <a id="exportLogs" class="ms-3 mt-1 btn btn-primary btn-sm" type="button"
+                                        <a id="exportLogs" class="ms-3 mt-2 btn btn-primary btn-sm" type="button"
                                            title="Export Logs to file.">Export Logs</a>
-                                        <a id="clearLogs" class="ms-1 mt-1 btn btn-primary btn-sm" type="button"
+                                        <a id="clearLogs" class="ms-1 mt-2 btn btn-primary btn-sm" type="button"
                                            title="Clear Logs in memory.">Clear Logs</a>
                                     </div>
                                 </div>
@@ -577,56 +577,56 @@
                 <div class="modal-body">
                     <div class="container-fluid">
                         <div class="snapshot-explain">
-                            <h5><i class="bi bi-floppy2"></i> Snapshots</h5>
-                            <b>Snapshot</b> includes: Folders, Filters, Options and Selection List.
+                            <h5><i class="bi bi-floppy2"></i> Tasks</h5>
+                            A <b>Task</b> is a snapshot of current selected Folders, Filters, Options and Selection List.
                         </div>
                         <div class="input-group">
                             <input type="text" class="form-control" id="saveSnapshotInput"
-                                   title="Name of the Snapshot to save"
-                                   placeholder="Name of Snapshot"/>
-                            <button id="saveSnapshot" type="button" class="btn btn-primary btn-sm snapshot-buttons" title="Save Snapshot"><i
-                                    class="bi bi-box-arrow-down" title="Save Snapshot"></i>
+                                   title="Name of the Task to save"
+                                   placeholder="Name of Task"/>
+                            <button id="saveSnapshot" type="button" class="btn btn-primary btn-sm snapshot-buttons" title="Save Task"><i
+                                    class="bi bi-box-arrow-down" title="Save Task"></i>
                             </button>
-                            <button id="exportSnapshot" type="button" class="btn btn-primary btn-sm snapshot-buttons" title="Export Snapshot to file"><i
-                                    class="bi bi-box-arrow-in-down" title="Export Snapshot to file"></i>
+                            <button id="exportSnapshot" type="button" class="btn btn-primary btn-sm snapshot-buttons" title="Export Task to file"><i
+                                    class="bi bi-box-arrow-in-down" title="Export Task to file"></i>
                             </button>
                         </div>
                         <div class="input-group">
-                            <select class="form-select form-select-sm" aria-label="Choose a Snapshot to load"
-                                    title="Choose a Snapshot to load"
+                            <select class="form-select form-select-sm" aria-label="Choose a Task to load"
+                                    title="Choose a Task to load"
                                     id="loadSnapshotInput">
                             </select>
-                            <button id="loadSnapshot" type="button" class="btn btn-primary btn-sm snapshot-buttons2" title="Load Saved Snapshot"><i
-                                    class="bi bi-box-arrow-up" title="Load Saved Snapshot"></i>
+                            <button id="loadSnapshot" type="button" class="btn btn-primary btn-sm snapshot-buttons2" title="Load Saved Task"><i
+                                    class="bi bi-box-arrow-up" title="Load Saved Task"></i>
 
                             </button>
-                            <button id="cleanSnapshot" type="button" class="btn btn-primary btn-sm snapshot-buttons2" title="Remove Saved Snapshot"><i
-                                    class="bi bi-trash" title="Remove Saved Snapshot"></i>
+                            <button id="cleanSnapshot" type="button" class="btn btn-primary btn-sm snapshot-buttons2" title="Remove Saved Task"><i
+                                    class="bi bi-trash" title="Remove Saved Task"></i>
 
                             </button>
-                            <a id="infoSnapshot" tabindex="0" data-bs-trigger="focus"  class="btn btn-primary btn-sm snapshot-buttons2" title="Info on Snapshot"
+                            <a id="infoSnapshot" tabindex="0" data-bs-trigger="focus"  class="btn btn-primary btn-sm snapshot-buttons2" title="Info on Task"
                                role="button" data-bs-toggle="popover" data-bs-placement="left" data-bs-custom-class="custom-popover"
                                data-bs-title="Copyman" data-bs-content="..."
                                onclick="App.snapshotManager.updateInfoSnapshotPopover();"><i
-                                    class="bi bi-eye" title="Info on Snapshot" ></i>
+                                    class="bi bi-eye" title="Info on Task" ></i>
                             </a>
                         </div>
 
                         <div>
-                            <button id="importSnapshot" type="button" class="btn btn-primary btn-sm"  title="Import Snapshot from file"><i
-                                    class="bi bi-box-arrow-in-up" title="Import Snapshot from file"></i>
+                            <button id="importSnapshot" type="button" class="btn btn-primary btn-sm"  title="Import Task from file"><i
+                                    class="bi bi-box-arrow-in-up" title="Import Task from file"></i>
                                 Import
                             </button>
                             <button id="cleanAllSnapshots" type="button"
-                                    class="btn btn-primary btn-sm"  title="Clear All saved Snapshots"><i
-                                    class="bi bi-trash" title="Clear All saved Snapshots"></i>
+                                    class="btn btn-primary btn-sm"  title="Clear All saved Tasks"><i
+                                    class="bi bi-trash" title="Clear All saved Tasks"></i>
                                 Clear All
                             </button>
                         </div>
                         <hr>
                         <div class="snapshot-explain">
                             <h5><i class="bi bi-collection"></i> Queue</h5>
-                            Snapshots can be <b>queued</b> as tasks to be executed in succession.
+                            Task can be <b>queued</b> to be executed in succession.
                         </div>
                         <div>
                             <!-- Section to display the queue -->
@@ -636,8 +636,8 @@
                             </div>
                             <!-- Section to display add -->
                             <div class="input-group">
-                                <select class="form-select form-select-sm" aria-label="Choose a Snapshot to add"
-                                        title="Choose a Snapshot to add"
+                                <select class="form-select form-select-sm" aria-label="Choose a Task to add"
+                                        title="Choose a Task to add"
                                         id="queueSelect">
                                 </select>
                                 <button id="addToQueue" type="button" class="btn btn-primary btn-sm snapshot-buttons"

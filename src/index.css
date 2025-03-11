@@ -513,7 +513,7 @@ body > div#div-modals {
 }
 
 #v-pills-tabContent .form-check {
-    min-width: 160px;
+    min-width: 180px;
 }
 
 .consistent-height.tab-content {

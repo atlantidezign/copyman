@@ -151,15 +151,15 @@ app.whenReady().then(() => {
             },
             {type: 'separator'},
             {
-                label: 'Options',
+                label: 'Automation',
                 click: () => {
-                    event.sender.send('context-menu-command', 'menu-open-options')
+                    event.sender.send('context-menu-command', 'menu-open-snapshots')
                 }
             },
             {
-                label: 'Snapshots',
+                label: 'Options',
                 click: () => {
-                    event.sender.send('context-menu-command', 'menu-open-snapshots')
+                    event.sender.send('context-menu-command', 'menu-open-options')
                 }
             },
             {type: 'separator'},
@@ -342,9 +342,9 @@ app.whenReady().then(() => {
     ipcMain.handle('select-export-snapshot-file', async (event, dataToExport) => {
         const pad = (number) => (number < 10 ? '0' + number : number);
         const now = new Date();
-        const defaultFileName = `copyman_snapshot_export-${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}-${pad(now.getHours())}-${pad(now.getMinutes())}-${pad(now.getSeconds())}.json`;
+        const defaultFileName = `copyman_task_export-${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}-${pad(now.getHours())}-${pad(now.getMinutes())}-${pad(now.getSeconds())}.json`;
         const options = {
-            title: 'Export Snapshot as JSON file',
+            title: 'Export Task as JSON file',
             defaultPath: defaultFileName,
             buttonLabel: 'Export',
             filters : [{ name: 'JSON', extensions: ['json'] }]

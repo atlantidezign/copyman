@@ -197,6 +197,7 @@ class CopyManager {
                 const removeButton = document.createElement('a');
                 removeButton.innerHTML = '<i class="bi bi-x-lg"></i>';
                 removeButton.dataset.index = index;
+                removeButton.title = "Remove Folder";
                 removeButton.addEventListener('click', (e) => {
                     App.copyManager.removeDestination(e.target.dataset.index);
                 });

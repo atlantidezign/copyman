@@ -35,6 +35,7 @@ The Destination tree is *aligned* with the Source tree. This means that for any 
 - If the checkbox is selected or deselected, the corresponding checkbox in the Destination tree matches that state.
 - If a folder in the Source tree is expanded or collapsed, the corresponding folder in the Destination tree is also expanded or collapsed, respectively.
 
+
 ---
 
 ### Filters
@@ -79,9 +80,36 @@ Accepts one or two numbers (expressed in Kb) as input, as file/folder size conta
 There is a panel with action buttons:
 - **Swap** swaps Source and First Destination folder.
 - **Selection List** Open Selection List panel.
-- **Snapshots** Open Snapshots panel.
+- **Automation** Open Tasks and Queue panel.
 - **Options** Open Options panel.
 - **Help** Open Help panel.
+
+
+---
+
+### Selection List
+In the **Selection List** panel you'll find a table list of the selected items.
+Trough **Export JSON** or **Export CSV** button you can export the list in your preferred format.
+
+
+---
+
+### Automation: Tasks and Queue
+The **Automation** panel provides useful tools for automation: you can save and reload snapshots of frequently used tasks, eliminating the need to make selections each time – simply load and execute.
+A Task includes the current configuration of folders, filters, options, and the selection list.
+In this panel, you can manage saving, loading, clearing, and exporting Tasks.
+- **Save Task** to save current Task, with a name.
+- **Export Task** to export current Task to a json file, with a name.
+- **Load Task** to load saved Task by selected name.
+- **Clear Task** to remove saved Task by selected name.
+- **Info Task** to get info on saved Task by selected name.
+- **Import Task** to import Task from json file.
+- **Clear All Tasks** to remove all saved Tasks.
+
+Tasks can be **Queued** to be executed in succession.
+- You can choose Tasks to *Add*.
+- You can move **Up** and **Down** and **Delete** items in the queue list.
+- You can **Execute** a queue.
 
 
 ---
@@ -114,32 +142,6 @@ It can be:
 #### System
 - **Split Screen** to add a tree view also for first Destination folder (remember: you can change order of destinations folders, and set what's the first one, by dragging the badges in the Destination Folders List). Default false.
 - **Maintain Logs** to choose if to record application logs in memory. Can be exported to file with **Export Logs** button, and cleaned with **Clear Logs** button. Default false.
-
----
-
-### Automation: Snapshots and Queue
-The **Snapshot** panel provides useful tools for automation: you can save and reload snapshots of frequently used tasks, eliminating the need to make selections each time – simply load and execute.
-A snapshot includes the current configuration of folders, filters, options, and the selection list.
-In this panel, you can manage saving, loading, clearing, and exporting snapshots.
-- **Save Shapshot** to save current snapshot, with a name.
-- **Export Shapshot** to export current snapshot to a json file, with a name.
-- **Load Shapshot** to load saved snapshot by selected name.
-- **Clear Shapshot** to remove saved snapshot by selected name.
-- **Info Shapshot** to get info on saved snapshot by selected name.
-- **Import Shapshot** to import snapshot from json file.
-- **Clear All Shapshots** to remove all saved snapshots.
-
-Snapshots can be **Queued** as tasks to be executed in succession.
-- You can choose snapshots to *Add*.
-- You can move **Up** and **Down** and **Delete** items in the queue list.
-- You can **Execute** a queue.
-
-
----
-
-### Selection List
-In the **Selection List** panel you'll find a table list of the selected items.
-Trough **Export JSON** or **Export CSV** button you can export the list in your preferred format.
 
 
 ---
