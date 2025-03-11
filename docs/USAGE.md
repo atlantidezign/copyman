@@ -167,3 +167,11 @@ The application **main menu** contains classical *View* actions, for  **Reload**
 it also contains the *Help* submenu, with links to **About** panel, to **Instructions** panel, to **Copyman Website** and to **Atlantide Design Website**.
 
 There is also the **tray** icon and its minimal menu, with **Quit** button.
+
+
+---
+
+### Contextual Help
+When you hover over the buttons and main interface elements, a tooltip will appear that briefly explains the respective functionality, ensuring that **help** is always available.
+
+

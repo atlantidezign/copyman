@@ -29,20 +29,3 @@ ui: alerts and confirms not using native dialogs but using html modals.
 ui: collapsable folders and filters panels or all separated panels using floating windows?
 
 sys: extensive testing, especially date/size filters and copymodes.
-
-ext: better Google Copyman account and GitHub profile.
-ext: in website add robots.txt and better SEO (and add to Google search).
-
----
-
-## NEVER?
-sys: rewrite all in TypeScript?
-
-electron: signed build for win and mac. (requires a paid  for win, for mac?) 
-electron: native check and update. (requires the above and third-party services)
-electron: notifications? create a dedicated modal for listing/reading and add a spinning icon. (needed?)
-
-sys: also delete and move selected files (complex if folders are empty/contain other items/partial selections, etc.) and to open single file, open in explorer.
-sys: progress during verbose copy is slower due to empty promises to update ui, if possible refactor various awaits flow to keep ui updated smoothly (if delay is <200 ms the ui does not update correctly).
-
----
