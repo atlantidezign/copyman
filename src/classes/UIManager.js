@@ -37,8 +37,8 @@ class UIManager {
     Written by Alessandro Di Michele<br>
 &copy;2025 Atlantide Design <a href="http://www.atlantide-design.it">www.atlantide-design.it</a> All rights reserved.<br>
 <br>
-Binaries download available on <a href="https://www.copyman.it"><img src="images/logotype_indigo_alt.svg" alt="Copyman" title="Copyman" height="14"/></a> website <br>
-Source code available on <a href="https://github.com/atlantidezign/copyman"><i class="bi bi-github"></i> GitHub</a>`;
+Binaries downloads are available on <a href="https://www.copyman.it"><img src="images/logotype_indigo_alt.svg" alt="Copyman" title="Copyman" height="14"/></a> website <br>
+Source code and binaries are available on <a href="https://github.com/atlantidezign/copyman"><i class="bi bi-github"></i> GitHub</a>`;
         let aboutDocs = `
     <img src="images/logotype_white.svg" alt="Copyman" class="img-fluid" title="Copyman" width="300"/><br>
     v${App.model.appVersion}

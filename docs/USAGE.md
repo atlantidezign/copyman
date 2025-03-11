@@ -1,6 +1,6 @@
 ### Folders
 You need to choose a **Source** folder and at least one **Destination** folder.  
-Use the **Clear** buttons to remove the folder selections.
+Use the corresponding **Clear** buttons to remove the folder selections.
 
 You can also **Refresh Source Folder Tree**.
 
@@ -38,6 +38,20 @@ The Destination tree is *aligned* with the Source tree. This means that for any 
 
 ---
 
+### Copying
+With the **Copy Selected Items** button, the files are copied from the Source to the Destinations.
+
+**Pay attention:** Copy process is **strict** on selection:
+only and exclusively the selected items will be copied.
+For example, if a folder is selected but only some of the files inside it are selected, only those will be copied.
+
+In **Options** panel you can choose between different **Copy modes**
+
+With **Preview** switch you can enable/disable *Preview Mode*: Copying is not performed, but the report is generated.
+
+
+---
+
 ### Filters
 To assist with **selection**, you can use the **Filters**.
 There are filters for file and folder **Name**, file and folder **Date** and file **Size**.
@@ -49,7 +63,7 @@ A **Substractive Filter** removes from selection every item matches, as a **NOT*
 **Relationship** between Addictive filters of different groups can be an **OR** or **AND** condition, according to options.
 *OR* means that item is selected if **at least one** of the group conditions matches, *AND* means that **all** conditions must match.
 
-#### Name Filter
+#### Name Filters
 Accepts text string as input, as file/folder name substring.
 - By clicking the **Set Name Filter** button, it selects the items that contain the specified string while deselecting the others.
 - By clicking the **Add Addictive Name Filter** button, it adds the items that match, without altering the others.
@@ -57,7 +71,7 @@ Accepts text string as input, as file/folder name substring.
 - In the **Name Filters List** you can see all Name filters applyed and remove individual filters.
 - Using the **Clear Name Filters** button, it removes the Name filters.
 
-#### Date Filter
+#### Date Filters
 Accepts one or two dates as input, as file/folder date container range. If one date is null, it will be threaded as -infinity (start) or  +infinity (end).
 - By clicking the **Set Date Filter** button, it selects the items with date inside the range while deselecting the others.
 - By clicking the **Add Addictive Date Filter** button, it adds the items that match, without altering the others.
@@ -65,7 +79,7 @@ Accepts one or two dates as input, as file/folder date container range. If one d
 - In the **Date Filters List** you can see all Date filters applyed and remove individual filters.
 - Using the **Clear Date Filters** button, it removes the Date filters.
 
-#### Size Filter
+#### Size Filters
 Accepts one or two numbers (expressed in Kb) as input, as file/folder size container range. If one number is null, it will be threaded as 0 (start) or  1.000.000.000 (end).
 - By clicking the **Set Size Filter** button, it selects the items with size inside the range while deselecting the others.
 - By clicking the **Add Addictive Size Filter** button, it adds the items that match, without altering the others.
@@ -77,7 +91,7 @@ Accepts one or two numbers (expressed in Kb) as input, as file/folder size conta
 ---
 
 ### Actions
-There is a panel with action buttons:
+Within the application, there's a dedicated area featuring action buttons:
 - **Swap** swaps Source and First Destination folder.
 - **Selection List** Open Selection List panel.
 - **Automation** Open Tasks and Queue panel.
@@ -123,7 +137,7 @@ Has an autosave behaviour, and can be **Reset** to defaults.
 - **Copying Report** to choose if to have a window with report at the end of the copying phase. Default true.
 - **Abort Queue** to choose if the *Abort Copying* command affects full Queue or just current Queue Item. Default true.
 - **Don't Confirm Queue Steps** to choose if to confirm or not every Queue Step start copying. Default false.
-- **Copy Mode** to choose the copy mode, eg: overwrite if a file/folder already exist, sync, etc. Default Always.
+- **Copy Mode** to choose the copying behaviour, eg: overwrite if a file/folder already exist, sync, etc. Default Always Overwrite.
 It can be: 
   - *Always Overwrite* Always Overwrite;
   - *Never Overwrite* Never Overwrite; 
@@ -146,22 +160,10 @@ It can be:
 
 ---
 
-### Copying
-With the **Copy Selected Items** button, the files are copied from the Source to the Destinations.
-
-**Pay attention:** Copy mode is **strict** on selection:
-only and exclusively the selected items will be copied.
-For example, if a folder is selected but only some of the files inside it are selected, only those will be copied.
-
-With **Preview** switch you can enable/disable *Preview Mode*: Copying is not performed, but the report is generated.
-
-
----
-
 ### Menus
 Through the **contextual menu** (right click) you have shortcuts to the main features of the application.
 
-The **main menu** contains classical *View* actions, for  **Reload**, **Zoom** levels, **Full Screen** and **Minimize** switches; 
+The application **main menu** contains classical *View* actions, for  **Reload**, **Zoom** levels, **Full Screen** and **Minimize** switches; 
 it also contains the *Help* submenu, with links to **About** panel, to **Instructions** panel, to **Copyman Website** and to **Atlantide Design Website**.
 
 There is also the **tray** icon and its minimal menu, with **Quit** button.
