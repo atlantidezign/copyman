@@ -189,11 +189,14 @@
                 </div>
             </div>
 
-            <button id="abortCopy" class="btn btn-primary btn-sm hidden" title="Abort Copying!"><i
-                    class="bi bi-x-circle"></i> Abort Copying
+            <button id="abortCopy" class="btn btn-primary btn-sm hidden" title="Abort Operation!"><i
+                    class="bi bi-x-circle"></i> Abort
             </button>
-            <button id="copySelected" class="btn btn-primary btn-sm" title="Copy Selected Items"><img
-                    src="images/80x80.svg" alt="Copyman" title="Copyman"/> Copy Selected Items
+            <button id="copySelected" class="btn btn-primary btn-sm" title="Execute Copy of Selected Items"><img
+                    src="images/80x80.svg" alt="Copyman" title="Execute Copy of Selected Items"/> Execute Copy
+            </button>
+            <button id="zipSelected" class="btn btn-primary btn-sm" title="Zip Selected Items"><i
+                    class="bi bi-file-earmark-zip"></i> Zip
             </button>
         </div>
     </div>
@@ -626,7 +629,7 @@
                         <hr>
                         <div class="snapshot-explain">
                             <h5><i class="bi bi-collection"></i> Queue</h5>
-                            Task can be <b>queued</b> to be executed in succession.
+                            Tasks can be <b>queued</b> to execute multiple copy operations automatically, in succession.
                         </div>
                         <div>
                             <!-- Section to display the queue -->
@@ -651,9 +654,9 @@
                                     class="bi bi-trash" title="Empty Queue"></i>
                                 Empty
                             </button>
-                            <button id="executeQueue" class="btn btn-primary btn-sm" title="Execute Queue"><i
-                                    class="bi bi-play-fill" title="Execute Queue"></i>
-                                Execute
+                            <button id="executeQueue" class="btn btn-primary btn-sm" title="Execute Copy Queue"><img
+                                    src="images/80x80.svg" alt="Copyman" title="Execute Copy Queue"/>
+                                Execute Copy Queue
                             </button>
                         </div>
                         <br>

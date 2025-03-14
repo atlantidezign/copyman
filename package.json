@@ -1,7 +1,7 @@
 {
 	"name": "copyman",
 	"title": "Copyman",
-	"version": "0.4.0",
+	"version": "0.4.1",
 	"description": "Electron application for fast copying files and folders to multiple destinations while preserving the path",
 	"author": "www.atlantide-design.it <copymanapp@gmail.com> (https://www.copyman.it)",
 	"license": "MIT",
@@ -17,6 +17,9 @@
 		"build:mac": "electron-builder --mac",
 		"build:linux": "electron-builder --linux",
 		"build:winlinux": "electron-builder --linux --windows"
+	},
+	"dependencies": {
+		"archiver": "^7.0.1"
 	},
 	"devDependencies": {
 		"electron": "^34.2.0",

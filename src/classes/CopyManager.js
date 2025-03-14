@@ -83,83 +83,11 @@ class CopyManager {
             e.target.classList.add("opDisabled");
             App.model.abort = true;
         });
-        document.getElementById('copySelected').addEventListener('click', async () => {
-            // check if at least a destination folder is selected, and if source folder selected
-            App.utils.writeMessage('Preparing for Copy...');
-            if (App.model.destinationFolders.length === 0) {
-                App.utils.showAlert('Please select at least a Destination Folder!');
-                App.utils.writeMessage('Unable to start copying.');
-                return;
-            }
-            if (!App.model.sourceFolder) {
-                App.utils.showAlert('Please select the Source Folder!');
-                App.utils.writeMessage('Unable to start copying.');
-                return;
-            }
-            const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
-            App.model.selectedNodes = [];
-            App.model.sizeTotal = 0;
-            App.model.sizeProcessed = 0;
-            checkboxes.forEach(checkbox => {
-                if (checkbox.checked) {
-                    App.model.sizeTotal += Number(checkbox.dataset.nodeSize);
-
-                    App.model.selectedNodes.push({
-                        fullPath: path.join(App.model.sourceFolder, checkbox.dataset.filePath),
-                        path: checkbox.dataset.filePath,
-                        name: checkbox.dataset.nodeName,
-                        sizeBits: Number(checkbox.dataset.nodeSize),
-                        getTime: App.utils.dateToGetTime(checkbox.dataset.nodeModified),
-                        ms: Number(checkbox.dataset.nodeMS),
-                        isDir: (checkbox.dataset.isDirectory === '1')
-                    });
-                }
-            });
-            if (App.model.selectedNodes.length === 0) {
-                App.utils.showAlert('No selected Items.\nPlease select at least one item.');
-                App.utils.writeMessage('Unable to start copying.');
-                return;
-            }
-            if (App.model.destinationFolders.includes(App.model.sourceFolder)) {
-                App.utils.showAlert('Source and some Destination Folder are the same.\nPlease select different folders.');
-                App.utils.writeMessage('Unable to start copying.');
-                return;
-            }
-            let destinations = App.model.destinationFolders.join(", ");
-            App.utils.writeMessage('Asking for copying confirmation...');
-            App.model.clicksActive = false;
-            App.utils.toggleSpinner(!App.model.clicksActive);
-            let useOverwrite = App.utils.formatOverwriteMode(App.model.fileOverwrite);
-
-            // remove confirmation request if queue or preview
-            if ((this.moreQueue() && App.model.dontConfirmQueue) || (App.model.isPreview)) {
-                App.utils.writeMessage('Copying Started...');
-                setTimeout(() => {
-                    App.copyManager.startCopying()
-                }, 100);
-                return;
-            }
-            let previewStr = '';
-            if (App.model.isPreview) previewStr = '\nPreview Mode is active.'
-            let confirmation = await App.utils.showConfirmWithReturn('Are you sure you want to copy ' + App.model.selectedNodes.length + ' items (' + App.utils.formatSizeForThree(App.model.sizeTotal) + ')\nfrom ' + App.model.sourceFolder +
-                '\nto ' + destinations + '\nwith overwrite mode set to ' +useOverwrite + '?'+previewStr);
-            if (confirmation) {
-                App.utils.writeMessage('Copying Started...');
-                setTimeout(() => {
-                    App.copyManager.startCopying()
-                }, 100);
-            } else {
-                //clear queue item if exists
-                if (App.model.queueToExecute.length > 0) {
-                    App.model.queueToExecute.shift();
-                    App.snapshotManager.executeNextQueue();
-                } else {
-                    App.utils.writeMessage('Copying Aborted.');
-                    App.model.clicksActive = true;
-                    App.utils.toggleSpinner(!App.model.clicksActive);
-                }
-            }
-
+        document.getElementById('copySelected').addEventListener('click', () => {
+            this.startCopyProcess();
+        });
+        document.getElementById('zipSelected').addEventListener('click', () => {
+            this.startZipProcess();
         });
     }
 
@@ -404,9 +332,7 @@ class CopyManager {
         //reset abort
         App.model.wasAborted = false;
         App.model.abort = false;
-        document.getElementById('abortCopy').classList.remove("hidden");
-        document.getElementById('copySelected').classList.add("hidden");
-        document.getElementById('previewCheckedContainer').classList.add("hidden");
+        this.setButtonsForOperation();
 
         //start
         this.openProgressModal();
@@ -437,19 +363,11 @@ class CopyManager {
             }
             App.model.isQueue = false;
         }
-        document.getElementById('abortCopy').classList.add("hidden");
-        document.getElementById('copySelected').classList.remove("hidden");
-        document.getElementById('previewCheckedContainer').classList.remove("hidden");
+        this.resetButtonsFromOperation();
         App.model.clicksActive = true;
         App.utils.toggleSpinner(!App.model.clicksActive);
         this.openReportModal();
     }
-
-    moreQueue() {
-        let moreQueue = App.model.queueToExecute.length > 0;
-        return moreQueue
-    }
-
     async executeCopy() {
         let now1 = new Date();
         let startTime = now1.getTime();
@@ -462,6 +380,7 @@ class CopyManager {
             if (App.model.abort) {
                 App.model.abort = false;
                 App.model.wasAborted = true;
+                App.utils.writeMessage(`Abort request received. Aborting current Copy operation...`);
                 document.getElementById('abortCopy').classList.remove("opDisabled");
                 if (App.model.abortFullQueue) {
                     App.model.queueToExecute = [];
@@ -510,7 +429,6 @@ class CopyManager {
             await App.utils.waitForUiUpdate();
         }
     }
-
     async copyRecursive(src, dest, destIndex, node) {
         const stats = fs.statSync(src);
         if (stats.isDirectory()) {
@@ -677,7 +595,6 @@ class CopyManager {
             modal.show();
         }
     }
-
     openReportModal() {
         if (App.model.copyReport) {
             document.getElementById('verboseProgress').classList.add('hidden');
@@ -707,7 +624,6 @@ class CopyManager {
             modal.show();
         }
     }
-
     updateCopyingProgress(message, sep = false) {
         if (App.model.copyVerbose || App.model.copyReport) {
             let useClass = '';
@@ -728,6 +644,269 @@ class CopyManager {
             App.model.copyingReport.push(useMessage);
         }
     }
+
+    // Utils for queue
+    moreQueue() {
+        let moreQueue = App.model.queueToExecute.length > 0;
+        return moreQueue
+    }
+
+    // Utils for buttons
+    setButtonsForOperation() {
+        document.getElementById('abortCopy').classList.remove("hidden");
+        document.getElementById('copySelected').classList.add("hidden");
+        document.getElementById('zipSelected').classList.add("hidden");
+        document.getElementById('previewCheckedContainer').classList.add("hidden");
+    }
+    resetButtonsFromOperation() {
+        document.getElementById('abortCopy').classList.add("hidden");
+        document.getElementById('copySelected').classList.remove("hidden");
+        document.getElementById('zipSelected').classList.remove("hidden");
+        document.getElementById('previewCheckedContainer').classList.remove("hidden");
+    }
+
+    // Utils for execution
+    performChecksAndCreateSelectedNodes(operation) {
+        // check if at least a destination folder is selected, and if source folder selected
+        let opUpper = "Copying";
+        if (operation === 'zip') {
+            opUpper = "Zipping";
+        }
+        App.utils.writeMessage('Preparing for '+opUpper+'...');
+
+        if (!App.model.sourceFolder) {
+            App.utils.showAlert('Please select the Source Folder!');
+            App.utils.writeMessage('Unable to start '+opUpper+'.');
+            return false;
+        }
+        if (App.model.destinationFolders.length === 0) {
+            App.utils.showAlert('Please select at least a Destination Folder!');
+            App.utils.writeMessage('Unable to start '+opUpper+'.');
+            return false;
+        }
+
+        const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
+        App.model.selectedNodes = [];
+        App.model.sizeTotal = 0;
+        App.model.sizeProcessed = 0;
+        checkboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                App.model.sizeTotal += Number(checkbox.dataset.nodeSize);
+
+                App.model.selectedNodes.push({
+                    fullPath: path.join(App.model.sourceFolder, checkbox.dataset.filePath),
+                    path: checkbox.dataset.filePath,
+                    name: checkbox.dataset.nodeName,
+                    sizeBits: Number(checkbox.dataset.nodeSize),
+                    getTime: App.utils.dateToGetTime(checkbox.dataset.nodeModified),
+                    ms: Number(checkbox.dataset.nodeMS),
+                    isDir: (checkbox.dataset.isDirectory === '1')
+                });
+            }
+        });
+        if (App.model.selectedNodes.length === 0) {
+            App.utils.showAlert('No selected Items.\nPlease select at least one item.');
+            App.utils.writeMessage('Unable to start '+opUpper+'.');
+            return false;
+        }
+        if (App.model.destinationFolders.includes(App.model.sourceFolder)) {
+            App.utils.showAlert('Source and some Destination Folder are the same.\nPlease select different folders.');
+            App.utils.writeMessage('Unable to start '+opUpper+'.');
+            return false;
+        }
+
+        return true;
+    }
+
+
+    // ZIP
+    /**
+     * Create ZIP archive of selected files and folders only.
+     * Folder will be added to archive only if explicitely present in the selection.
+     *
+     * @param {string} sourceFolder - The source folder.
+     * @param {Array} selectedNodes - Selected Nodes (with path).
+     * @param {string} outputFolder - Temporary path to create ZIP archive to.
+     * @returns {Promise<string>} - Resolves with full path of created ZIP.
+     */
+    async createSelectiveZipArchive(sourceFolder, selectedNodes, outputFolder) {
+        // Create unique name for zip
+        const pad = (number) => (number < 10 ? '0' + number : number);
+        const now = new Date();
+        const archiveName = `copyman_zip_archive-${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}-${pad(now.getHours())}-${pad(now.getMinutes())}-${pad(now.getSeconds())}.zip`;
+        const archivePath = path.join(outputFolder, archiveName);
+
+        const output = fs.createWriteStream(archivePath);
+        const archive = archiver('zip', {
+            zlib: { level: 9 } // compression level
+        });
+
+        return new Promise(async (resolve, reject) => {
+            let aborted = false;
+            output.on('close', () => {
+                if (!aborted) {
+                    App.utils.writeMessageAndWaitForUiUpdate(`Zip Archive created (${archive.pointer()} bytes).`);
+                    resolve(archivePath);
+                } else {
+                    fs.unlinkSync(archivePath);
+                    App.utils.writeMessageAndWaitForUiUpdate(`Zip Archive creation aborted.`);
+                    resolve("");
+                }
+            });
+            output.on('error', err => reject(err));
+            archive.on('error', err => reject(err));
+
+            archive.on("progress", async (progress) => {
+                App.utils.writeMessageAndWaitForUiUpdate(`Zipped ${progress.entries.processed}/${progress.entries.total} (${App.utils.formatSizeForThree(progress.fs.processedBytes)}/${App.utils.formatSizeForThree(progress.fs.totalBytes)})`);
+            });
+
+            archive.pipe(output);
+
+            // Add selected entry to archive
+            for (const node of selectedNodes) {
+                if (App.model.abort) {
+                    App.model.abort = false;
+                    aborted = true;
+                    App.utils.writeMessageAndWaitForUiUpdate(`Abort request received. Aborting ZIP creation...`);
+                    break;
+                }
+                const relativeEntryPath = node.path;
+                const absolutePath = path.join(sourceFolder, relativeEntryPath);
+                try {
+                    const stats = fs.statSync(absolutePath);
+                    if (stats.isDirectory()) {
+                        // If folder selected, creates empty (don't add contents)
+                        archive.append(null, { name: relativeEntryPath.replace(/\/?$/, '/') });
+                    } else {
+                        // Add file maintaining relative path
+                        archive.file(absolutePath, { name: relativeEntryPath });
+                    }
+                } catch (err) {
+                    console.error(`Error processing ${absolutePath}:`, err);
+                    App.utils.writeMessageAndWaitForUiUpdate(`Error processing ${absolutePath}`);
+                }
+            };
+
+            // Finalize archive
+            archive.finalize();
+        });
+    }
+
+    /**
+     * Create ZIP one time then copy to all desinations
+     *
+     * @param {string} sourceFolder - Source folder.
+     * @param {Array} selectedNodes - Array of selected nodes.
+     * @param {Array} destinationFolders - Array of destination folders.
+     * @returns {Promise<void>}
+     */
+    async createAndCopyZipArchive(sourceFolder, selectedNodes, destinationFolders) {
+        // Create ZIP in temporary folder.
+        const tempDir = os.tmpdir();
+        App.utils.writeMessageAndWaitForUiUpdate('Start Zipping...');
+        const zipPath = await this.createSelectiveZipArchive(sourceFolder, selectedNodes, tempDir);
+
+        if (zipPath === "") {
+            App.utils.writeMessageAndWaitForUiUpdate('Zipping Aborted.');
+        } else {
+            // Copy ZIP to destinations
+            destinationFolders.forEach(destFolder => {
+                const targetZipPath = path.join(destFolder, path.basename(zipPath));
+                const targetReportPath = path.join(destFolder, path.basename(zipPath).replace(".zip", ".json").replace("_archive", "_report"));
+                try {
+                    fs.copyFileSync(zipPath, targetZipPath);
+                    App.utils.writeMessageAndWaitForUiUpdate(`ZIP Archive copied to ${targetZipPath}`);
+                } catch (error) {
+                    console.error(`Error copying ZIP Archive to ${destFolder}:`, error);
+                    App.utils.writeMessageAndWaitForUiUpdate(`Error copying ZIP Archive to ${destFolder}`);
+                }
+            });
+
+            fs.unlinkSync(zipPath); // Remove termporary zip
+
+            App.utils.writeMessage('Zipping Completed!');
+            App.utils.showAlert('Zipping Completed!');
+        }
+        document.getElementById('abortCopy').classList.remove("opDisabled");
+    }
+
+    // Executions
+    async startCopyProcess() {
+        if (!this.performChecksAndCreateSelectedNodes("copy")) return;
+
+        //continue after checks
+        let destinations = App.model.destinationFolders.join(", ");
+        App.utils.writeMessage('Asking for copying confirmation...');
+        App.model.clicksActive = false;
+        App.utils.toggleSpinner(!App.model.clicksActive);
+        let useOverwrite = App.utils.formatOverwriteMode(App.model.fileOverwrite);
+
+        // remove confirmation request if queue or preview
+        if ((this.moreQueue() && App.model.dontConfirmQueue) || (App.model.isPreview)) {
+            App.utils.writeMessage('Copying Started...');
+            setTimeout(() => {
+                App.copyManager.startCopying()
+            }, 100);
+            return;
+        }
+        let previewStr = '';
+        if (App.model.isPreview) previewStr = '\nPreview Mode is active.'
+        let confirmation = await App.utils.showConfirmWithReturn('Are you sure you want to copy ' + App.model.selectedNodes.length + ' items (' + App.utils.formatSizeForThree(App.model.sizeTotal) + ')\nfrom ' + App.model.sourceFolder +
+            '\nto ' + destinations + '\nwith overwrite mode set to ' +useOverwrite + '?'+previewStr);
+        if (confirmation) {
+            App.utils.writeMessage('Copying Started...');
+            setTimeout(() => {
+                App.copyManager.startCopying()
+            }, 100);
+        } else {
+            //clear queue item if exists
+            if (App.model.queueToExecute.length > 0) {
+                App.model.queueToExecute.shift();
+                App.snapshotManager.executeNextQueue();
+            } else {
+                App.utils.writeMessage('Copying Canceled.');
+                App.model.clicksActive = true;
+                App.utils.toggleSpinner(!App.model.clicksActive);
+            }
+        }
+
+    }
+    async startZipProcess() {
+        try {
+            if (!this.performChecksAndCreateSelectedNodes("zip")) return;
+
+            //continue after checks
+            App.model.abort = false;
+            App.model.clicksActive = false;
+            App.utils.toggleSpinner(!App.model.clicksActive);
+            let destinations = App.model.destinationFolders.join(", ");
+            App.utils.writeMessage('Asking for ZIP confirmation...');
+            let confirmation = await App.utils.showConfirmWithReturn('Are you sure you want to ZIP ' + App.model.selectedNodes.length + ' items (' + App.utils.formatSizeForThree(App.model.sizeTotal) + ')\nfrom ' + App.model.sourceFolder +
+                '\nto ' + destinations + ' ?');
+            if (confirmation) {
+                this.setButtonsForOperation();
+                await this.createAndCopyZipArchive(
+                    App.model.sourceFolder,
+                    App.model.selectedNodes,
+                    App.model.destinationFolders
+                );
+                this.resetButtonsFromOperation();
+                App.model.clicksActive = true;
+                App.utils.toggleSpinner(!App.model.clicksActive);
+            } else {
+                App.utils.writeMessage('Zipping Canceled.');
+                App.model.clicksActive = true;
+                App.utils.toggleSpinner(!App.model.clicksActive);
+            }
+        } catch (error) {
+            console.error('Error during ZIP process:', error);
+            App.utils.writeMessage(`Error during ZIP process!`);
+            App.model.clicksActive = true;
+            App.utils.toggleSpinner(!App.model.clicksActive);
+        }
+    }
+
+
 }
 
 module.exports = CopyManager;

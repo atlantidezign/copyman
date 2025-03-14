@@ -94,7 +94,7 @@ app.whenReady().then(() => {
             },
             {type: 'separator'},
             {
-                label: 'Copy Selected Items',
+                label: 'Execute Copy',
                 click: () => {
                     event.sender.send('context-menu-command', 'menu-copy-start')
                 }

@@ -20,6 +20,11 @@ class Utils {
         }, App.model.messageLife);
     }
 
+    writeMessageAndWaitForUiUpdate(message) {
+        this.writeMessage(message);
+        this.waitForUiUpdate();
+    }
+
     // Utils: check if 'child' is a subfolder of 'parent'
     isSubFolder(child, parent) {
         const relative = path.relative(parent, child);

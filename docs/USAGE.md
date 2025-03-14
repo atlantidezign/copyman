@@ -39,7 +39,7 @@ The Destination tree is *aligned* with the Source tree. This means that for any 
 ---
 
 ### Copying
-With the **Copy Selected Items** button, the files are copied from the Source to the Destinations.
+With the **Execute Copy** button, the files are copied from the Source to the Destinations.
 
 **Pay attention:** Copy process is **strict** on selection:
 only and exclusively the selected items will be copied.
@@ -48,6 +48,12 @@ For example, if a folder is selected but only some of the files inside it are se
 In **Options** panel you can choose between different **Copy modes**
 
 With **Preview** switch you can enable/disable *Preview Mode*: Copying is not performed, but the report is generated.
+
+During copying, you can **Abort** process.
+
+#### Zipping
+With the **Zip** button, a zip archive of selected Items is created, then copied to the Destinations.
+Also during zipping, you can **Abort** process.
 
 
 ---
@@ -123,7 +129,7 @@ In this panel, you can manage saving, loading, clearing, and exporting Tasks.
 Tasks can be **Queued** to be executed in succession.
 - You can choose Tasks to *Add*.
 - You can move **Up** and **Down** and **Delete** items in the queue list.
-- You can **Execute** a queue.
+- You can **Execute Copy Queue** for an entire queue.
 
 
 ---
@@ -135,7 +141,7 @@ Has an autosave behaviour, and can be **Reset** to defaults.
 #### Copying
 - **Verbose Progress** to choose if to have a window with verborse progress during copying phase. Default false.
 - **Copying Report** to choose if to have a window with report at the end of the copying phase. Default true.
-- **Abort Queue** to choose if the *Abort Copying* command affects full Queue or just current Queue Item. Default true.
+- **Abort Queue** to choose if the **Abort** command during copying affects full Queue or just current Queue Item. Default true.
 - **Don't Confirm Queue Steps** to choose if to confirm or not every Queue Step start copying. Default false.
 - **Copy Mode** to choose the copying behaviour, eg: overwrite if a file/folder already exist, sync, etc. Default Always Overwrite.
 It can be: 

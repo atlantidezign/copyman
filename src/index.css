@@ -603,7 +603,7 @@ body > div#div-modals {
     padding-top: 5px;
 }
 
-#copySelected img {
+#copySelected img, #executeQueue img {
     height: 16px;
     vertical-align: text-bottom;
 }
