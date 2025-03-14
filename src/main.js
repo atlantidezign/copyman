@@ -366,11 +366,32 @@ app.whenReady().then(() => {
         const now = new Date();
         const defaultFileName = `copyman_log_export-${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}-${pad(now.getHours())}-${pad(now.getMinutes())}-${pad(now.getSeconds())}.txt`;
         const options = {
-            title: 'Export Logs as JSON file',
+            title: 'Export Logs as TXT file',
             defaultPath: defaultFileName,
             buttonLabel: 'Export'
         };
         let useText = dataToExport.join('\n');
+        const result = await dialog.showSaveDialog(options);
+        if (!result.canceled && result.filePath) {
+            try {
+                fs.writeFileSync(result.filePath, useText);
+            } catch (err) {
+                return false
+            }
+            return true;
+        }
+        return false;
+    });
+    ipcMain.handle('select-export-report-file', async (event, textToExport) => {
+        const pad = (number) => (number < 10 ? '0' + number : number);
+        const now = new Date();
+        const defaultFileName = `copyman_report_export-${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}-${pad(now.getHours())}-${pad(now.getMinutes())}-${pad(now.getSeconds())}.txt`;
+        const options = {
+            title: 'Export Report as TXT file',
+            defaultPath: defaultFileName,
+            buttonLabel: 'Export'
+        };
+        let useText = textToExport;
         const result = await dialog.showSaveDialog(options);
         if (!result.canceled && result.filePath) {
             try {

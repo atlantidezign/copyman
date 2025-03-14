@@ -1,16 +1,5 @@
 # TODO
 
-## NOW
-zip: ok - new feature 'copy to zip archive' -> not copy single files/folder, but produce a zip archive to be moved to destinations,
-     - and a report json with list of files/dates that can be used for searching/history (tbd).
-     ok - with better progress, (internal, add waits).
-     ok - create button start and abort
-     ok - manage abort
-
-copy: export copy report (button in report panel - choose filename)
-
---- 
-
 ## NEXT
 copy: in verbose mode, using selectedNodes, include info on file sizes/date, and elapsed, and progress?, for each single file,
       and better verbose and progress in case of small files.

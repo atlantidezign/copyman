@@ -89,8 +89,12 @@ class CopyManager {
         document.getElementById('zipSelected').addEventListener('click', () => {
             this.startZipProcess();
         });
+        document.getElementById('exportReport').addEventListener('click', () => {
+            this.exportReport();
+        });
     }
 
+    // Sources and Destinations
     swapSourceAndDestination() {
         if (!App.model.sourceFolder || App.model.destinationFolders.length === 0) {
             App.utils.showAlert("Please select the Source Folder and a Destination Folder before swap.")
@@ -105,7 +109,6 @@ class CopyManager {
         App.filtersManager.applyAllFilters();
         App.utils.writeMessage('Source / Destination Folders swapped.');
     }
-
     updateDestinationList() {
         const listContainer = document.getElementById('destinationList');
         listContainer.innerHTML = ''; // empty list
@@ -233,7 +236,6 @@ class CopyManager {
         }
 
     }
-
     async addDestination() {
         App.utils.writeMessage('Choose a Destination folder.');
         App.model.clicksActive = false;
@@ -289,13 +291,11 @@ class CopyManager {
         App.model.clicksActive = true;
         App.utils.toggleSpinner(!App.model.clicksActive);
     }
-
     removeDestination(index) {
         App.model.destinationFolders.splice(Number(index), 1);
         this.updateDestinationList();
         App.utils.writeMessage('Destination folder removed.');
     }
-
     clearDestinations() {
         App.model.destinationFolders = [];
         this.updateDestinationList();
@@ -423,7 +423,7 @@ class CopyManager {
         let endTime = now2.getTime();
         let elapsedTimeMS = (endTime - startTime);
         let elapsedTimeS = (elapsedTimeMS / 1000).toFixed(2);
-        this.updateCopyingProgress('▷ ' + 'Copy finished at: ' + now2.toLocaleTimeString() + '.<hr>Elapsed: ' + elapsedTimeS + 's (' + elapsedTimeMS + 'ms)', true);
+        this.updateCopyingProgress('▷ ' + 'Copy finished at: ' + now2.toLocaleTimeString() + '. <hr> Elapsed: ' + elapsedTimeS + 's (' + elapsedTimeMS + 'ms)', true);
         App.utils.writeMessage('Copy Completed!');
         if (App.model.copyVerbose && !App.model.isPreview) {
             await App.utils.waitForUiUpdate();
@@ -585,6 +585,7 @@ class CopyManager {
         if (App.model.copyVerbose && !App.model.isPreview) {
             document.getElementById('verboseProgress').classList.remove('hidden');
             document.getElementById('copyingReport').classList.add('hidden');
+            document.getElementById('exportReport').classList.add('hidden');
             document.querySelectorAll('.copyingClose').forEach((el) => el.classList.add('hidden'));
             document.getElementById('verboseProgressMD').innerHTML = "";
             document.getElementById('progressBarItems').style.width = "0%";
@@ -599,23 +600,9 @@ class CopyManager {
         if (App.model.copyReport) {
             document.getElementById('verboseProgress').classList.add('hidden');
             document.getElementById('copyingReport').classList.remove('hidden');
+            document.getElementById('exportReport').classList.remove('hidden');
             document.querySelectorAll('.copyingClose').forEach((el) => el.classList.remove('hidden'));
-            let copyReport = App.model.copyingReport.join("\n");
-            if (copyReport == "") {
-                copyReport = "No items copied!"
-            }
-            let innerHTML = '<h6>Report</h6>' + copyReport + `<hr>
-        Processed <b>${App.model.itemsProcessed}</b> of <b>${App.model.itemsTotal}</b> items, into <b>${App.model.destinationFolders.length}</b> Destination folders.<br>
-        Copied: <b>${App.model.itemsCopied.toString()}</b>; Skipped: <b>${App.model.itemsSkipped.toString()}</b>; Failed: <b>${App.model.itemsFailed.toString()}</b>.<br>
-        Size: ${App.utils.formatSizeForThree(App.model.sizeTotal)}
-        `;
-            if (App.model.wasAborted) {
-                innerHTML += `<hr> Copying aborted by user!
-                `;
-                App.model.wasAborted = false;
-            }
-            document.getElementById('copyingReportMD').innerHTML = innerHTML;
-
+            document.getElementById('copyingReportMD').innerHTML = this.generateReportContentHtml();
             setTimeout( () => {
                 const modalBody = document.querySelector('#copyingModal .modal-body');
                 modalBody.scrollTop = modalBody.scrollHeight;
@@ -645,12 +632,59 @@ class CopyManager {
         }
     }
 
+    // Utils for report
+    generateReportContentHtml() {
+        let copyReport = App.model.copyingReport.join("\n");
+        if (copyReport == "") {
+            copyReport = "No items copied!"
+        }
+        let innerHTML = `<h6>Report [${(new Date()).toLocaleDateString()}]</h6>
+${copyReport}
+<hr>
+Processed <b>${App.model.itemsProcessed}</b> of <b>${App.model.itemsTotal}</b> items, into <b>${App.model.destinationFolders.length}</b> Destination folders.<br>
+Copied: <b>${App.model.itemsCopied.toString()}</b>; Skipped: <b>${App.model.itemsSkipped.toString()}</b>; Failed: <b>${App.model.itemsFailed.toString()}</b>.<br>
+Size: ${App.utils.formatSizeForThree(App.model.sizeTotal)}
+`;
+        if (App.model.wasAborted) {
+            innerHTML += `<hr> Copying aborted by user!
+                `;
+            App.model.wasAborted = false;
+        }
+
+        return innerHTML;
+
+    }
+    async exportReport() {
+        if (App.model.copyingReport === 0) {
+            App.utils.writeMessage('No Report to export.');
+            return;
+        }
+        App.utils.writeMessage('Choose Report Export file.');
+        App.model.clicksActive = false;
+        App.utils.toggleSpinner(!App.model.clicksActive);
+        let htmlExport = htmlToPlainText(this.generateReportContentHtml());
+        const saved = await ipcRenderer.invoke('select-export-report-file', htmlExport);
+        if (saved) {
+            App.utils.writeMessage('Report exported successfully.');
+        } else {
+            App.utils.writeMessage('Report not exported.');
+        }
+        App.model.clicksActive = true;
+        App.utils.toggleSpinner(!App.model.clicksActive);
+
+        function htmlToPlainText(html) {
+            var tempDiv = document.createElement('div');
+            // Replace <br> elements with newlines
+            html = html.replace(/<br\s*\/?>/gi, '\n').replace(/▷/gi, '\n▷');
+            tempDiv.innerHTML = html;
+            return tempDiv.textContent || tempDiv.innerText;
+        }
+    }
     // Utils for queue
     moreQueue() {
         let moreQueue = App.model.queueToExecute.length > 0;
         return moreQueue
     }
-
     // Utils for buttons
     setButtonsForOperation() {
         document.getElementById('abortCopy').classList.remove("hidden");
@@ -664,7 +698,6 @@ class CopyManager {
         document.getElementById('zipSelected').classList.remove("hidden");
         document.getElementById('previewCheckedContainer').classList.remove("hidden");
     }
-
     // Utils for execution
     performChecksAndCreateSelectedNodes(operation) {
         // check if at least a destination folder is selected, and if source folder selected
@@ -717,7 +750,6 @@ class CopyManager {
 
         return true;
     }
-
 
     // ZIP
     /**
@@ -791,7 +823,6 @@ class CopyManager {
             archive.finalize();
         });
     }
-
     /**
      * Create ZIP one time then copy to all desinations
      *
