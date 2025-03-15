@@ -4,7 +4,7 @@ class SysManager {
     }
 
     init() {
-        // Live reload
+        // Live reload //TODO remove for production build
         (async () => {
             const watcher_html = fs.watch('./src/index.html');
             watcher_html.on('change', () => {

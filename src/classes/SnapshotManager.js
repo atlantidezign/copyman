@@ -205,7 +205,6 @@ class SnapshotManager {
     setFromSnapshot(settings) {
         try {
             App.filtersManager.removeAllFilters();
-
             // update global app vars
             App.model.sourceFolder = settings.sourceFolder || '';
             App.model.destinationFolders = settings.destinationFolders || [];
@@ -214,15 +213,18 @@ class SnapshotManager {
             App.model.copyReport = (typeof settings.copyReport === 'boolean') ? settings.copyReport : App.model.copyReportDefault;
             App.model.abortFullQueue = (typeof settings.abortFullQueue === 'boolean') ? settings.abortFullQueue : App.model.abortFullQueueDefault;
             App.model.dontConfirmQueue = (typeof settings.dontConfirmQueue === 'boolean') ? settings.dontConfirmQueue : App.model.dontConfirmQueueDefault;
-            App.model.propagateSelections = (typeof settings.propagateSelections === 'boolean') ? settings.propagateSelections : App.model.propagateSelectionsDefault;
-            App.model.clickOnNamesToSelect = (typeof settings.clickOnNamesToSelect === 'boolean') ? settings.clickOnNamesToSelect : App.model.clickOnNamesToSelectDefault;
-            App.model.relationshipOR = (typeof settings.relationshipOR === 'boolean') ? settings.relationshipOR : App.model.relationshipORDefault;
-            App.model.maintainLogs = (typeof settings.maintainLogs === 'boolean') ? settings.maintainLogs : App.model.maintainLogsDefault;
-            App.model.splitScreen = (typeof settings.splitScreen === 'boolean') ? settings.splitScreen : App.model.splitScreenDefault;
-            App.model.makeTreeDiffs = (typeof settings.makeTreeDiffs === 'boolean') ? settings.makeTreeDiffs : App.model.makeTreeDiffsDefault;
-            App.model.saveSelection = (typeof settings.saveSelection === 'boolean') ? settings.saveSelection : App.model.saveSelectionDefault;
-            App.model.zipLevel = (typeof settings.zipLevel === 'number') ? settings.zipLevel : App.model.zipLevelDefault;
-            App.model.sortOrder = (typeof settings.sortOrder === 'string') ? settings.sortOrder : App.model.sortOrderDefault;
+            if (App.model.loadNotCopyRelatedOptions) {
+                App.model.propagateSelections = (typeof settings.propagateSelections === 'boolean') ? settings.propagateSelections : App.model.propagateSelectionsDefault;
+                App.model.clickOnNamesToSelect = (typeof settings.clickOnNamesToSelect === 'boolean') ? settings.clickOnNamesToSelect : App.model.clickOnNamesToSelectDefault;
+                App.model.relationshipOR = (typeof settings.relationshipOR === 'boolean') ? settings.relationshipOR : App.model.relationshipORDefault;
+                App.model.maintainLogs = (typeof settings.maintainLogs === 'boolean') ? settings.maintainLogs : App.model.maintainLogsDefault;
+                App.model.loadNotCopyRelatedOptions = (typeof settings.loadNotCopyRelatedOptions === 'boolean') ? settings.loadNotCopyRelatedOptions : App.model.loadNotCopyRelatedOptionsDefault;
+                App.model.splitScreen = (typeof settings.splitScreen === 'boolean') ? settings.splitScreen : App.model.splitScreenDefault;
+                App.model.makeTreeDiffs = (typeof settings.makeTreeDiffs === 'boolean') ? settings.makeTreeDiffs : App.model.makeTreeDiffsDefault;
+                App.model.saveSelection = (typeof settings.saveSelection === 'boolean') ? settings.saveSelection : App.model.saveSelectionDefault;
+                App.model.zipLevel = (typeof settings.zipLevel === 'number') ? settings.zipLevel : App.model.zipLevelDefault;
+                App.model.sortOrder = (typeof settings.sortOrder === 'string') ? settings.sortOrder : App.model.sortOrderDefault;
+            }
             App.model.filtersNamePlus = settings.filtersNamePlus || [];
             App.model.filtersNameMinus = settings.filtersNameMinus || [];
             App.model.filtersDatePlus = settings.filtersDatePlus || [];
@@ -303,6 +305,7 @@ class SnapshotManager {
             relationshipOR: App.model.relationshipOR,
             sortOrder: App.model.sortOrder,
             maintainLogs: App.model.maintainLogs,
+            loadNotCopyRelatedOptions: App.model.loadNotCopyRelatedOptions,
             splitScreen: App.model.splitScreen,
             makeTreeDiffs: App.model.makeTreeDiffs,
             saveSelection: App.model.saveSelection,
@@ -392,6 +395,7 @@ class SnapshotManager {
                 settings.clickOnNamesToSelect && "Click On Names To Select",
                 settings.sortOrder!="" && "Sort Order: '" + settings.sortOrder+"'",
                 settings.maintainLogs && "Maintain Logs",
+                settings.loadNotCopyRelatedOptions && "Load Not Copy-related Options",
                 settings.splitScreen && "Split Screen",
                 settings.makeTreeDiffs && "Tree Diffs",
                 settings.zipLevel && "Zip Level: "+settings.zipLevel,

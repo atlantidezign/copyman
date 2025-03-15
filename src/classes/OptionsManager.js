@@ -55,6 +55,11 @@ class OptionsManager {
             App.optionsManager.saveOptions();
             App.utils.writeMessage('Maintain Logs setting is now ' + App.model.maintainLogs);
         });
+        document.getElementById("loadNotCopyRelatedChecked").addEventListener("change", function () {
+            App.model.loadNotCopyRelatedOptions = this.checked;
+            App.optionsManager.saveOptions();
+            App.utils.writeMessage('Load Not Copy Related Options setting is now ' + App.model.loadNotCopyRelatedOptions);
+        });
         document.getElementById("splitScreenChecked").addEventListener("change", function () {
             App.model.splitScreen = this.checked;
             App.optionsManager.saveOptions();
@@ -119,6 +124,7 @@ class OptionsManager {
             model.relationshipOR = options.relationshipOR;
             model.sortOrder = options.sortOrder;
             model.maintainLogs = options.maintainLogs;
+            model.loadNotCopyRelatedOptions = options.loadNotCopyRelatedOptions;
             model.splitScreen = options.splitScreen;
             model.makeTreeDiffs = options.makeTreeDiffs;
             model.saveSelection = options.saveSelection;
@@ -147,6 +153,7 @@ class OptionsManager {
             relationshipOR: model.relationshipOR,
             sortOrder: model.sortOrder,
             maintainLogs: model.maintainLogs,
+            loadNotCopyRelatedOptions: model.loadNotCopyRelatedOptions,
             splitScreen: model.splitScreen,
             makeTreeDiffs: model.makeTreeDiffs,
             saveSelection: model.saveSelection,
@@ -166,6 +173,7 @@ class OptionsManager {
         model.relationshipOR = model.relationshipORDefault;
         model.sortOrder = model.sortOrderDefault;
         model.maintainLogs = model.maintainLogsDefault;
+        model.loadNotCopyRelatedOptions = model.loadNotCopyRelatedOptionsDefault;
         model.splitScreen = model.splitScreenDefault;
         model.makeTreeDiffs = model.makeTreeDiffsDefault;
         model.saveSelection = model.saveSelectionDefault;
@@ -191,6 +199,7 @@ class OptionsManager {
         document.getElementById("clickOnNamesChecked").checked = App.model.clickOnNamesToSelect;
         document.getElementById("relationshipORChecked").checked = App.model.relationshipOR;
         document.getElementById("maintainLogsChecked").checked = App.model.maintainLogs;
+        document.getElementById("loadNotCopyRelatedChecked").checked = App.model.loadNotCopyRelatedOptions;
         document.getElementById("splitScreenChecked").checked = App.model.splitScreen;
         document.getElementById("makeTreeDiffsChecked").checked = App.model.makeTreeDiffs;
         document.getElementById("saveSelectionChecked").checked = App.model.saveSelection;

@@ -1,8 +1,8 @@
 const {ipcRenderer, remote, shell} = require('electron');
 const fs = require('fs');
 const path = require('path');
-const archiver = require('archiver');
 const os = require('os');
+const fsp = fs.promises;
 
 const { version } = require('../package.json');
 

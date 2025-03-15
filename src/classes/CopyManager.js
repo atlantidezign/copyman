@@ -755,31 +755,85 @@ Size: ${App.utils.formatSizeForThree(App.model.sizeTotal)}
 
     // ZIP
     /**
-     * Create ZIP archive of selected files and folders only.
-     * Folder will be added to archive only if explicitely present in the selection.
+     * Asynchronously creates a selective ZIP archive using JSZip streaming.
+     * Each file is read asynchronously (using fs.promises.readFile) and added to the archive.
+     * If the node represents a directory, only the folder entry is created inside the ZIP.
      *
      * @param {string} sourceFolder - The source folder.
-     * @param {Array} selectedNodes - Selected Nodes (with path).
-     * @param {string} outputFolder - Temporary path to create ZIP archive to.
-     * @returns {Promise<string>} - Resolves with full path of created ZIP.
+     * @param {Array} selectedNodes - Array of selected nodes (each node may contain a fullPath or a relative path).
+     * @param {string} outputFolder - Temporary folder where the ZIP will be created.
+     * @returns {Promise<string>} - Resolves with the full path of the created ZIP file.
      */
-    async createSelectiveZipArchive(sourceFolder, selectedNodes, outputFolder) {
-        // Create unique name for zip
-        const pad = (number) => (number < 10 ? '0' + number : number);
+    async createSelectiveZipArchiveJSZipStream(sourceFolder, selectedNodes, outputFolder) {
+        // Create a unique name for the ZIP archive
+        const pad = number => (number < 10 ? '0' + number : number);
         const now = new Date();
         const archiveName = `copyman_zip_archive-${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}-${pad(now.getHours())}-${pad(now.getMinutes())}-${pad(now.getSeconds())}.zip`;
         const archivePath = path.join(outputFolder, archiveName);
 
-        const output = fs.createWriteStream(archivePath);
-        const archive = archiver('zip', {
-            zlib: { level: App.model.zipLevel } // compression level
-        });
+        const zip = new JSZip();
+        let aborted = false;
+        // Add each selected node to the ZIP archive
+        for (const node of selectedNodes) {
+            if (App.model.abort) {
+                App.model.abort = false;
+                aborted = true;
+                App.utils.writeMessageAndWaitForUiUpdate(`Abort request received. Aborting ZIP creation...`);
+                break;
+            }
+            // Use fullPath if available; otherwise, build a path from sourceFolder and node.path
+            const absolutePath = node.fullPath ? node.fullPath : path.join(sourceFolder, node.path);
+            // The relative path to be used inside the ZIP: use node.path if available, else use the file name only
+            const relativePath = node.path ? node.path : path.basename(absolutePath);
 
-        return new Promise(async (resolve, reject) => {
+            try {
+                const stats = fs.statSync(absolutePath);
+                if (stats.isDirectory()) {
+                    // Add a folder entry in the ZIP (without adding its contents)
+                    zip.folder(relativePath.replace(/\/?$/, '/'));
+                } else {
+                    // Read the file asynchronously and add it to the ZIP archive
+                    const fileData = await fsp.readFile(absolutePath);
+                    zip.file(relativePath, fileData);
+                }
+            } catch (err) {
+                console.error(`Error processing ${absolutePath}: ${err.message}`);
+                App.utils.writeMessageAndWaitForUiUpdate(`Error processing ${absolutePath}`);
+            }
+        }
+
+        // Create a writable stream to the archive file
+        return new Promise((resolve, reject) => {
             let aborted = false;
-            output.on('close', () => {
+            const outputStream = fs.createWriteStream(archivePath);
+            // Generate the ZIP as a Node.js stream
+            let useCompression = "DEFLATE";
+            let useCompressionLevel = 6;
+            if (App.model.zipLevel == 0) {
+                useCompression = "STORE";
+            } else if (App.model.zipLevel > 0) {
+                useCompressionLevel = App.model.zipLevel;
+            }
+            const zipStream = zip.generateNodeStream({ type: 'nodebuffer', streamFiles: true,
+                compression: useCompression,
+                compressionOptions: {
+                    level: useCompressionLevel
+                }}, function updateCallback(metadata) {
+                let useFile = "";
+                if(metadata.currentFile) {
+                    useFile = " File: " + metadata.currentFile;
+                }
+                App.utils.writeMessageAndWaitForUiUpdate("Zip Progression: " + metadata.percent.toFixed(2) + " %" + useFile);
+            });
+
+            // Attach error event listeners
+            zipStream.on('error', err => reject(err));
+            outputStream.on('error', err => reject(err));
+
+            // When the writable stream finishes, resolve the Promise with the archive path
+            outputStream.on('finish', () => {
                 if (!aborted) {
-                    App.utils.writeMessageAndWaitForUiUpdate(`Zip Archive created (${archive.pointer()} bytes).`);
+                    App.utils.writeMessageAndWaitForUiUpdate(`Zip Archive created (${archivePath}).`);
                     resolve(archivePath);
                 } else {
                     fs.unlinkSync(archivePath);
@@ -787,79 +841,62 @@ Size: ${App.utils.formatSizeForThree(App.model.sizeTotal)}
                     resolve("");
                 }
             });
-            output.on('error', err => reject(err));
-            archive.on('error', err => reject(err));
 
-            archive.on("progress", async (progress) => {
-                App.utils.writeMessageAndWaitForUiUpdate(`Zipped ${progress.entries.processed}/${progress.entries.total} (${App.utils.formatSizeForThree(progress.fs.processedBytes)}/${App.utils.formatSizeForThree(progress.fs.totalBytes)})`);
-            });
-
-            archive.pipe(output);
-
-            // Add selected entry to archive
-            for (const node of selectedNodes) {
-                if (App.model.abort) {
-                    App.model.abort = false;
-                    aborted = true;
-                    App.utils.writeMessageAndWaitForUiUpdate(`Abort request received. Aborting ZIP creation...`);
-                    break;
-                }
-                const relativeEntryPath = node.path;
-                const absolutePath = path.join(sourceFolder, relativeEntryPath);
-                try {
-                    const stats = fs.statSync(absolutePath);
-                    if (stats.isDirectory()) {
-                        // If folder selected, creates empty (don't add contents)
-                        archive.append(null, { name: relativeEntryPath.replace(/\/?$/, '/') });
-                    } else {
-                        // Add file maintaining relative path
-                        archive.file(absolutePath, { name: relativeEntryPath });
-                    }
-                } catch (err) {
-                    console.error(`Error processing ${absolutePath}:`, err);
-                    App.utils.writeMessageAndWaitForUiUpdate(`Error processing ${absolutePath}`);
-                }
-            };
-
-            // Finalize archive
-            archive.finalize();
+            // Pipe the generated ZIP stream to the output stream
+            zipStream.pipe(outputStream);
         });
     }
+
     /**
-     * Create ZIP one time then copy to all desinations
+     * Creates a ZIP archive in a temporary folder and copies it into all specified destination folders.
      *
-     * @param {string} sourceFolder - Source folder.
-     * @param {Array} selectedNodes - Array of selected nodes.
-     * @param {Array} destinationFolders - Array of destination folders.
+     * @param {string} sourceFolder - The source folder.
+     * @param {Array} selectedNodes - Array of nodes to be included (files or directories).
+     * @param {Array} destinationFolders - Array of destination folders where the ZIP will be copied.
      * @returns {Promise<void>}
      */
-    async createAndCopyZipArchive(sourceFolder, selectedNodes, destinationFolders) {
-        // Create ZIP in temporary folder.
+    async createAndCopyZipArchiveJSZipStream(sourceFolder, selectedNodes, destinationFolders) {
+        // Use the system's temporary folder
         const tempDir = os.tmpdir();
         App.utils.writeMessageAndWaitForUiUpdate('Start Zipping...');
-        const zipPath = await this.createSelectiveZipArchive(sourceFolder, selectedNodes, tempDir);
+        let zipPath;
 
-        if (zipPath === "") {
-            App.utils.writeMessageAndWaitForUiUpdate('Zipping Aborted.');
-        } else {
-            // Copy ZIP to destinations
-            destinationFolders.forEach(destFolder => {
-                const targetZipPath = path.join(destFolder, path.basename(zipPath));
-                const targetReportPath = path.join(destFolder, path.basename(zipPath).replace(".zip", ".json").replace("_archive", "_report"));
-                try {
-                    fs.copyFileSync(zipPath, targetZipPath);
-                    App.utils.writeMessageAndWaitForUiUpdate(`ZIP Archive copied to ${targetZipPath}`);
-                } catch (error) {
-                    console.error(`Error copying ZIP Archive to ${destFolder}:`, error);
-                    App.utils.writeMessageAndWaitForUiUpdate(`Error copying ZIP Archive to ${destFolder}`);
-                }
-            });
+        try {
+            zipPath = await this.createSelectiveZipArchiveJSZipStream(sourceFolder, selectedNodes, tempDir);
+        } catch (err) {
+            console.error('Error during ZIP creation:', err);
+            App.utils.writeMessageAndWaitForUiUpdate('Error during ZIP creation.');
+            return;
+        }
 
+        if (!zipPath) {
+            App.utils.writeMessageAndWaitForUiUpdate('ZIP creation aborted.');
+            return;
+        }
+
+        // Copy the ZIP archive to all destination folders
+        for (const destFolder of destinationFolders) {
+            const targetZipPath = path.join(destFolder, path.basename(zipPath));
+            //const targetReportPath = path.join(destFolder, path.basename(zipPath).replace(".zip", ".json").replace("_archive", "_report"));
+            try {
+                fs.copyFileSync(zipPath, targetZipPath);
+                App.utils.writeMessageAndWaitForUiUpdate(`ZIP Archive copied to ${targetZipPath}`);
+            } catch (error) {
+                console.error(`Error copying ZIP Archive to ${destFolder}:`, error);
+                App.utils.writeMessageAndWaitForUiUpdate(`Error copying ZIP Archive to ${destFolder}`);
+            }
+        }
+
+        // Remove the temporary ZIP file
+        try {
             fs.unlinkSync(zipPath); // Remove termporary zip
 
-            App.utils.writeMessage('Zipping Completed!');
-            App.utils.showAlert('Zipping Completed!');
+        } catch (error) {
+            console.error(`Error removing temporary ZIP file: ${error.message}`);
         }
+
+        App.utils.writeMessage('Zipping Completed!');
+        App.utils.showAlert('Zipping Completed!');
         document.getElementById('abortCopy').classList.remove("opDisabled");
     }
 
@@ -918,11 +955,14 @@ Size: ${App.utils.formatSizeForThree(App.model.sizeTotal)}
                 '\nto ' + destinations + ' ?');
             if (confirmation) {
                 this.setButtonsForOperation();
-                await this.createAndCopyZipArchive(
+                await this.createAndCopyZipArchiveJSZipStream(
                     App.model.sourceFolder,
                     App.model.selectedNodes,
                     App.model.destinationFolders
-                );
+                ).catch((err) => {
+                    console.error('ZIP operation error:', err);
+                    App.utils.writeMessage('ZIP operation error.');
+                });
                 this.resetButtonsFromOperation();
                 App.model.clicksActive = true;
                 App.utils.toggleSpinner(!App.model.clicksActive);

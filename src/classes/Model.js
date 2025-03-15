@@ -62,26 +62,32 @@ class Model {
     relationshipORDefault = true;
     sortOrderDefault = this.sortOrderList[0];
     maintainLogsDefault = false;
+    loadNotCopyRelatedOptionsDefault = false;
     splitScreenDefault = false;
     saveSelectionDefault = true;
     makeTreeDiffsDefault = false;
     zipLevelDefault = -1;
 
     // User Options - stored
+    //copy-related
     fileOverwrite = this.fileOverwriteDefault;
     copyVerbose = this.copyVerboseDefault;
     copyReport = this.copyReportDefault;
     abortFullQueue = this.abortFullQueueDefault;
     dontConfirmQueue = this.dontConfirmQueueDefault;
+    //selection, not copy-related
     propagateSelections = this.propagateSelectionsDefault;
     clickOnNamesToSelect = this.clickOnNamesToSelectDefault;
     relationshipOR = this.relationshipORDefault;
-    sortOrder = this.sortOrderDefault;
+    //sys, not copy-related
     maintainLogs = this.maintainLogsDefault;
+    loadNotCopyRelatedOptions = this.loadNotCopyRelatedOptionsDefault;
     splitScreen = this.splitScreenDefault;
-    saveSelection = this.saveSelectionDefault;
+    saveSelection = this.saveSelectionDefault; //not in ui
     makeTreeDiffs = this.makeTreeDiffsDefault;
     zipLevel = this.zipLevelDefault;
+    //view, not copy-related
+    sortOrder = this.sortOrderDefault;
 
     // Components
     initialRangeSliderValues = [500000, 1000000];

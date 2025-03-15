@@ -1,13 +1,15 @@
 # TODO
 
+## NOW
+add to ui: if diffs active, also clicks on destination tree for open/close, and scroll, align source tree
+add to sys options: App.model.msBaseTolerance , App.model.msCopySpeed
+
+---
+
 ## NEXT
 sys: custom suffix when keep existing (unique or (#INCREMENTAL)), custom filename for zip archive
 
 ui: color skins/variants
-
-tree diffs: 
-add to ui: if diffs active, also clicks on destination tree for open/close, and scroll, align source tree
-add diff to features list
 
 ---
 
@@ -30,6 +32,7 @@ ui: alerts and confirms not using native dialogs but using html modals.
 ui: collapsable folders and filters panels or all separated panels using floating windows?
 ui: better text wrap on trees.
 
+sys: remove Live reload for production build
 sys: extensive testing, especially date/size filters and copymodes.
 
 
