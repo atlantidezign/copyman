@@ -37,7 +37,7 @@ class CopyManager {
                 App.model.sourceFolder = folder;
                 document.getElementById('sourcePath').textContent = folder;
                 // build tree
-                App.treeManager.updateSourceTree();
+                App.treeManager.updateSourceTree(true);
                 App.utils.writeMessage('Source Folder rendered.');
             } else {
                 App.utils.writeMessage('No Source folder selected.');
@@ -49,7 +49,7 @@ class CopyManager {
             App.model.sourceFolder = '';
             App.filtersManager.removeAllFilters();
             document.getElementById('sourcePath').textContent = 'Select Source Folder';
-            App.model.fileTreeData = [];
+            App.model.sourceTreeData = [];
             const container = document.getElementById('file-tree');
             container.innerHTML = '';
             App.utils.writeMessage('Source folder cleared.');
@@ -61,7 +61,7 @@ class CopyManager {
                 return;
             }
             // rebuild tree
-            App.treeManager.updateSourceTree();
+            App.treeManager.updateSourceTree(true);
             App.utils.writeMessage('Source Folder refreshed.');
         });
         document.getElementById('buttonSwap').addEventListener('click', this.swapSourceAndDestination.bind(this));
@@ -104,7 +104,7 @@ class CopyManager {
         App.model.sourceFolder = App.model.destinationFolders[0];
         App.model.destinationFolders[0] = oldSource;
         document.getElementById('sourcePath').textContent = App.model.sourceFolder;
-        App.treeManager.updateSourceTree();
+        App.treeManager.updateSourceTree(true);
         this.updateDestinationList();
         App.filtersManager.applyAllFilters();
         App.utils.writeMessage('Source / Destination Folders swapped.');
@@ -139,7 +139,7 @@ class CopyManager {
             });
         }
         if (App.model.destinationFolders.length > 0) {
-            App.treeManager.renderDestinationTree();
+            App.treeManager.updateDestinationTree(true);
         }
         if (App.model.destinationFolders.length > 1) {
             addDraggableToDestinationFolders();
@@ -203,7 +203,7 @@ class CopyManager {
                             let removeButton = badge.querySelector('a');
                             removeButton.dataset.index = index;
                         })
-                        App.treeManager.renderDestinationTree();
+                        App.treeManager.updateDestinationTree(true);
                         App.utils.writeMessage('Destination Folders List updated!'); // + App.model.destinationFolders.join(","));
                     }
                     draggedIndex = null;
@@ -621,6 +621,8 @@ class CopyManager {
                 else document.getElementById('verboseProgressMD').innerHTML = useMessage + document.getElementById('verboseProgressMD').innerHTML;
                 let percentageI = ((App.model.itemsProcessed * 100) / App.model.itemsTotal).toFixed(0);
                 let percentageS = ((App.model.sizeProcessed * 100) / App.model.sizeTotal).toFixed(0);
+                if (isNaN(percentageI)) percentageI = 0;
+                if (isNaN(percentageS)) percentageS = 0;
                 document.getElementById('progressBarItems').style.width = percentageI + "%";
                 document.getElementById('progressBarItems').textContent = App.model.itemsProcessed + "/" + App.model.itemsTotal;
                 document.getElementById('progressBarSize').style.width = percentageS + "%";
@@ -770,7 +772,7 @@ Size: ${App.utils.formatSizeForThree(App.model.sizeTotal)}
 
         const output = fs.createWriteStream(archivePath);
         const archive = archiver('zip', {
-            zlib: { level: 9 } // compression level
+            zlib: { level: App.model.zipLevel } // compression level
         });
 
         return new Promise(async (resolve, reject) => {

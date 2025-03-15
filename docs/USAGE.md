@@ -27,9 +27,11 @@ You can also choose the **Sort order** of the tree. Possible values are:
 - Type ASC
 - Type DESC
 
-In **tree view**, if the **Split Screen** option is enabled, the view is divided into two adjustable columns:
-- On the left side, we display the **Source Folder** Tree.
-- On the right side, we display the First **Destination Folder** Tree.
+In **tree view**
+- if the **Split Screen** option is enabled, the view is divided into two adjustable columns:
+  - On the left side, we display the **Source Folder** Tree.
+  - On the right side, we display the First **Destination Folder** Tree.
+- if the **Tree Diffs** options is active, for each tree also missing files will be shown, and different files will be marked.
 
 The Destination tree is *aligned* with the Source tree. This means that for any item in the Source tree, if an item with same relative path exists also on the Destination Tree:
 - If the checkbox is selected or deselected, the corresponding checkbox in the Destination tree matches that state.
@@ -116,20 +118,31 @@ Trough **Export JSON** or **Export CSV** button you can export the list in your 
 
 ### Automation: Tasks and Queue
 The **Automation** panel provides useful tools for automation: you can save and reload snapshots of frequently used tasks, eliminating the need to make selections each time – simply load and execute.
+
+#### Tasks
 A Task includes the current configuration of folders, filters, options, and the selection list.
 In this panel, you can manage saving, loading, clearing, and exporting Tasks.
-- **Save Task** to save current Task, with a name.
-- **Export Task** to export current Task to a json file, with a name.
+##### Save
+- **Name** enter the name for the Task to save/export.
+- **Save Task** to save current Task, with the name.
+- **Export Task** to export current Task to a json file, with the name.
+##### Load
 - **Load Task** to load saved Task by selected name.
-- **Clear Task** to remove saved Task by selected name.
 - **Info Task** to get info on saved Task by selected name.
+- **Clear Task** to remove saved Task by selected name.
+##### General
 - **Import Task** to import Task from json file.
 - **Clear All Tasks** to remove all saved Tasks.
 
+#### Queue
 Tasks can be **Queued** to be executed in succession.
-- You can choose Tasks to *Add*.
+##### List
 - You can move **Up** and **Down** and **Delete** items in the queue list.
-- You can **Execute Copy Queue** for an entire queue.
+##### Add
+- You can choose Tasks to *Add*.
+##### General
+- You can **Empty** the queue.
+- You can **Execute Copy Queue** for the entire queue.
 
 
 ---
@@ -161,7 +174,9 @@ It can be:
 
 #### System
 - **Split Screen** to add a tree view also for first Destination folder (remember: you can change order of destinations folders, and set what's the first one, by dragging the badges in the Destination Folders List). Default false.
+- **Tree Diffs** to show Diffs in the tree view. Default false.
 - **Maintain Logs** to choose if to record application logs in memory. Can be exported to file with **Export Logs** button, and cleaned with **Clear Logs** button. Default false.
+- **Zip Compression** to choose the ZIP Compression level. *-1:* Zip Default, *0:* None, *1...9:* Less or More Compressed. Default -1.
 
 
 ---

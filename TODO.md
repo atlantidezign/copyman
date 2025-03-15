@@ -1,16 +1,22 @@
 # TODO
 
 ## NEXT
-copy: in verbose mode, using selectedNodes, include info on file sizes/date, and elapsed, and progress?, for each single file,
-      and better verbose and progress in case of small files.
-copy: new copy mode -> if selected something only on leaf or descending trees, 
-     (ignoring when folder selection is just to reach the leaf path - no other selection in the descending ones) it syncs just starting from that ones,
+sys: custom suffix when keep existing (unique or (#INCREMENTAL)), custom filename for zip archive
 
-sys: custom suffix when keep existing (unique or (#INCR)), custom filename for zip archive/report
+ui: color skins/variants
+
+tree diffs: 
+add to ui: if diffs active, also clicks on destination tree for open/close, and scroll, align source tree
+add diff to features list
 
 ---
 
 ## THEN
+copy: in verbose mode, using selectedNodes, include info on file sizes/date, and elapsed, and progress?, for each single file,
+      and better verbose and progress in case of small files.
+copy: new copy mode -> if selected something only on leaf or descending trees,
+      (ignoring when folder selection is just to reach the leaf path - no other selection in the descending ones) it syncs just starting from that ones,
+
 queue: multiple queues with load/save/export/import for singles and for all.
 
 settings: support localization for other languages (in options), for labels and datepicker (language and format),
@@ -25,3 +31,5 @@ ui: collapsable folders and filters panels or all separated panels using floatin
 ui: better text wrap on trees.
 
 sys: extensive testing, especially date/size filters and copymodes.
+
+

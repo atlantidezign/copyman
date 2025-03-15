@@ -219,7 +219,9 @@ class SnapshotManager {
             App.model.relationshipOR = (typeof settings.relationshipOR === 'boolean') ? settings.relationshipOR : App.model.relationshipORDefault;
             App.model.maintainLogs = (typeof settings.maintainLogs === 'boolean') ? settings.maintainLogs : App.model.maintainLogsDefault;
             App.model.splitScreen = (typeof settings.splitScreen === 'boolean') ? settings.splitScreen : App.model.splitScreenDefault;
+            App.model.makeTreeDiffs = (typeof settings.makeTreeDiffs === 'boolean') ? settings.makeTreeDiffs : App.model.makeTreeDiffsDefault;
             App.model.saveSelection = (typeof settings.saveSelection === 'boolean') ? settings.saveSelection : App.model.saveSelectionDefault;
+            App.model.zipLevel = (typeof settings.zipLevel === 'number') ? settings.zipLevel : App.model.zipLevelDefault;
             App.model.sortOrder = (typeof settings.sortOrder === 'string') ? settings.sortOrder : App.model.sortOrderDefault;
             App.model.filtersNamePlus = settings.filtersNamePlus || [];
             App.model.filtersNameMinus = settings.filtersNameMinus || [];
@@ -232,35 +234,38 @@ class SnapshotManager {
             App.uiManager.updateSplitScreen();
 
             document.getElementById('sourcePath').textContent = App.model.sourceFolder;
-            App.treeManager.updateSourceTree();
+            App.treeManager.updateSourceTree(true);
 
             App.copyManager.updateDestinationList();
 
             // update snapshot name
             document.getElementById('saveSnapshotInput').value = settings.name;
-
-            // apply filters
-            App.filtersManager.applyAllFilters();
-
-            //apply selection
-            if (App.model.saveSelection && settings.selectionList && settings.selectionList.length > 0) {
-                const fileTree = document.getElementById('file-tree');
-                const allCheckboxes = fileTree.querySelectorAll('input[type="checkbox"]');
-                allCheckboxes.forEach(checkbox => {
-                    if (settings.selectionList.indexOf(checkbox.dataset.filePath) >= 0) {
-                        checkbox.checked = true;
-                    }
-                });
-            }
-
-            //update stats
-            App.selectionListManager.updateSelectionStats();
+            // apply filters, selection, stats
+            this.setFromSnapshottedSelection(settings);
 
             App.utils.writeMessage('Snapshot loaded.');
         } catch (error) {
             console.error("Error during loading of Task " + settings.name + ":", error);
             App.utils.writeMessage("Error during loading of Task " + settings.name + ".");
         }
+    }
+    setFromSnapshottedSelection(settings) {
+        // apply filters
+        App.filtersManager.applyAllFilters();
+
+        //apply selection
+        if (App.model.saveSelection && settings.selectionList && settings.selectionList.length > 0) {
+            const fileTree = document.getElementById('file-tree');
+            const allCheckboxes = fileTree.querySelectorAll('input[type="checkbox"]');
+            allCheckboxes.forEach(checkbox => {
+                if (settings.selectionList.indexOf(checkbox.dataset.filePath) >= 0) {
+                    checkbox.checked = true;
+                }
+            });
+        }
+
+        //update stats
+        App.selectionListManager.updateSelectionStats();
     }
 
     // Info popover
@@ -299,7 +304,9 @@ class SnapshotManager {
             sortOrder: App.model.sortOrder,
             maintainLogs: App.model.maintainLogs,
             splitScreen: App.model.splitScreen,
+            makeTreeDiffs: App.model.makeTreeDiffs,
             saveSelection: App.model.saveSelection,
+            zipLevel: App.model.zipLevel,
             // filters
             filtersNamePlus: App.model.filtersNamePlus,
             filtersNameMinus: App.model.filtersNameMinus,
@@ -386,6 +393,8 @@ class SnapshotManager {
                 settings.sortOrder!="" && "Sort Order: '" + settings.sortOrder+"'",
                 settings.maintainLogs && "Maintain Logs",
                 settings.splitScreen && "Split Screen",
+                settings.makeTreeDiffs && "Tree Diffs",
+                settings.zipLevel && "Zip Level: "+settings.zipLevel,
                 //settings.saveSelection && "Save Selection",
             ].filter(Boolean);
     

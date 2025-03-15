@@ -12,7 +12,7 @@ class Model {
 
     // Business vars
     clicksActive = true; //system: to deactivate clicks while copying
-    fileTreeData = []; // system: source tree data
+    sourceTreeData = []; // system: source tree data
     destTreeData = []; // system: destination [0] tree data
 
     copyingReport = [];
@@ -64,8 +64,10 @@ class Model {
     maintainLogsDefault = false;
     splitScreenDefault = false;
     saveSelectionDefault = true;
+    makeTreeDiffsDefault = false;
+    zipLevelDefault = -1;
 
-    // User Options
+    // User Options - stored
     fileOverwrite = this.fileOverwriteDefault;
     copyVerbose = this.copyVerboseDefault;
     copyReport = this.copyReportDefault;
@@ -78,6 +80,8 @@ class Model {
     maintainLogs = this.maintainLogsDefault;
     splitScreen = this.splitScreenDefault;
     saveSelection = this.saveSelectionDefault;
+    makeTreeDiffs = this.makeTreeDiffsDefault;
+    zipLevel = this.zipLevelDefault;
 
     // Components
     initialRangeSliderValues = [500000, 1000000];
@@ -104,6 +108,14 @@ class Model {
     abort = false;
     wasAborted = false;
     someCopyDone = 0;
+
+    // Diffs
+    preDiffsSnapshot = null;
+    afterDiffsTimeout = 250;
+
+    msBaseTolerance = 1000; //ms
+    msCopySpeed = 50000; //ms - 50 MB/s
+
 }
 
 // export for singleton

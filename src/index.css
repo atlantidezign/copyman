@@ -102,7 +102,7 @@ body > div#div-controls {
     overflow: auto;
     max-height: calc(100vh - 295px);
     display: grid;
-    grid-template-columns: 2fr 10px 1fr;
+    grid-template-columns: 1fr 10px 1fr;
 }
 
 #file-tree, #dest-tree {
@@ -203,8 +203,16 @@ li {
     background: #8510f2;
 }
 
-.badge-dest:first-of-type {
-    background: #8510f2 !important;
+/*
+.check-node .node-source|.node-destination  .node-different|.node-same .node-exists|.node-missing
+.label-node .node-source|.node-destination  .node-different|.node-same .node-exists|.node-missing
+.ul-node .node-source|.node-destination  .node-different|.node-same .node-exists|.node-missing
+*/
+.label-node.node-missing {
+    opacity: 0.5;
+}
+.label-node.node-different > span:nth-child(n+2) {
+    color: #ee0000 !important;
 }
 
 /* Actions */
@@ -424,6 +432,10 @@ li {
     margin-top: 1px;
 }
 
+.badge-dest:first-of-type {
+    background: #8510f2 !important;
+}
+
 #selectionStats {
     display: inline-block;
     font-size: 0.80em;
@@ -606,6 +618,29 @@ body > div#div-modals {
 #copySelected img, #executeQueue img {
     height: 16px;
     vertical-align: text-bottom;
+}
+.form-zip-level {
+    width: calc(98% - 110px);
+}
+.form-zip-output {
+    float: right;
+    width: 100px;
+    overflow: hidden;
+    padding-top: 32px;
+    color: #9e68ff;
+    font-size: 0.90em;
+}
+@media screen and (max-width: 468px){
+    .form-zip-level {
+        width: 100%;
+    }
+    .form-zip-output {
+        float: none;
+        width: unset;
+        overflow: unset;
+        padding-top: unset;
+        display: block;
+    }
 }
 
 /* Overlay full screen */

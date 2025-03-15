@@ -256,6 +256,7 @@ Source code and binaries are available on <a href="https://github.com/atlantidez
                 document.querySelector('#dest-tree').classList.remove('hidden');
                 App.copyManager.updateDestinationList();
             }
+            App.treeManager.updateTreeDiffs();
         } else {
             this.splitted = false;
             this.cleanDestinationTree();

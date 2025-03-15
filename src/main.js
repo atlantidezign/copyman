@@ -11,12 +11,12 @@ nativeTheme.themeSource = 'system';
 function createWindow() {
     const appIcon = nativeImage.createFromPath(path.join(__dirname, 'images','256x256.png'))
     const win = new BrowserWindow({
-        width: 1200,
+        width: 1600,
         height: 900,
         webPreferences: {
             nodeIntegration: true,
             enableRemoteModule: true,
-            contextIsolation: false // for production it has to be more secure.
+            contextIsolation: false // for production, it has to be more secure.
         },
         icon: appIcon
     });
@@ -307,10 +307,10 @@ app.whenReady().then(() => {
             buttonLabel: 'Export'
         };
         let useText = "";
-        if (kind == 'json') {
+        if (kind === 'json') {
             options.filters = [{ name: 'JSON', extensions: ['json'] }]
             useText = JSON.stringify(dataToExport, null, 2);
-        } else if (kind == 'csv') {
+        } else if (kind === 'csv') {
             options.filters = [{ name: 'CSV', extensions: ['csv'] }]
             useText = createCsv(dataToExport);
         } else {

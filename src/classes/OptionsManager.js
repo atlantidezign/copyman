@@ -61,10 +61,22 @@ class OptionsManager {
             App.utils.writeMessage('Split Screen setting is now ' + App.model.splitScreen);
             App.uiManager.updateSplitScreen();
         });
+        document.getElementById("makeTreeDiffsChecked").addEventListener("change", function () {
+            App.model.makeTreeDiffs = this.checked;
+            App.optionsManager.saveOptions();
+            App.utils.writeMessage('Tree Diffs setting is now ' + App.model.makeTreeDiffs);
+            App.treeManager.updateTreeDiffs();
+        });
         document.getElementById("saveSelectionChecked").addEventListener("change", function () {
             App.model.saveSelection = this.checked;
             App.optionsManager.saveOptions();
             App.utils.writeMessage('Selection List setting is now ' + App.model.saveSelection);
+        });
+        document.getElementById("zipLevelChecked").addEventListener("change", function () {
+            App.model.zipLevel = this.value;
+            document.getElementById("zipLevelCheckedValue").innerText = App.optionsManager.formatZipLevel();
+            App.optionsManager.saveOptions();
+            App.utils.writeMessage('Zip Level setting is now ' + App.model.zipLevel);
         });
         document.getElementById("resetOptions").addEventListener("click", async function () {
             let confirmation = await App.utils.showConfirmWithReturn('Are you sure you want to reset Options to defaults?');
@@ -108,7 +120,9 @@ class OptionsManager {
             model.sortOrder = options.sortOrder;
             model.maintainLogs = options.maintainLogs;
             model.splitScreen = options.splitScreen;
+            model.makeTreeDiffs = options.makeTreeDiffs;
             model.saveSelection = options.saveSelection;
+            model.zipLevel = options.zipLevel;
         } else {
             const saveOptions = this.getOptionsItem();
             localStorage.setItem('options', JSON.stringify(saveOptions));
@@ -134,7 +148,9 @@ class OptionsManager {
             sortOrder: model.sortOrder,
             maintainLogs: model.maintainLogs,
             splitScreen: model.splitScreen,
+            makeTreeDiffs: model.makeTreeDiffs,
             saveSelection: model.saveSelection,
+            zipLevel: model.zipLevel,
         };
         return saveOptions;
     }
@@ -151,7 +167,9 @@ class OptionsManager {
         model.sortOrder = model.sortOrderDefault;
         model.maintainLogs = model.maintainLogsDefault;
         model.splitScreen = model.splitScreenDefault;
+        model.makeTreeDiffs = model.makeTreeDiffsDefault;
         model.saveSelection = model.saveSelectionDefault;
+        model.zipLevel = model.zipLevelDefault;
         this.saveOptions();
         this.updateOptionsUI();
         App.uiManager.updateSplitScreen();
@@ -174,8 +192,11 @@ class OptionsManager {
         document.getElementById("relationshipORChecked").checked = App.model.relationshipOR;
         document.getElementById("maintainLogsChecked").checked = App.model.maintainLogs;
         document.getElementById("splitScreenChecked").checked = App.model.splitScreen;
+        document.getElementById("makeTreeDiffsChecked").checked = App.model.makeTreeDiffs;
         document.getElementById("saveSelectionChecked").checked = App.model.saveSelection;
         document.getElementById("sortOrderCombo").value = App.model.sortOrder;
+        document.getElementById("zipLevelChecked").value = App.model.zipLevel;
+        document.getElementById("zipLevelCheckedValue").innerText =  App.optionsManager.formatZipLevel();
     }
 
     async exportLogs() {
@@ -194,6 +215,17 @@ class OptionsManager {
         }
         App.model.clicksActive = true;
         App.utils.toggleSpinner(!App.model.clicksActive);
+    }
+
+    formatZipLevel() {
+        let outStr = App.model.zipLevel;
+        if (App.model.zipLevel < 0) outStr = "Default";
+        if (App.model.zipLevel == 0) outStr = App.model.zipLevel + " (None)";
+        if (App.model.zipLevel > 0) outStr = App.model.zipLevel + " (Low)";
+        if (App.model.zipLevel > 3) outStr = App.model.zipLevel + " (Med)";
+        if (App.model.zipLevel > 6) outStr = App.model.zipLevel + " (High)";
+        if (App.model.zipLevel > 8) outStr = App.model.zipLevel + " (Max)";
+        return outStr;
     }
 }
 

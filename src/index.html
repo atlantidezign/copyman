@@ -520,9 +520,17 @@
                                             <input class="form-check-input" type="checkbox" role="switch"
                                                    id="splitScreenChecked"
                                                    title="Split Screen to display Source and first destination"
-                                                   checked/>
+                                                   />
                                             <label class="form-check-label" for="splitScreenChecked">Split
                                                 Screen</label>
+                                        </div>
+                                        <div class="form-check form-switch"
+                                             title="Show Diffs in Tree View, if Split Screen is enabled">
+                                            <input class="form-check-input" type="checkbox" role="switch"
+                                                   id="makeTreeDiffsChecked"
+                                                   title="Show Diffs in Tree View, if Split Screen is enabled"
+                                                   />
+                                            <label class="form-check-label" for="makeTreeDiffsChecked">Tree Diffs</label>
                                         </div>
                                     </div>
                                     <hr/>
@@ -542,6 +550,15 @@
                                            title="Export Logs to file.">Export Logs</a>
                                         <a id="clearLogs" class="ms-1 mt-2 btn btn-primary btn-sm" type="button"
                                            title="Clear Logs in memory.">Clear Logs</a>
+                                    </div>
+                                    <hr>
+                                    <div>
+                                        <div class="ms-3">
+                                            <label for="zipLevelChecked" class="form-label">Zip Compression</label>
+                                            <output id="zipLevelCheckedValue" class="form-zip-output" title="Zip Compression Level">-1</output>
+                                            <input type="range" class="form-range form-zip-level" min="-1" max="9" step="1" value="-1" id="zipLevelChecked"
+                                                   title="Choose Zip Compression Level: -1 Default, 0 No Compression ... 9 Max Compression" />
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="v-pills-99" role="tabpanel"
@@ -606,16 +623,16 @@
                                     class="bi bi-box-arrow-up" title="Load Saved Task"></i>
 
                             </button>
-                            <button id="cleanSnapshot" type="button" class="btn btn-primary btn-sm snapshot-buttons2" title="Remove Saved Task"><i
-                                    class="bi bi-trash" title="Remove Saved Task"></i>
-
-                            </button>
                             <a id="infoSnapshot" tabindex="0" data-bs-trigger="focus"  class="btn btn-primary btn-sm snapshot-buttons2" title="Info on Task"
                                role="button" data-bs-toggle="popover" data-bs-placement="left" data-bs-custom-class="custom-popover"
                                data-bs-title="Copyman" data-bs-content="..."
                                onclick="App.snapshotManager.updateInfoSnapshotPopover();"><i
                                     class="bi bi-eye" title="Info on Task" ></i>
                             </a>
+                            <button id="cleanSnapshot" type="button" class="btn btn-primary btn-sm snapshot-buttons2" title="Remove Saved Task"><i
+                                    class="bi bi-trash" title="Remove Saved Task"></i>
+
+                            </button>
                         </div>
 
                         <div>
