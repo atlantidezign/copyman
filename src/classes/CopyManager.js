@@ -768,7 +768,10 @@ Size: ${App.utils.formatSizeForThree(App.model.sizeTotal)}
         // Create a unique name for the ZIP archive
         const pad = number => (number < 10 ? '0' + number : number);
         const now = new Date();
-        const archiveName = `copyman_zip_archive-${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}-${pad(now.getHours())}-${pad(now.getMinutes())}-${pad(now.getSeconds())}.zip`;
+        const folderName = path.basename(sourceFolder);
+        const trimmedFolderName = folderName.trim();
+
+        const archiveName = `copyman_zip_archive-${trimmedFolderName}-${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}-${pad(now.getHours())}-${pad(now.getMinutes())}-${pad(now.getSeconds())}.zip`;
         const archivePath = path.join(outputFolder, archiveName);
 
         const zip = new JSZip();
@@ -905,6 +908,7 @@ Size: ${App.utils.formatSizeForThree(App.model.sizeTotal)}
             console.error(`Error removing temporary ZIP file: ${error.message}`);
         }
 
+        App.treeManager.updateSourceTree(true);
         App.utils.writeMessage('Zipping Completed!');
         App.utils.showAlert('Zipping Completed!');
         document.getElementById('abortCopy').classList.remove("opDisabled");

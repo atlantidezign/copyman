@@ -390,7 +390,7 @@ class TreeManager {
                 if (sourceItem.exists !== false && destItem.exists !== false) {
                     let modMs = false;
                     if (sourceItem.modifiedMs !== destItem.modifiedMs) {
-                        let tolerance = App.model.msBaseTolerance + (sourceItem.sizeRaw / App.model.msCopySpeed)
+                        let tolerance = App.model.msBaseTolerance + (sourceItem.sizeRaw / (App.model.msCopySpeed*1000) )
                         if (Math.abs(sourceItem.modifiedMs - destItem.modifiedMs) > tolerance) { modMs = true;}
                     }
                     if (sourceItem.sizeRaw !== destItem.sizeRaw || modMs) {

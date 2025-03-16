@@ -1,17 +1,17 @@
 # TODO
 
 ## NOW
-options: App.model.msCopySpeed (default 50000 = 50 MB/s) , App.model.zipAlreadyCompressed (default false) in sys options
-options: custom suffix for keep existing (unique or (#INCREMENTAL)), custom filename for zip archive in sys options
+options: App.model.msCopySpeed (default 50000 = 50 MB/s)  in sys options;
 
-site: in features add "diffs", ...
+options: custom suffix for keep existing (unique or (#INCREMENTAL)) - in copy options + handle; 
+options: custom filename for zip archive - in zip options + handle;
+
+ext: update screenshot
 
 ---
 
 ## NEXT
 ui: color skins/variants
-
-options: review defaults, in model and index.html first draw (eg: split & diff default true)
 
 ---
 

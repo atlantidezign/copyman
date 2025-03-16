@@ -359,6 +359,10 @@
                                 </button>
                                 <button class="nav-link btn-sm" id="v-pills-03-tab" data-bs-toggle="pill"
                                         data-bs-target="#v-pills-03" type="button" role="tab" aria-controls="v-pills-03"
+                                        aria-selected="false"><i class="bi bi-file-earmark-zip"></i></i> Zip
+                                </button>
+                                <button class="nav-link btn-sm" id="v-pills-04-tab" data-bs-toggle="pill"
+                                        data-bs-target="#v-pills-04" type="button" role="tab" aria-controls="v-pills-04"
                                         aria-selected="false"><i class="bi bi-window"></i> System
                                 </button>
                                 <button class="nav-link btn-sm hidden" id="v-pills-99-tab" data-bs-toggle="pill"
@@ -371,10 +375,10 @@
                                      aria-labelledby="v-pills-01-tab" tabindex="0">
                                     <div>
                                         <div class="form-check form-switch"
-                                             title="Verbose progress during copying phase">
+                                             title="Verbose progress during copying phase. Disable to boost performance.">
                                             <input class="form-check-input" type="checkbox" role="switch"
                                                    id="verboseChecked"
-                                                   title="Verbose progress during copying phase"
+                                                   title="Verbose progress during copying phase. Disable to boost performance."
                                                    checked/>
                                             <label class="form-check-label" for="verboseChecked">Verbose
                                                 Progress</label>
@@ -403,7 +407,7 @@
                                             <input class="form-check-input" type="checkbox" role="switch"
                                                    id="dontConfirmQueueChecked"
                                                    title="Do not confirm every Queue Step during copying"
-                                                   checked/>
+                                                   />
                                             <label class="form-check-label" for="dontConfirmQueueChecked">Don't Confirm
                                                 Queue Steps </label>
                                         </div>
@@ -516,11 +520,34 @@
                                      aria-labelledby="v-pills-03-tab" tabindex="0">
                                     <div>
                                         <div class="form-check form-switch"
+                                             title="Re-compress already compressed files, otherwise just store them as is">
+                                            <input class="form-check-input" type="checkbox" role="switch"
+                                                   id="zipAlreadyChecked"
+                                                   title="Re-compress already compressed files, otherwise just store them as is"
+                                                   />
+                                            <label class="form-check-label" for="zipAlreadyChecked">Recompress</label>
+                                        </div>
+
+                                    </div>
+                                    <hr/>
+                                    <div>
+                                        <div class="ms-3">
+                                            <label for="zipLevelChecked" class="form-label">Zip Compression</label>
+                                            <output id="zipLevelCheckedValue" class="form-zip-output" title="Zip Compression Level">-1</output>
+                                            <input type="range" class="form-range form-zip-level" min="-1" max="9" step="1" value="-1" id="zipLevelChecked"
+                                                   title="Choose Zip Compression Level: -1 Default, 0 No Compression ... 9 Max Compression" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="v-pills-04" role="tabpanel"
+                                     aria-labelledby="v-pills-03-tab" tabindex="0">
+                                    <div>
+                                        <div class="form-check form-switch"
                                              title="Split Screen to display Source and first destination">
                                             <input class="form-check-input" type="checkbox" role="switch"
                                                    id="splitScreenChecked"
                                                    title="Split Screen to display Source and first destination"
-                                                   />
+                                                   checked/>
                                             <label class="form-check-label" for="splitScreenChecked">Split
                                                 Screen</label>
                                         </div>
@@ -529,7 +556,7 @@
                                             <input class="form-check-input" type="checkbox" role="switch"
                                                    id="makeTreeDiffsChecked"
                                                    title="Show Diffs in Tree View, if Split Screen is enabled"
-                                                   />
+                                                   checked/>
                                             <label class="form-check-label" for="makeTreeDiffsChecked">Tree Diffs</label>
                                         </div>
                                     </div>
@@ -557,15 +584,6 @@
                                            title="Export Logs to file.">Export Logs</a>
                                         <a id="clearLogs" class="ms-1 mt-2 btn btn-primary btn-sm" type="button"
                                            title="Clear Logs in memory.">Clear Logs</a>
-                                    </div>
-                                    <hr>
-                                    <div>
-                                        <div class="ms-3">
-                                            <label for="zipLevelChecked" class="form-label">Zip Compression</label>
-                                            <output id="zipLevelCheckedValue" class="form-zip-output" title="Zip Compression Level">-1</output>
-                                            <input type="range" class="form-range form-zip-level" min="-1" max="9" step="1" value="-1" id="zipLevelChecked"
-                                                   title="Choose Zip Compression Level: -1 Default, 0 No Compression ... 9 Max Compression" />
-                                        </div>
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="v-pills-99" role="tabpanel"

@@ -223,6 +223,7 @@ class SnapshotManager {
                 App.model.makeTreeDiffs = (typeof settings.makeTreeDiffs === 'boolean') ? settings.makeTreeDiffs : App.model.makeTreeDiffsDefault;
                 App.model.saveSelection = (typeof settings.saveSelection === 'boolean') ? settings.saveSelection : App.model.saveSelectionDefault;
                 App.model.zipLevel = (typeof settings.zipLevel === 'number') ? settings.zipLevel : App.model.zipLevelDefault;
+                App.model.zipAlreadyCompressed = (typeof settings.zipAlreadyCompressed === 'boolean') ? settings.zipAlreadyCompressed : App.model.zipAlreadyCompressedDefault;
                 App.model.sortOrder = (typeof settings.sortOrder === 'string') ? settings.sortOrder : App.model.sortOrderDefault;
             }
             App.model.filtersNamePlus = settings.filtersNamePlus || [];
@@ -310,6 +311,7 @@ class SnapshotManager {
             makeTreeDiffs: App.model.makeTreeDiffs,
             saveSelection: App.model.saveSelection,
             zipLevel: App.model.zipLevel,
+            zipAlreadyCompressed: App.model.zipAlreadyCompressed,
             // filters
             filtersNamePlus: App.model.filtersNamePlus,
             filtersNameMinus: App.model.filtersNameMinus,
@@ -398,6 +400,7 @@ class SnapshotManager {
                 settings.loadNotCopyRelatedOptions && "Load Not Copy-related Options",
                 settings.splitScreen && "Split Screen",
                 settings.makeTreeDiffs && "Tree Diffs",
+                settings.zipAlreadyCompressed && "Recompress",
                 settings.zipLevel && "Zip Level: "+settings.zipLevel,
                 //settings.saveSelection && "Save Selection",
             ].filter(Boolean);

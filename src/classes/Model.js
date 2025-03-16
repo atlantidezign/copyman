@@ -53,7 +53,7 @@ class Model {
 
     // User Options Defaults
     fileOverwriteDefault = this.fileOverwriteEnum.always;
-    copyVerboseDefault = false;
+    copyVerboseDefault = true;
     copyReportDefault = true;
     abortFullQueueDefault = true;
     dontConfirmQueueDefault = false;
@@ -63,9 +63,9 @@ class Model {
     sortOrderDefault = this.sortOrderList[0];
     maintainLogsDefault = false;
     loadNotCopyRelatedOptionsDefault = false;
-    splitScreenDefault = false;
-    saveSelectionDefault = true;
-    makeTreeDiffsDefault = false;
+    splitScreenDefault = true;
+    makeTreeDiffsDefault = true;
+    saveSelectionDefault = true; //not in ui
     zipLevelDefault = -1;
     zipAlreadyCompressedDefault = false;
 
@@ -86,9 +86,11 @@ class Model {
     splitScreen = this.splitScreenDefault;
     saveSelection = this.saveSelectionDefault; //not in ui
     makeTreeDiffs = this.makeTreeDiffsDefault;
+    msCopySpeed = 50; //50 MB/s  //TODO add to options sys
+    //zip, not copy-related
     zipLevel = this.zipLevelDefault;
-    zipAlreadyCompressed = this.zipAlreadyCompressedDefault;
-    //view, not copy-related
+    zipAlreadyCompressed = this.zipAlreadyCompressedDefault; //TODO add to options sys
+    //ui view, not copy-related
     sortOrder = this.sortOrderDefault;
 
     // Components
@@ -122,7 +124,6 @@ class Model {
     afterDiffsTimeout = 250;
 
     msBaseTolerance = 1000; //ms
-    msCopySpeed = 50000; //ms - 50 MB/s
 
 }
 

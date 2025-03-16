@@ -77,6 +77,11 @@ class OptionsManager {
             App.optionsManager.saveOptions();
             App.utils.writeMessage('Selection List setting is now ' + App.model.saveSelection);
         });
+        document.getElementById("zipAlreadyChecked").addEventListener("change", function () {
+            App.model.zipAlreadyCompressed = this.checked;
+            App.optionsManager.saveOptions();
+            App.utils.writeMessage('Recompress setting is now ' + App.model.zipAlreadyCompressed);
+        });
         document.getElementById("zipLevelChecked").addEventListener("change", function () {
             App.model.zipLevel = this.value;
             document.getElementById("zipLevelCheckedValue").innerText = App.optionsManager.formatZipLevel();
@@ -129,6 +134,7 @@ class OptionsManager {
             model.makeTreeDiffs = options.makeTreeDiffs;
             model.saveSelection = options.saveSelection;
             model.zipLevel = options.zipLevel;
+            model.zipAlreadyCompressed = options.zipAlreadyCompressed;
         } else {
             const saveOptions = this.getOptionsItem();
             localStorage.setItem('options', JSON.stringify(saveOptions));
@@ -158,6 +164,7 @@ class OptionsManager {
             makeTreeDiffs: model.makeTreeDiffs,
             saveSelection: model.saveSelection,
             zipLevel: model.zipLevel,
+            zipAlreadyCompressed: model.zipAlreadyCompressed,
         };
         return saveOptions;
     }
@@ -178,6 +185,7 @@ class OptionsManager {
         model.makeTreeDiffs = model.makeTreeDiffsDefault;
         model.saveSelection = model.saveSelectionDefault;
         model.zipLevel = model.zipLevelDefault;
+        model.zipAlreadyCompressed = model.zipAlreadyCompressedDefault;
         this.saveOptions();
         this.updateOptionsUI();
         App.uiManager.updateSplitScreen();
@@ -206,6 +214,7 @@ class OptionsManager {
         document.getElementById("sortOrderCombo").value = App.model.sortOrder;
         document.getElementById("zipLevelChecked").value = App.model.zipLevel;
         document.getElementById("zipLevelCheckedValue").innerText =  App.optionsManager.formatZipLevel();
+        document.getElementById("zipAlreadyChecked").value = App.model.zipAlreadyCompressed;
     }
 
     async exportLogs() {
