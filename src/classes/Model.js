@@ -81,7 +81,7 @@ class Model {
     propagateSelections = this.propagateSelectionsDefault;
     clickOnNamesToSelect = this.clickOnNamesToSelectDefault;
     relationshipOR = this.relationshipORDefault;
-    saveSelection = this.saveSelectionDefault; //not in ui
+    saveSelection = this.saveSelectionDefault;
     //sys, not copy-related
     maintainLogs = this.maintainLogsDefault;
     loadNotCopyRelatedOptions = this.loadNotCopyRelatedOptionsDefault;

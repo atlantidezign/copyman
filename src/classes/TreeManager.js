@@ -104,7 +104,7 @@ class TreeManager {
         let doOther = false;
         if (direct) {
             let useName = "preDiffsSnapshot";
-            App.model.preDiffsSnapshot = App.snapshotManager.createSnapshotObject(useName);
+            App.model.preDiffsSnapshot = App.snapshotManager.createSnapshotObject(useName, true);
             App.model.sourceTreeData = this.buildFileTree(App.model.sourceFolder);
         }
         if (direct && App.model.makeTreeDiffs === true && App.model.splitScreen === true) {

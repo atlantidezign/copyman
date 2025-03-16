@@ -80,7 +80,7 @@ class OptionsManager {
         document.getElementById("saveSelectionChecked").addEventListener("change", function () {
             App.model.saveSelection = this.checked;
             App.optionsManager.saveOptions();
-            App.utils.writeMessage('Selection List setting is now ' + App.model.saveSelection);
+            App.utils.writeMessage('Save Selection List setting is now ' + App.model.saveSelection);
         });
         document.getElementById("zipAlreadyChecked").addEventListener("change", function () {
             App.model.zipAlreadyCompressed = this.checked;

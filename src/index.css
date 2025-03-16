@@ -527,6 +527,9 @@ body > div#div-modals {
 #v-pills-tabContent .form-check {
     min-width: 180px;
 }
+#v-pills-tabContent #v-pills-02 .form-check {
+    min-width: 200px;
+}
 
 .consistent-height.tab-content {
     display: flex;

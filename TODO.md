@@ -11,6 +11,8 @@ ext: update screenshot
 ## NEXT
 ui: color skins/variants
 
+select: like filter but on diffs: select different (exclusive, addictive, subtractive), select non different (exclusive, addictive, subtractive) if tree & diff active. rearrange ui
+
 ---
 
 ## THEN

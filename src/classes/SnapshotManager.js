@@ -78,7 +78,7 @@ class SnapshotManager {
             }
         }
 
-        let newSettings = this.createSnapshotObject(useName);
+        let newSettings = this.createSnapshotObject(useName, false);
         useSettings.push(newSettings);
         // serialize and save in localStorage
         localStorage.setItem('snapshots', JSON.stringify(useSettings));
@@ -149,7 +149,7 @@ class SnapshotManager {
             return;
         }
 
-        let newSettings = this.createSnapshotObject(useName);
+        let newSettings = this.createSnapshotObject(useName, false);
 
         App.utils.writeMessage('Choose Task JSON file for Export.');
         App.model.clicksActive = false;
@@ -290,7 +290,7 @@ class SnapshotManager {
     }
 
     // Utils: create snapshot object from current model and assign name
-    createSnapshotObject(useName) {
+    createSnapshotObject(useName, internal) {
         let newSettings = {
             name: useName,
             // source and destinations folders
@@ -324,7 +324,7 @@ class SnapshotManager {
             // selection list
             selectionList: []
         }
-        if (App.model.saveSelection) {
+        if (App.model.saveSelection || internal) {
             newSettings.selectionList = App.snapshotManager.getListOfSelectedItemsForSnapshot();
         }
         return newSettings
@@ -405,7 +405,7 @@ class SnapshotManager {
                 settings.makeTreeDiffs && "Tree Diffs",
                 settings.zipAlreadyCompressed && "Recompress Already Compressed",
                 settings.zipLevel && "Zip Level: "+settings.zipLevel,
-                //settings.saveSelection && "Save Selection",
+                settings.saveSelection && "Save Selection List",
             ].filter(Boolean);
     
             return trueOptions.length > 0
@@ -585,7 +585,7 @@ class SnapshotManager {
 
                 // saves actual snapshot
                 let useName = "preQueueSnapshot";
-                App.model.preQueueSnapshot = this.createSnapshotObject(useName);
+                App.model.preQueueSnapshot = this.createSnapshotObject(useName, true);
 
                 App.model.isQueue = true;
                 App.model.someCopyDone = 0;

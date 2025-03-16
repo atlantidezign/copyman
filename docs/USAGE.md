@@ -171,6 +171,7 @@ It can be:
 - **Propagate Selection** to choose if propagate (checked) or not (unchecked) the selection/deselection click of an item to parent and childen elements. Default true.
 - **Click on Names to Select**  to choose if also clicks on files/folders names can Select/Deselect the item. Default true.
 - **Filters Relationship OR** to choose the kind of relationship between filter groups, OR (checked) or AND (unchecked). Default true (OR).
+- **Save Selection List to Task** to choose if to save also Actual Selection List to Task (if not, only filters will be used for restore selection on loading of Tasks). Default true.
 
 #### Zip
 - **Recompress Already Compressed** to choose if to re-compress already compressed files, otherwise just store them as is. Default false.
