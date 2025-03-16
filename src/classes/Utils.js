@@ -19,7 +19,6 @@ class Utils {
             document.getElementById('status').textContent = '';
         }, App.model.messageLife);
     }
-
     writeMessageAndWaitForUiUpdate(message) {
         this.writeMessage(message);
         this.waitForUiUpdate();
@@ -42,7 +41,6 @@ class Utils {
     showAlert(message) {
         ipcRenderer.invoke("show-alert", message);
     }
-
     async showConfirmWithReturn(message) {
         const confirmation = await ipcRenderer.invoke('show-confirm', message);
         return confirmation;
@@ -79,7 +77,6 @@ class Utils {
         }
         return formattedSize;
     }
-
     formatSizeForThree(size) {
         if (size === undefined || size === null) return "???";
         let formattedSize;
@@ -93,7 +90,6 @@ class Utils {
 
         return formattedSize;
     }
-
     formatDate(date) {
         if (date === undefined || date === null || (date.toString() === "Invalid Date")) return "???";
         if (!(date instanceof Date)) {
@@ -108,7 +104,6 @@ class Utils {
         // replaces placeholders as for App.model.dateFormat
         return App.model.dateFormat.replace('dd', dd).replace('mm', mm).replace('yyyy', yyyy);
     }
-
     dateToGetTime(dateToCheck) {
         //from dataset
         if (!dateToCheck || (dateToCheck.toString() === "Invalid Date")) return false;
@@ -117,42 +112,6 @@ class Utils {
         }
         const datePoint = dateToCheck ? dateToCheck.getTime() : 0;
         return datePoint;
-    }
-
-    // Utils: Diffs filters formatting
-    formatDiffGeneral(value) {
-        let outStr = "";
-        switch (value) {
-            case "diff":
-                outStr = "Different";
-                break;
-            case "nodiff":
-                outStr = "Not Different";
-                break;
-            case "size":
-                outStr = "Different Size";
-                break;
-            case "date":
-                outStr = "Different Date/Time";
-                break;
-        }
-    }
-    formatDiffForFilters(value) {
-        let outStr = "";
-        switch (value) {
-            case "diff":
-                outStr = "any-diff";
-                break;
-            case "nodiff":
-                outStr = "no-diff";
-                break;
-            case "size":
-                outStr = "size-diff";
-                break;
-            case "date":
-                outStr = "date-diff";
-                break;
-        }
     }
 
     // Utils: overwrite mode to string

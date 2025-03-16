@@ -55,7 +55,8 @@ class SnapshotManager {
         document.getElementById('saveSnapshotInput').value = useName;
 
         if (App.model.sourceFolder === '' && App.model.destinationFolders.length === 0 && App.model.filtersDateMinus.length === 0 && App.model.filtersDatePlus.length === 0 &&
-            App.model.filtersSizeMinus.length === 0 && App.model.filtersSizePlus.length === 0 && App.model.filtersNameMinus.length === 0 && App.model.filtersNamePlus.length === 0) {
+            App.model.filtersSizeMinus.length === 0 && App.model.filtersSizePlus.length === 0 && App.model.filtersNameMinus.length === 0 && App.model.filtersNamePlus.length === 0 &&
+            App.model.filtersDiffsMinus.length === 0 && App.model.filtersDiffsPlus.length === 0) {
             App.utils.showAlert('Please enter some Folder/Filter to save.');
             return;
         }
@@ -144,7 +145,8 @@ class SnapshotManager {
         document.getElementById('saveSnapshotInput').value = useName;
 
         if (App.model.sourceFolder === '' && App.model.destinationFolders.length === 0 && App.model.filtersDateMinus.length === 0 && App.model.filtersDatePlus.length === 0 &&
-            App.model.filtersSizeMinus.length === 0 && App.model.filtersSizePlus.length === 0 && App.model.filtersNameMinus.length === 0 && App.model.filtersNamePlus.length === 0) {
+            App.model.filtersSizeMinus.length === 0 && App.model.filtersSizePlus.length === 0 && App.model.filtersNameMinus.length === 0 && App.model.filtersNamePlus.length === 0 &&
+            App.model.filtersDiffsMinus.length === 0 && App.model.filtersDiffsPlus.length === 0) {
             App.utils.showAlert('Please enter some Folder/Filter to save.');
             return;
         }
@@ -228,13 +230,19 @@ class SnapshotManager {
                 App.model.zipAlreadyCompressed = (typeof settings.zipAlreadyCompressed === 'boolean') ? settings.zipAlreadyCompressed : App.model.zipAlreadyCompressedDefault;
                 App.model.sortOrder = (typeof settings.sortOrder === 'string') ? settings.sortOrder : App.model.sortOrderDefault;
             }
+
             App.model.filtersNamePlus = settings.filtersNamePlus || [];
             App.model.filtersNameMinus = settings.filtersNameMinus || [];
             App.model.filtersDatePlus = settings.filtersDatePlus || [];
             App.model.filtersDateMinus = settings.filtersDateMinus || [];
             App.model.filtersSizePlus = settings.filtersSizePlus || [];
             App.model.filtersSizeMinus = settings.filtersSizeMinus || [];
-
+            App.model.filtersDiffsPlus = settings.filtersDiffsPlus || [];
+            App.model.filtersDiffsMinus = settings.filtersDiffsMinus || [];
+            if ( (App.model.filtersDiffPlus && App.model.filtersDiffPlus.length > 0) || (App.model.filtersDiffMinus && App.model.filtersDiffMinus.length > 0)) {
+                App.model.splitScreen = true;
+                App.model.makeTreeDiffs = true;
+            }
             App.optionsManager.updateOptionsUI();
             App.uiManager.updateSplitScreen();
 
@@ -325,6 +333,8 @@ class SnapshotManager {
             filtersDateMinus: App.model.filtersDateMinus,
             filtersSizePlus: App.model.filtersSizePlus,
             filtersSizeMinus: App.model.filtersSizeMinus,
+            filtersDiffsPlus: App.model.filtersDiffsPlus,
+            filtersDiffsMinus: App.model.filtersDiffsMinus,
             // selection list
             selectionList: []
         }
@@ -390,6 +400,14 @@ class SnapshotManager {
         <b>Filter Size:</b> ${orString}
         ${settings.filtersSizePlus.length > 0 ? ` (OR ${settings.filtersSizePlus.join(",")})` : ""}
         ${settings.filtersSizeMinus.length > 0 ? ` (NOT ${settings.filtersSizeMinus.join(",")})` : ""}
+      </div>
+    ` : ""}
+    
+    ${(settings.filtersDiffsPlus.length > 0 || settings.filtersDiffsMinus.length > 0) ? `
+      <div>
+        <b>Filter Diffs:</b> ${orString}
+        ${settings.filtersDiffsPlus.length > 0 ? ` (OR ${settings.filtersDiffsPlus.join(",")})` : ""}
+        ${settings.filtersDiffsMinus.length > 0 ? ` (NOT ${settings.filtersDiffsMinus.join(",")})` : ""}
       </div>
     ` : ""}
     

@@ -1,20 +1,9 @@
 # TODO
 
 ## NOW
-filters: on diffs-> select different (set, addictive, subtractive), select non different (set, addictive, subtractive) 
-         on setting, if tree & diff active, otherwise asks: activate tree and diffs? 
-         enable tree+diff always on load snapshots if at least a diff filter present
-            - actions for ui
-                filterNameInput.value
-                setNameFilter
-                addNamePlusFilter
-                addNameMinusFilter
-                nameFilterList
-                clearNameFilter
-            // App.utils.formatDiffForFilters
-            // App.utils.formatDiffGeneral
-
 ext: update screenshot
+
+check: propagation of diff classes/props on tree
 
 ---
 

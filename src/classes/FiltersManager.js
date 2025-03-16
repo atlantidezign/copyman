@@ -211,6 +211,97 @@ class FiltersManager {
             App.filtersManager.removeSizeFilters();
         });
 
+        //Filters Diffs
+        async function askForEnableDiffs() {
+            let confirmation = await App.utils.showConfirmWithReturn('Enable Split Screen and Tree Diffs to use this feature?');
+            if (confirmation) {
+                if (!App.model.makeTreeDiffs) {
+                    document.getElementById("makeTreeDiffsChecked").click();
+                }
+                if (!App.model.splitScreen) {
+                    document.getElementById("splitScreenChecked").click();
+                }
+                App.utils.showAlert('Split Screen and Tree Diffs are now enabled.');
+                App.utils.writeMessage('Split Screen and Tree Diffs are now enabled.');
+            }
+        }
+        document.getElementById('setDiffsFilter').addEventListener('click', () => {
+            if (!App.model.splitScreen || !App.model.makeTreeDiffs) {
+                askForEnableDiffs();
+                return;
+            }
+            if (!App.model.sourceFolder) {
+                App.utils.showAlert("Please select a source folder first.");
+                return;
+            }
+            const filterValue = document.getElementById('filterDiffsInput').value.trim().toLowerCase();
+            if (!filterValue) {
+                App.utils.showAlert("Please enter a string for filter.");
+                return;
+            }
+            App.model.filtersDiffsPlus = [filterValue];
+            App.model.filtersDiffsMinus = [];
+            App.filtersManager.resetDiffsFilterUI();
+            App.filtersManager.applyAllFilters();
+        });
+        document.getElementById('addDiffsMinusFilter').addEventListener('click', () => {
+            if (!App.model.splitScreen || !App.model.makeTreeDiffs) {
+                askForEnableDiffs();
+                return;
+            }
+            if (!App.model.sourceFolder) {
+                App.utils.showAlert("Please select a source folder first.");
+
+                return;
+            }
+            const filterValue = document.getElementById('filterDiffsInput').value.trim().toLowerCase();
+            if (!filterValue) {
+                App.utils.showAlert("Please enter a string for filter.");
+                return;
+            }
+            if (App.model.filtersDiffsMinus.indexOf(filterValue) < 0 && App.model.filtersDiffsPlus.indexOf(filterValue) < 0) {
+                App.model.filtersDiffsMinus.push(filterValue);
+                App.filtersManager.resetDiffsFilterUI();
+                App.filtersManager.applyAllFilters();
+            } else {
+                App.utils.showAlert("This filter is already present.");
+                App.utils.writeMessage('Filter "' + filterValue + '" is already present.');
+            }
+        });
+        document.getElementById('addDiffsPlusFilter').addEventListener('click', () => {
+            if (!App.model.splitScreen || !App.model.makeTreeDiffs) {
+                askForEnableDiffs();
+                return;
+            }
+            if (!App.model.sourceFolder) {
+                App.utils.showAlert("Please select a source folder first.");
+
+                return;
+            }
+            const filterValue = document.getElementById('filterDiffsInput').value.trim().toLowerCase();
+            if (!filterValue) {
+                App.utils.showAlert("Please enter a string for filter.");
+
+                return;
+            }
+            if (App.model.filtersDiffsMinus.indexOf(filterValue) < 0 && App.model.filtersDiffsPlus.indexOf(filterValue) < 0) {
+                App.model.filtersDiffsPlus.push(filterValue);
+                App.filtersManager.resetDiffsFilterUI();
+                App.filtersManager.applyAllFilters();
+            } else {
+                App.utils.showAlert("This filter is already present.");
+                App.utils.writeMessage('Filter "' + filterValue + '" is already present.');
+            }
+
+        });
+        document.getElementById('clearDiffsFilter').addEventListener('click', () => {
+            if (!App.model.splitScreen || !App.model.makeTreeDiffs) {
+                askForEnableDiffs();
+                return;
+            }
+            App.filtersManager.removeDiffsFilters();
+        });
+
         //Filters Select/Deselect all
         document.getElementById('selectAll').addEventListener('click', () => {
             if (!App.model.sourceFolder) {
@@ -243,13 +334,13 @@ class FiltersManager {
         });
     }
 
-
     //Filters common
     removeAllFilters() {
         App.treeManager.inRendering = true;
         this.resetNameFilterUI();
         this.resetDateFilterUI();
         this.resetSizeFilterUI();
+        this.resetDiffsFilterUI();
 
         // iterate all tree checkboxes
         App.model.filtersNamePlus = [];
@@ -264,6 +355,7 @@ class FiltersManager {
         this.renderNameFiltersList();
         this.renderDateFiltersList();
         this.renderSizeFiltersList();
+        this.renderDiffsFiltersList();
 
         this.removeAllSelection();
         App.treeManager.inRendering = false;
@@ -275,6 +367,7 @@ class FiltersManager {
         this.renderNameFiltersList();
         this.renderDateFiltersList();
         this.renderSizeFiltersList();
+        this.renderDiffsFiltersList();
 
         this.removeAllSelection();
 
@@ -301,7 +394,7 @@ class FiltersManager {
             });
         }
 
-        //apply filters for Date and Size, evaluating also App.model.relationshipOR true or false (AND)
+        //apply filters for Date, Size and Diffs, evaluating also App.model.relationshipOR true or false (AND)
         for (const filterValue of App.model.filtersDatePlus) {
             // iterate all tree checkboxes
             const checkboxes = document.querySelectorAll('#source-tree input[type="checkbox"]');
@@ -368,6 +461,38 @@ class FiltersManager {
             });
         }
 
+        for (const filterValue of App.model.filtersDiffsPlus) {
+            // iterate all tree checkboxes
+            const checkboxes = document.querySelectorAll('#source-tree input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                if (App.filtersManager.matchesDiff(checkbox, filterValue)) {
+                    if (App.model.relationshipOR) {
+                        checkbox.checked = true;
+                        // expand to selected
+                        App.treeManager.expandAncestors(checkbox);
+                    } else {
+                        if (App.model.filtersNameMinus.length === 0 && App.model.filtersNamePlus.length === 0 && filterDateMinus.length === 0 && App.model.filtersDatePlus.length === 0
+                            && filterSizeMinus.length === 0 && App.model.filtersSizePlus.length === 0) {
+                            checkbox.checked = true;
+                            // expand to selected
+                            App.treeManager.expandAncestors(checkbox);
+                        }
+                        //on if no previous condition exists (Name, Date, Size for Diffs)
+                    }
+                } else {
+                    if (!App.model.relationshipOR) checkbox.checked = false;
+                }
+            });
+        }
+        for (const filterValue of App.model.filtersDiffsMinus) {
+            const checkboxes = document.querySelectorAll('#source-tree input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                if (App.filtersManager.matchesDiff(checkbox, filterValue)) {
+                    checkbox.checked = false;
+                }
+            });
+        }
+
         //update stats
         App.selectionListManager.updateSelectionStats();
         App.treeManager.inRendering = false;
@@ -383,6 +508,7 @@ class FiltersManager {
         App.selectionListManager.updateSelectionStats();
     }
 
+    // Name
     removeNameFilters() {
         this.resetNameFilterUI();
         // iterate all tree checkboxes
@@ -392,7 +518,6 @@ class FiltersManager {
         this.applyAllFilters();
         App.utils.writeMessage('Name filters removed.');
     }
-
     removeSingleNameFilter(index, kind) {
         let oldFilter = "";
         if (kind === "+") {
@@ -406,7 +531,6 @@ class FiltersManager {
         App.utils.writeMessage('Removed Name filter "' + kind + oldFilter + '".');
         this.applyAllFilters();
     }
-
     renderNameFiltersList() {
         const listContainer = document.getElementById('nameFilterList');
         listContainer.innerHTML = '';
@@ -437,11 +561,11 @@ class FiltersManager {
             });
         }
     }
-
     resetNameFilterUI() {
         document.getElementById('filterNameInput').value = "";
     }
 
+    // Date
     dateRangeInsideAnotherArrayOfRanges(rangeToCheck, rangeOrigin) {
         let isInside = false
         if (rangeToCheck[0] !== null && rangeToCheck[0] !== undefined && rangeToCheck[0] !== "undefined" && (!(rangeToCheck[0] instanceof Date) || rangeToCheck[0].toString() === "Invalid Date")) {
@@ -471,7 +595,6 @@ class FiltersManager {
 
         return isInside
     }
-
     dateSingleInsideARange(dateToCheck, rangePresent) {
         let isInside = false;
 
@@ -494,7 +617,6 @@ class FiltersManager {
 
         return isInside
     }
-
     removeDateFilters() {
         this.resetDateFilterUI();
         // iterate on all tree checkboxes
@@ -504,7 +626,6 @@ class FiltersManager {
         this.applyAllFilters();
         App.utils.writeMessage('Date filters removed.');
     }
-
     removeSingleDateFilter(index, kind) {
         let oldFilter = "";
         if (kind === "+") {
@@ -518,11 +639,9 @@ class FiltersManager {
         App.utils.writeMessage('Removed Date filter "' + kind + this.renderSingleDateFilter(oldFilter) + '".');
         this.applyAllFilters();
     }
-
     renderSingleDateFilter(filter) {
         return App.utils.formatDate(filter[0]) + "-" + App.utils.formatDate(filter[1]);
     }
-
     renderDateFiltersList() {
         const listContainer = document.getElementById('dateFilterList');
         listContainer.innerHTML = '';
@@ -553,11 +672,11 @@ class FiltersManager {
             });
         }
     }
-
     resetDateFilterUI() {
         App.uiManager.rangePicker.setDates({clear: true}, {clear: true});
     }
 
+    // Size
     sizeRangeInsideAnotherArrayOfRanges(rangeToCheck, rangeOrigin) {
         let isInside = false
         let sliderStart = (rangeToCheck[0] !== null && rangeToCheck[0] !== undefined)
@@ -612,7 +731,6 @@ class FiltersManager {
 
         return isInside
     }
-
     sizeSingleInsideARange(sizeToCheck, rangePresent) {
         let isInside = false
         if (!sizeToCheck) return false;
@@ -655,7 +773,6 @@ class FiltersManager {
         }
         return isInside
     }
-
     removeSizeFilters() {
         this.resetSizeFilterUI();
         // iterate on all tree checkboxes
@@ -665,7 +782,6 @@ class FiltersManager {
         this.applyAllFilters();
         App.utils.writeMessage('Size filters removed.');
     }
-
     removeSingleSizeFilter(index, kind) {
         let oldFilter = "";
         if (kind === "+") {
@@ -679,11 +795,9 @@ class FiltersManager {
         App.utils.writeMessage('Removed Size filter "' + kind + this.renderSingleSizeFilter(oldFilter) + '".');
         this.applyAllFilters();
     }
-
     renderSingleSizeFilter(filter) {
         return App.utils.formatSizeForFilters(filter[0]) + "-" + formatSize(filter[1]);
     }
-
     renderSizeFiltersList() {
         const listContainer = document.getElementById('sizeFilterList');
         listContainer.innerHTML = ''; // clear existing list
@@ -714,9 +828,88 @@ class FiltersManager {
             });
         }
     }
-
     resetSizeFilterUI() {
         App.uiManager.rangeSlider.noUiSlider.set(App.model.initialRangeSliderValues)
+    }
+
+    // Diffs
+    removeDiffsFilters() {
+        this.resetDiffsFilterUI();
+        // iterate all tree checkboxes
+        App.model.filtersDiffsPlus = [];
+        App.model.filtersDiffsMinus = [];
+        this.renderDiffsFiltersList();
+        this.applyAllFilters();
+        App.utils.writeMessage('Diffs filters removed.');
+    }
+    removeSingleDiffsFilter(index, kind) {
+        let oldFilter = "";
+        if (kind === "+") {
+            oldFilter = App.model.filtersDiffsPlus[index];
+            App.model.filtersDiffsPlus.splice(index, 1);
+        }
+        if (kind === "-") {
+            oldFilter = App.model.filtersDiffsMinus[index];
+            App.model.filtersDiffsMinus.splice(index, 1);
+        }
+        App.utils.writeMessage('Removed Diffs filter "' + kind + oldFilter + '".');
+        this.applyAllFilters();
+    }
+    renderDiffsFiltersList() {
+        const listContainer = document.getElementById('diffsFilterList');
+        listContainer.innerHTML = '';
+        drawFiltersFor(App.model.filtersDiffsPlus, "+");
+        drawFiltersFor(App.model.filtersDiffsMinus, "-");
+        if (listContainer.innerHTML === '') listContainer.innerHTML = 'Diffs Filters list'
+
+        function drawFiltersFor(arrayList, filterKind) {
+            arrayList.forEach((filter, index) => {
+                const listItem = document.createElement('span');
+                listItem.classList.add('badge', 'badge-outer', 'text-bg-secondary', 'position-relative', 'me-3');
+                if (filterKind === "+") listItem.classList.add('filter-plus');
+                if (filterKind === "-") listItem.classList.add('filter-minus');
+                listItem.textContent = filterKind + filter;
+                const listItemInner = document.createElement('span');
+                listItemInner.classList.add('position-absolute', 'start-100', 'translate-middle', 'badge', 'rounded-pill', 'bg-danger');
+                // remove single
+                const removeButton = document.createElement('a');
+                removeButton.innerHTML = '<i class="bi bi-x-lg"></i>';
+                removeButton.title = 'Remove Filter';
+                removeButton.addEventListener('click', () => {
+                    App.filtersManager.removeSingleDiffsFilter(index, filterKind);
+                });
+                removeButton.style.cursor = 'pointer';
+                listItemInner.appendChild(removeButton);
+                listItem.appendChild(listItemInner);
+                listContainer.appendChild(listItem);
+            });
+        }
+    }
+    resetDiffsFilterUI() {
+        document.getElementById('filterDiffsInput').value = "diff";
+    }
+    matchesDiff(checkbox, filter) {
+        let matches = false;
+        //check node for filter
+        let path = checkbox.dataset.filePath;
+        let realItem = App.model.sourceTreeData.find(item => item.path === path);
+        if (realItem && realItem.exists) {
+            switch (filter) {
+                case "diff":
+                    if (realItem.different) matches = true;
+                    break;
+                case "nodiff":
+                    if (!realItem.different) matches = true;
+                    break;
+                case "size":
+                    if (realItem.different_size) matches = true;
+                    break;
+                case "date":
+                    if (realItem.different_date) matches = true;
+                    break;
+            }
+        }
+        return matches;
     }
 
 }

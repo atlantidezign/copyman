@@ -119,6 +119,12 @@ app.whenReady().then(() => {
                 }
             },
             {
+                label: 'Clear Diffs Filters',
+                click: () => {
+                    event.sender.send('context-menu-command', 'menu-filter-diffs-clear')
+                }
+            },
+            {
                 label: 'Clear All Filters',
                 click: () => {
                     event.sender.send('context-menu-command', 'menu-filter-all-clear')

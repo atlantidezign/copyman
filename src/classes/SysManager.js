@@ -59,6 +59,9 @@ class SysManager {
                 case 'menu-filter-size-clear':
                     document.getElementById('clearSizeFilter').click();
                     break;
+                case 'menu-filter-diffs-clear':
+                    document.getElementById('clearDiffsFilter').click();
+                    break;
                 case 'menu-filter-all-clear':
                     document.getElementById('deselectAll').click();
                     break;
