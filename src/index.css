@@ -115,7 +115,7 @@ body > div#div-filters4 {
     margin: 10px 10px 10px 10px;
     padding: 0;
     overflow: auto;
-    max-height: calc(100vh - 346px);
+    max-height: calc(100vh - 344px);
     display: grid;
     grid-template-columns: 1fr 10px 1fr;
 }
