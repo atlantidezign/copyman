@@ -527,7 +527,7 @@ body > div#div-modals {
 #v-pills-tabContent .form-check {
     min-width: 180px;
 }
-#v-pills-tabContent #v-pills-02 .form-check {
+#v-pills-tabContent #v-pills-04 .form-check, #v-pills-tabContent #v-pills-05 .form-check {
     min-width: 200px;
 }
 

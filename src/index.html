@@ -357,6 +357,10 @@
                                         data-bs-target="#v-pills-02" type="button" role="tab" aria-controls="v-pills-02"
                                         aria-selected="false"><i class="bi bi-check-all"></i> Selecting
                                 </button>
+                                <button class="nav-link btn-sm" id="v-pills-05-tab" data-bs-toggle="pill"
+                                        data-bs-target="#v-pills-05" type="button" role="tab" aria-controls="v-pills-05"
+                                        aria-selected="false"><i class="bi bi-star-fill"></i> Tasks
+                                </button>
                                 <button class="nav-link btn-sm" id="v-pills-03-tab" data-bs-toggle="pill"
                                         data-bs-target="#v-pills-03" type="button" role="tab" aria-controls="v-pills-03"
                                         aria-selected="false"><i class="bi bi-file-earmark-zip"></i></i> Zip
@@ -511,15 +515,7 @@
                                         <label class="form-check-label" for="relationshipORChecked">Filters Relationship
                                             OR</label>
                                     </div>
-                                    <div class="form-check form-switch" title="Save also Actual Selection List to Task">
-                                        <input class="form-check-input" type="checkbox" role="switch"
-                                               id="saveSelectionChecked"
-                                               title="Save also Actual Selection List to Task"
-                                               checked/>
-                                        <label class="form-check-label" for="saveSelectionChecked">Save Selection
-                                            List to Task</label>
-                                    </div>
-                                </div>
+                                 </div>
                                 <div class="tab-pane fade" id="v-pills-03" role="tabpanel"
                                      aria-labelledby="v-pills-03-tab" tabindex="0">
                                     <div>
@@ -541,6 +537,24 @@
                                             <input type="range" class="form-range form-zip-level" min="-1" max="9" step="1" value="-1" id="zipLevelChecked"
                                                    title="Choose Zip Compression Level: -1 Default, 0 No Compression ... 9 Max Compression" />
                                         </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="v-pills-05" role="tabpanel"
+                                     aria-labelledby="v-pills-05-tab" tabindex="0">
+                                    <div class="form-check form-switch" title="Save also Actual Selection List to Task">
+                                        <input class="form-check-input" type="checkbox" role="switch"
+                                               id="saveSelectionChecked"
+                                               title="Save also Actual Selection List to Task"
+                                               checked/>
+                                        <label class="form-check-label" for="saveSelectionChecked">Save Selection
+                                            List to Task</label>
+                                    </div>
+                                    <div class="form-check form-switch" title="Load also not Copy-related Options from Snapshots of Tasks">
+                                        <input class="form-check-input" type="checkbox" role="switch"
+                                               id="loadNotCopyRelatedChecked"
+                                               title="Load also not Copy-related Options from Snapshots of Tasks"
+                                        />
+                                        <label class="form-check-label" for="loadNotCopyRelatedChecked">Load not Copy-related Options </label>
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="v-pills-04" role="tabpanel"
@@ -574,13 +588,6 @@
                                             <label class="form-check-label" for="maintainLogsChecked">Maintain
                                                 Logs</label>
 
-                                        </div>
-                                        <div class="form-check form-switch" title="Load also not Copy-related Options from Snapshots of Tasks">
-                                            <input class="form-check-input" type="checkbox" role="switch"
-                                                   id="loadNotCopyRelatedChecked"
-                                                   title="Load also not Copy-related Options from Snapshots of Tasks"
-                                                   />
-                                            <label class="form-check-label" for="loadNotCopyRelatedChecked">Load not Copy-related Options </label>
                                         </div>
                                         <div>
                                             <a id="exportLogs" class="ms-3 mt-2 btn btn-primary btn-sm" type="button"

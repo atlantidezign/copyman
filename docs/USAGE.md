@@ -171,7 +171,10 @@ It can be:
 - **Propagate Selection** to choose if propagate (checked) or not (unchecked) the selection/deselection click of an item to parent and childen elements. Default true.
 - **Click on Names to Select**  to choose if also clicks on files/folders names can Select/Deselect the item. Default true.
 - **Filters Relationship OR** to choose the kind of relationship between filter groups, OR (checked) or AND (unchecked). Default true (OR).
+
+#### Tasks
 - **Save Selection List to Task** to choose if to save also Actual Selection List to Task (if not, only filters will be used for restore selection on loading of Tasks). Default true.
+- **Load not Copy-related Options** to choose if to load also not Copy-related Options from Task Snapshots. Default false.
 
 #### Zip
 - **Recompress Already Compressed** to choose if to re-compress already compressed files, otherwise just store them as is. Default false.
@@ -181,7 +184,6 @@ It can be:
 - **Split Screen** to add a tree view also for first Destination folder (remember: you can change order of destinations folders, and set what's the first one, by dragging the badges in the Destination Folders List). Default true.
 - **Tree Diffs** to enable the Diffs Display in the tree view (when Split Screen is enabled), for visual friendly comparison of Source and Destination #1 folders. Default true.
 - **Maintain Logs** to choose if to record application logs in memory. Can be exported to file with **Export Logs** button, and cleaned with **Clear Logs** button. Default false.
-- **Load not Copy-related Options** to choose if to load also not Copy-related Options from Task Snapshots. Default false.
 - **Drive Speed** the approx speed in MB/s of drive, for tolerance in comparisons for modified datetime. Default 50 MB/s.
 
 ---
