@@ -1,8 +1,6 @@
 # TODO
 
 ## NOW
-options: App.model.msCopySpeed (default 50000 = 50 MB/s)  in sys options;
-
 options: custom suffix for keep existing (unique or (#INCREMENTAL)) - in copy options + handle; 
 options: custom filename for zip archive - in zip options + handle;
 

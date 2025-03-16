@@ -642,6 +642,12 @@ body > div#div-modals {
         display: block;
     }
 }
+#msCopySpeedChecked {
+    width: 80px;
+    display: inline-block;
+    margin-left: 5px;
+    font-size: 0.9em;
+}
 
 /* Overlay full screen */
 body > div#spinner-overlay {

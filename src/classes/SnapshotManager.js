@@ -218,6 +218,7 @@ class SnapshotManager {
                 App.model.clickOnNamesToSelect = (typeof settings.clickOnNamesToSelect === 'boolean') ? settings.clickOnNamesToSelect : App.model.clickOnNamesToSelectDefault;
                 App.model.relationshipOR = (typeof settings.relationshipOR === 'boolean') ? settings.relationshipOR : App.model.relationshipORDefault;
                 App.model.maintainLogs = (typeof settings.maintainLogs === 'boolean') ? settings.maintainLogs : App.model.maintainLogsDefault;
+                App.model.msCopySpeed = (typeof settings.maintainLogs === 'number') ? settings.msCopySpeed : App.model.msCopySpeedDefault;
                 App.model.loadNotCopyRelatedOptions = (typeof settings.loadNotCopyRelatedOptions === 'boolean') ? settings.loadNotCopyRelatedOptions : App.model.loadNotCopyRelatedOptionsDefault;
                 App.model.splitScreen = (typeof settings.splitScreen === 'boolean') ? settings.splitScreen : App.model.splitScreenDefault;
                 App.model.makeTreeDiffs = (typeof settings.makeTreeDiffs === 'boolean') ? settings.makeTreeDiffs : App.model.makeTreeDiffsDefault;
@@ -306,6 +307,7 @@ class SnapshotManager {
             relationshipOR: App.model.relationshipOR,
             sortOrder: App.model.sortOrder,
             maintainLogs: App.model.maintainLogs,
+            msCopySpeed: App.model.msCopySpeed,
             loadNotCopyRelatedOptions: App.model.loadNotCopyRelatedOptions,
             splitScreen: App.model.splitScreen,
             makeTreeDiffs: App.model.makeTreeDiffs,
@@ -397,10 +399,11 @@ class SnapshotManager {
                 settings.clickOnNamesToSelect && "Click On Names To Select",
                 settings.sortOrder!="" && "Sort Order: '" + settings.sortOrder+"'",
                 settings.maintainLogs && "Maintain Logs",
+                settings.msCopySpeed && "Drive Speed: "+settings.msCopySpeed,
                 settings.loadNotCopyRelatedOptions && "Load Not Copy-related Options",
                 settings.splitScreen && "Split Screen",
                 settings.makeTreeDiffs && "Tree Diffs",
-                settings.zipAlreadyCompressed && "Recompress",
+                settings.zipAlreadyCompressed && "Recompress Already Compressed",
                 settings.zipLevel && "Zip Level: "+settings.zipLevel,
                 //settings.saveSelection && "Save Selection",
             ].filter(Boolean);

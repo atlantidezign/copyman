@@ -55,6 +55,11 @@ class OptionsManager {
             App.optionsManager.saveOptions();
             App.utils.writeMessage('Maintain Logs setting is now ' + App.model.maintainLogs);
         });
+        document.getElementById("msCopySpeedChecked").addEventListener("change", function () {
+            App.model.msCopySpeed = this.value;
+            App.optionsManager.saveOptions();
+            App.utils.writeMessage('Copy Speed setting is now ' + App.model.msCopySpeed);
+        });
         document.getElementById("loadNotCopyRelatedChecked").addEventListener("change", function () {
             App.model.loadNotCopyRelatedOptions = this.checked;
             App.optionsManager.saveOptions();
@@ -80,7 +85,7 @@ class OptionsManager {
         document.getElementById("zipAlreadyChecked").addEventListener("change", function () {
             App.model.zipAlreadyCompressed = this.checked;
             App.optionsManager.saveOptions();
-            App.utils.writeMessage('Recompress setting is now ' + App.model.zipAlreadyCompressed);
+            App.utils.writeMessage('Recompress Already Compressed setting is now ' + App.model.zipAlreadyCompressed);
         });
         document.getElementById("zipLevelChecked").addEventListener("change", function () {
             App.model.zipLevel = this.value;
@@ -129,6 +134,7 @@ class OptionsManager {
             model.relationshipOR = options.relationshipOR;
             model.sortOrder = options.sortOrder;
             model.maintainLogs = options.maintainLogs;
+            model.msCopySpeed = options.msCopySpeed;
             model.loadNotCopyRelatedOptions = options.loadNotCopyRelatedOptions;
             model.splitScreen = options.splitScreen;
             model.makeTreeDiffs = options.makeTreeDiffs;
@@ -159,6 +165,7 @@ class OptionsManager {
             relationshipOR: model.relationshipOR,
             sortOrder: model.sortOrder,
             maintainLogs: model.maintainLogs,
+            msCopySpeed: model.msCopySpeed,
             loadNotCopyRelatedOptions: model.loadNotCopyRelatedOptions,
             splitScreen: model.splitScreen,
             makeTreeDiffs: model.makeTreeDiffs,
@@ -180,6 +187,7 @@ class OptionsManager {
         model.relationshipOR = model.relationshipORDefault;
         model.sortOrder = model.sortOrderDefault;
         model.maintainLogs = model.maintainLogsDefault;
+        model.msCopySpeed = model.msCopySpeedDefault;
         model.loadNotCopyRelatedOptions = model.loadNotCopyRelatedOptionsDefault;
         model.splitScreen = model.splitScreenDefault;
         model.makeTreeDiffs = model.makeTreeDiffsDefault;
@@ -207,6 +215,7 @@ class OptionsManager {
         document.getElementById("clickOnNamesChecked").checked = App.model.clickOnNamesToSelect;
         document.getElementById("relationshipORChecked").checked = App.model.relationshipOR;
         document.getElementById("maintainLogsChecked").checked = App.model.maintainLogs;
+        document.getElementById("msCopySpeedChecked").value = App.model.msCopySpeed;
         document.getElementById("loadNotCopyRelatedChecked").checked = App.model.loadNotCopyRelatedOptions;
         document.getElementById("splitScreenChecked").checked = App.model.splitScreen;
         document.getElementById("makeTreeDiffsChecked").checked = App.model.makeTreeDiffs;

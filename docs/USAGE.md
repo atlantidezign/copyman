@@ -173,7 +173,7 @@ It can be:
 - **Filters Relationship OR** to choose the kind of relationship between filter groups, OR (checked) or AND (unchecked). Default true (OR).
 
 #### Zip
-- **Recompress** to choose if to re-compress already compressed files, otherwise just store them as is. Default false.
+- **Recompress Already Compressed** to choose if to re-compress already compressed files, otherwise just store them as is. Default false.
 - **Zip Compression** to choose the ZIP Compression level. *-1:* Zip Default (6), *0:* None, *1...9:* Less or More Compressed. Default -1.
 
 #### System
@@ -181,6 +181,7 @@ It can be:
 - **Tree Diffs** to enable the Diffs Display in the tree view (when Split Screen is enabled), for visual friendly comparison of Source and Destination #1 folders. Default true.
 - **Maintain Logs** to choose if to record application logs in memory. Can be exported to file with **Export Logs** button, and cleaned with **Clear Logs** button. Default false.
 - **Load not Copy-related Options** to choose if to load also not Copy-related Options from Task Snapshots. Default false.
+- **Drive Speed** the approx speed in MB/s of drive, for tolerance in comparisons for modified datetime. Default 50 MB/s.
 
 ---
 

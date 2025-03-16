@@ -525,7 +525,7 @@
                                                    id="zipAlreadyChecked"
                                                    title="Re-compress already compressed files, otherwise just store them as is"
                                                    />
-                                            <label class="form-check-label" for="zipAlreadyChecked">Recompress</label>
+                                            <label class="form-check-label" for="zipAlreadyChecked">Recompress Already Compressed</label>
                                         </div>
 
                                     </div>
@@ -578,12 +578,26 @@
                                                    />
                                             <label class="form-check-label" for="loadNotCopyRelatedChecked">Load not Copy-related Options </label>
                                         </div>
-                                    </div>
-                                    <div>
-                                        <a id="exportLogs" class="ms-3 mt-2 btn btn-primary btn-sm" type="button"
-                                           title="Export Logs to file.">Export Logs</a>
-                                        <a id="clearLogs" class="ms-1 mt-2 btn btn-primary btn-sm" type="button"
-                                           title="Clear Logs in memory.">Clear Logs</a>
+                                        <div>
+                                            <a id="exportLogs" class="ms-3 mt-2 btn btn-primary btn-sm" type="button"
+                                               title="Export Logs to file.">Export Logs</a>
+                                            <a id="clearLogs" class="ms-1 mt-2 btn btn-primary btn-sm" type="button"
+                                               title="Clear Logs in memory.">Clear Logs</a>
+                                        </div>
+                                        <hr/>
+                                        <div>
+                                            <div class="row ms-1">
+                                                <div class="col-sm-6">
+                                                    <label class="form-check-label" for="msCopySpeedChecked" title="The speed in MB/s of drive, for tolerance in comparisons for modified datetime">Drive Speed (MB/s)</label>
+                                                    <input class="form-control" type="number"
+                                                           id="msCopySpeedChecked"
+                                                           title="The speed in MB/s of drive, for tolerance in comparisons for modified datetime"
+                                                    />
+                                                </div>
+                                                <div class="col-sm-6">
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="v-pills-99" role="tabpanel"

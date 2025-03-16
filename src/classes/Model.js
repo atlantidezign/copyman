@@ -68,6 +68,7 @@ class Model {
     saveSelectionDefault = true; //not in ui
     zipLevelDefault = -1;
     zipAlreadyCompressedDefault = false;
+    msCopySpeedDefault = 50; //50 MB/s
 
     // User Options - stored
     //copy-related
@@ -86,10 +87,10 @@ class Model {
     splitScreen = this.splitScreenDefault;
     saveSelection = this.saveSelectionDefault; //not in ui
     makeTreeDiffs = this.makeTreeDiffsDefault;
-    msCopySpeed = 50; //50 MB/s  //TODO add to options sys
+    msCopySpeed = this.msCopySpeedDefault;  //TODO add to options sys
     //zip, not copy-related
     zipLevel = this.zipLevelDefault;
-    zipAlreadyCompressed = this.zipAlreadyCompressedDefault; //TODO add to options sys
+    zipAlreadyCompressed = this.zipAlreadyCompressedDefault;
     //ui view, not copy-related
     sortOrder = this.sortOrderDefault;
 
