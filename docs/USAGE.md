@@ -174,10 +174,10 @@ It can be:
 
 #### System
 - **Split Screen** to add a tree view also for first Destination folder (remember: you can change order of destinations folders, and set what's the first one, by dragging the badges in the Destination Folders List). Default false.
-- **Tree Diffs** to enable the Diffs Display in the tree view (when Split Screen is enabled). Default false.
+- **Tree Diffs** to enable the Diffs Display in the tree view (when Split Screen is enabled), for visual friendly comparison of Source and Destination #1 folders. Default false.
 - **Maintain Logs** to choose if to record application logs in memory. Can be exported to file with **Export Logs** button, and cleaned with **Clear Logs** button. Default false.
 - **Load not Copy-related Options** to choose if to load also not Copy-related Options from Task Snapshots. Default false.
-- **Zip Compression** to choose the ZIP Compression level. *-1:* Zip Default, *0:* None, *1...9:* Less or More Compressed. Default -1.
+- **Zip Compression** to choose the ZIP Compression level. *-1:* Zip Default (6), *0:* None, *1...9:* Less or More Compressed. Default -1.
 
 
 ---

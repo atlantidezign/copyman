@@ -1,15 +1,19 @@
 # TODO
 
 ## NOW
-add to ui: if diffs active, also clicks on destination tree for open/close, and scroll, align source tree
-add to sys options: App.model.msBaseTolerance , App.model.msCopySpeed
+ui: if diffs active, also clicks on destination tree for open/close aligns open/close on source tree
+
+options: App.model.msCopySpeed (default 50000 = 50 MB/s) , App.model.zipAlreadyCompressed (default false) in sys options
+options: custom suffix for keep existing (unique or (#INCREMENTAL)), custom filename for zip archive in sys options
+
+site: in features add "diffs", ...
 
 ---
 
 ## NEXT
-sys: custom suffix when keep existing (unique or (#INCREMENTAL)), custom filename for zip archive
-
 ui: color skins/variants
+
+options: review defaults, in model and index.html first draw (eg: split & diff default true)
 
 ---
 
@@ -24,9 +28,6 @@ queue: multiple queues with load/save/export/import for singles and for all.
 settings: support localization for other languages (in options), for labels and datepicker (language and format),
           and add to snapshots,
           check also all menu items (contextual, tray, main).
-
-electron: leaner build, better integrated build parameters and properties for Electron in package.json.
-electron: splash with logo?
 
 ui: alerts and confirms not using native dialogs but using html modals.
 ui: collapsable folders and filters panels or all separated panels using floating windows?

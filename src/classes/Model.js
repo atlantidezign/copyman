@@ -67,6 +67,7 @@ class Model {
     saveSelectionDefault = true;
     makeTreeDiffsDefault = false;
     zipLevelDefault = -1;
+    zipAlreadyCompressedDefault = false;
 
     // User Options - stored
     //copy-related
@@ -86,6 +87,7 @@ class Model {
     saveSelection = this.saveSelectionDefault; //not in ui
     makeTreeDiffs = this.makeTreeDiffsDefault;
     zipLevel = this.zipLevelDefault;
+    zipAlreadyCompressed = this.zipAlreadyCompressedDefault;
     //view, not copy-related
     sortOrder = this.sortOrderDefault;
 

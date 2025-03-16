@@ -794,7 +794,17 @@ Size: ${App.utils.formatSizeForThree(App.model.sizeTotal)}
                 } else {
                     // Read the file asynchronously and add it to the ZIP archive
                     const fileData = await fsp.readFile(absolutePath);
-                    zip.file(relativePath, fileData);
+                    const archiveExtensions = [
+                        '.zip', '.7z', '.rar', '.tar', '.gz', '.bz2', '.xz', '.iso', '.cab', '.arj', '.lz', '.lzma', '.z'
+                    ];
+                    // Check if the file (using relativePath) is an archive
+                    let isArchive = archiveExtensions.some(ext => relativePath.toLowerCase().endsWith(ext));
+                    if (App.model.zipAlreadyCompressed) isArchive = false;
+                    if (isArchive) {
+                        zip.file(relativePath, fileData, { compression : "DEFLATE" });
+                    } else {
+                        zip.file(relativePath, fileData);
+                    }
                 }
             } catch (err) {
                 console.error(`Error processing ${absolutePath}: ${err.message}`);
