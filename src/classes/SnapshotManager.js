@@ -203,6 +203,7 @@ class SnapshotManager {
 
     // Apply snapshot
     setFromSnapshot(settings) {
+        App.treeManager.inRendering = true;
         try {
             App.filtersManager.removeAllFilters();
             // update global app vars
@@ -244,11 +245,13 @@ class SnapshotManager {
 
             // update snapshot name
             document.getElementById('saveSnapshotInput').value = settings.name;
+            App.treeManager.inRendering = false;
             // apply filters, selection, stats
             this.setFromSnapshottedSelection(settings);
 
             App.utils.writeMessage('Snapshot loaded.');
         } catch (error) {
+            App.treeManager.inRendering = false;
             console.error("Error during loading of Task " + settings.name + ":", error);
             App.utils.writeMessage("Error during loading of Task " + settings.name + ".");
         }
@@ -256,7 +259,7 @@ class SnapshotManager {
     setFromSnapshottedSelection(settings) {
         // apply filters
         App.filtersManager.applyAllFilters();
-
+        App.treeManager.inRendering = true;
         //apply selection
         if (App.model.saveSelection && settings.selectionList && settings.selectionList.length > 0) {
             const fileTree = document.getElementById('source-tree');
@@ -270,6 +273,7 @@ class SnapshotManager {
 
         //update stats
         App.selectionListManager.updateSelectionStats();
+        App.treeManager.inRendering = false;
     }
 
     // Info popover

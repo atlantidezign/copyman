@@ -70,6 +70,7 @@ class OptionsManager {
             App.optionsManager.saveOptions();
             App.utils.writeMessage('Split Screen setting is now ' + App.model.splitScreen);
             App.uiManager.updateSplitScreen();
+            App.treeManager.updateTreeDiffs();
         });
         document.getElementById("makeTreeDiffsChecked").addEventListener("change", function () {
             App.model.makeTreeDiffs = this.checked;

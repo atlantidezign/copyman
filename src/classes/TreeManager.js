@@ -405,14 +405,18 @@ class TreeManager {
         //-----------
     }
     realignSelectionAfterDiffs(direct) {
-        this.realignSelectionAfterDiffsTimeout = setTimeout( ()=> {
-            if (App.model.preDiffsSnapshot) {
+        this.realignSelectionAfterDiffsTimeout = setTimeout( realignInner, App.model.afterDiffsTimeout);
+        function realignInner() {
+            if (App.treeManager.inRendering) {
+                //retry
+                App.treeManager.realignSelectionAfterDiffs(direct);
+            } else if (App.model.preDiffsSnapshot) {
                 // apply filters, selection, stats
                 App.snapshotManager.setFromSnapshottedSelection(App.model.preDiffsSnapshot);
                 App.model.preDiffsSnapshot = null;
                 App.utils.writeMessage('Selection restored.');
             }
-        }, App.model.afterDiffsTimeout);
+        }
     }
 
     // Public. Diffs
@@ -437,9 +441,10 @@ class TreeManager {
             //App.treeManager.updateDestinationTree(true);
         }
     }
-
+    inRendering = false;
     // Inner - common. Tree rendering
     renderFileTree(treeData, container, isSource) {
+        this.inRendering = true;
         container.innerHTML = '';
         if (isSource) {
             container.innerHTML += '<div class="tree-folder-name">Source: <b>' + App.model.sourceFolder + '</b></div>';
@@ -454,6 +459,7 @@ class TreeManager {
             }
         });
         container.appendChild(ul);
+        this.inRendering = false;
     }
     createTreeNode(node, isSource) {
         const li = document.createElement('li');

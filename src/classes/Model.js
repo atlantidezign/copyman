@@ -122,7 +122,7 @@ class Model {
 
     // Diffs
     preDiffsSnapshot = null;
-    afterDiffsTimeout = 250;
+    afterDiffsTimeout = 100;
 
     msBaseTolerance = 1000; //ms
 

@@ -219,13 +219,14 @@ class FiltersManager {
                 return;
             }
             App.filtersManager.removeAllFilters();
+            App.treeManager.inRendering = true;
             const checkboxes = document.querySelectorAll('#source-tree input[type="checkbox"]');
             checkboxes.forEach(checkbox => {
                 checkbox.checked = true;
             });
             //update stats
             App.selectionListManager.updateSelectionStats();
-
+            App.treeManager.inRendering = false;
             App.utils.writeMessage('All items selected.');
         });
         document.getElementById('deselectAll').addEventListener('click', () => {
@@ -245,6 +246,7 @@ class FiltersManager {
 
     //Filters common
     removeAllFilters() {
+        App.treeManager.inRendering = true;
         this.resetNameFilterUI();
         this.resetDateFilterUI();
         this.resetSizeFilterUI();
@@ -262,10 +264,12 @@ class FiltersManager {
         this.renderSizeFiltersList();
 
         this.removeAllSelection();
+        App.treeManager.inRendering = false;
         App.utils.writeMessage('All filters removed.');
     }
 
     applyAllFilters() {
+        App.treeManager.inRendering = true;
         this.renderNameFiltersList();
         this.renderDateFiltersList();
         this.renderSizeFiltersList();
@@ -364,7 +368,7 @@ class FiltersManager {
 
         //update stats
         App.selectionListManager.updateSelectionStats();
-
+        App.treeManager.inRendering = false;
         App.utils.writeMessage('Filters updated.');
     }
 
