@@ -2,7 +2,7 @@
 
 ## NOW
 options: custom suffix for keep existing (unique or (#INCREMENTAL)) - in copy options + handle; 
-options: custom filename for zip archive - in zip options + handle;
+options: custom filename radix for zip archive - in zip options + handle;
 
 ext: update screenshot
 
@@ -11,7 +11,7 @@ ext: update screenshot
 ## NEXT
 ui: color skins/variants
 
-select: like filter but on diffs: select different (exclusive, addictive, subtractive), select non different (exclusive, addictive, subtractive) if tree & diff active. rearrange ui
+select: like filter but on diffs: select different (set, addictive, subtractive), select non different (set, addictive, subtractive) if tree & diff active. rearrange ui
 
 ---
 
