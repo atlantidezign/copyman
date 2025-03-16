@@ -136,7 +136,30 @@ class Model {
         '.zip', '.7z', '.rar', '.tar', '.gz', '.bz2', '.xz', '.iso', '.cab', '.arj', '.lz', '.lzma', '.z'
     ];
 
-    // Skins //TODO add more skins
+    // Skins
+    skinKeys = [
+        '--copyman-primary',
+        '--copyman-primary-rgb',
+        '--copyman-secondary',
+        '--copyman-tertiary',
+        '--copyman-quaternary',
+        '--copyman-quinquinary',
+        '--copyman-different',
+
+        '--copyman-bg-rgb',
+        '--copyman-bg-opacity',
+        '--copyman-bg-alt-rgb',
+        '--copyman-bg-black-rgb',
+        '--copyman-white',
+        '--copyman-almostwhite',
+        '--copyman-quitewhite',
+        '--copyman-gray',
+        '--copyman-gray-transparent',
+        '--copyman-gray-mid',
+        '--copyman-gray-light',
+        '--copyman-gray-dark'
+    ];
+    // TODO add more skins
     skins = [{
         name: "blue", data: {
             '--copyman-primary': '#103df2',
@@ -145,7 +168,20 @@ class Model {
             '--copyman-tertiary': '#6875ff',
             '--copyman-quaternary': '#102ef2',
             '--copyman-quinquinary': '#ff7925',
-            '--copyman-different': '#de00ee'
+            '--copyman-different': '#de00ee',
+
+            '--copyman-bg-rgb': '102, 16, 242',
+            '--copyman-bg-opacity': '1',
+            '--copyman-bg-alt-rgb': '46, 16, 242',
+            '--copyman-bg-black-rgb': '0,0,0',
+            '--copyman-white': '#ffffff',
+            '--copyman-almostwhite': '#eeeeee',
+            '--copyman-quitewhite': '#dddddd',
+            '--copyman-gray': '#8f8f8f',
+            '--copyman-gray-transparent': '#99999944',
+            '--copyman-gray-mid': '#aaaaaa',
+            '--copyman-gray-light': '#DEE2E6',
+            '--copyman-gray-dark': '#495057'
         }
     }, {
         name: "green", data: {
@@ -155,7 +191,20 @@ class Model {
             '--copyman-tertiary': '#7cff68',
             '--copyman-quaternary': '#2ef210',
             '--copyman-quinquinary': '#25fff8',
-            '--copyman-different': '#ee7f00'
+            '--copyman-different': '#ee7f00',
+
+            '--copyman-bg-rgb': '102, 16, 242',
+            '--copyman-bg-opacity': '1',
+            '--copyman-bg-alt-rgb': '46, 16, 242',
+            '--copyman-bg-black-rgb': '0,0,0',
+            '--copyman-white': '#ffffff',
+            '--copyman-almostwhite': '#eeeeee',
+            '--copyman-quitewhite': '#dddddd',
+            '--copyman-gray': '#8f8f8f',
+            '--copyman-gray-transparent': '#99999944',
+            '--copyman-gray-mid': '#aaaaaa',
+            '--copyman-gray-light': '#DEE2E6',
+            '--copyman-gray-dark': '#495057'
         }
     },
         {
@@ -166,7 +215,20 @@ class Model {
                 '--copyman-tertiary': '#ff6868',
                 '--copyman-quaternary': '#f21010',
                 '--copyman-quinquinary': '#ffed25',
-                '--copyman-different': '#9f00ee'
+                '--copyman-different': '#9f00ee',
+
+                '--copyman-bg-rgb': '102, 16, 242',
+                '--copyman-bg-opacity': '1',
+                '--copyman-bg-alt-rgb': '46, 16, 242',
+                '--copyman-bg-black-rgb': '0,0,0',
+                '--copyman-white': '#ffffff',
+                '--copyman-almostwhite': '#eeeeee',
+                '--copyman-quitewhite': '#dddddd',
+                '--copyman-gray': '#8f8f8f',
+                '--copyman-gray-transparent': '#99999944',
+                '--copyman-gray-mid': '#aaaaaa',
+                '--copyman-gray-light': '#DEE2E6',
+                '--copyman-gray-dark': '#495057'
             }
         }]
 

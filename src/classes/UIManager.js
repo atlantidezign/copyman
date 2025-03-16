@@ -328,17 +328,8 @@ Source code and binaries are available on <a href="https://github.com/atlantidez
     }
     getCopymanSkin() {
         const computedStyle = getComputedStyle(document.documentElement);
-        const keys = [
-            '--copyman-primary',
-            '--copyman-primary-rgb',
-            '--copyman-secondary',
-            '--copyman-tertiary',
-            '--copyman-quaternary',
-            '--copyman-quinquinary',
-            '--copyman-different'
-        ];
         const skin = {};
-        keys.forEach(key => {
+        App.model.skinKeys.forEach(key => {
             skin[key] = computedStyle.getPropertyValue(key).trim();
         });
         return skin;

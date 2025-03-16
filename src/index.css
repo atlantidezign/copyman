@@ -16,6 +16,12 @@
     --copyman-quinquinary: #4225ff;
     --copyman-different: #ee0000;
 
+    /* bgs */
+    --copyman-bg-rgb: 102, 16, 242;
+    --copyman-bg-opacity: 1; /*var(--bs-bg-opacity);*/
+    --copyman-bg-alt-rgb: 46, 16, 242;
+    --copyman-bg-black-rgb: 0,0,0;
+
     /* neutrals */
     --copyman-white: #ffffff;
     --copyman-almostwhite: #eeeeee;
@@ -27,18 +33,12 @@
     --copyman-gray-dark: #495057;
 
     /* common */
-    --copyman-bg-rgb: 102, 16, 242;
-    --copyman-bg-opacity: 1; /*var(--bs-bg-opacity);*/
-    --copyman-bg-alt-rgb: 46, 16, 242;
-    --copyman-bg-black-rgb: 0,0,0;
     --copyman-bg-opacity-dark: 0.65;
     --copyman-bg-opacity-mid: 0.5;
     --copyman-bg-opacity-low: 0.5;
-
     --copyman-bg-shadow-rgb: 0,0,0;
     --copyman-bg-focus-shadow-rgb: 49, 132, 253;
     --copyman-bg-opacity-shadow: 0.125;
-
     --copyman-border-width: 1px;
 
     /* dependent */
@@ -771,7 +771,7 @@ body > div#div-modals {
     font-size: 0.9em;
 }
 #currentSkinChecked {
-    width: 180px;
+    width: 150px;
     display: inline-block;
     margin-left: 5px;
     font-size: 0.9em;
