@@ -231,6 +231,28 @@ Source code and binaries are available on <a href="https://github.com/atlantidez
             return outputString;
         }
 
+        // Filters panel
+        document.getElementById("button-filter-open").addEventListener("click", () => {
+            document.getElementById("button-filter-open").classList.add("hidden");
+            document.getElementById("button-filter-close").classList.remove("hidden");
+            document.getElementById("div-filters1").classList.remove("hidden");
+            document.getElementById("div-filters2").classList.remove("hidden");
+            document.getElementById("div-filters3").classList.remove("hidden");
+            document.getElementById("div-filters4").classList.remove("hidden");
+            document.getElementById("div-tree").classList.remove("expanded");
+            document.getElementById("div-controls").classList.remove("expanded");
+        });
+        document.getElementById("button-filter-close").addEventListener("click", () => {
+            document.getElementById("button-filter-open").classList.remove("hidden");
+            document.getElementById("button-filter-close").classList.add("hidden");
+            document.getElementById("div-filters1").classList.add("hidden");
+            document.getElementById("div-filters2").classList.add("hidden");
+            document.getElementById("div-filters3").classList.add("hidden");
+            document.getElementById("div-filters4").classList.add("hidden");
+            document.getElementById("div-tree").classList.add("expanded");
+            document.getElementById("div-controls").classList.add("expanded");
+        });
+
         // Popover Info Snapshot
         let popoverEl = document.getElementById('infoSnapshot');
         this.popoverInfoSnapshot = new bootstrap.Popover(popoverEl, {

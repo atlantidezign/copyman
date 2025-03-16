@@ -43,6 +43,7 @@
 </div>
 
 <!-- Filters -->
+<div id="div-filters-collapse"><a id="button-filter-open" class="btn btn-sm hidden"><span>FILTERS</span> <i class="bi bi-caret-down-fill"></i></a><a id="button-filter-close" class="btn btn-sm"><span>FILTERS</span> <i class="bi bi-caret-up-fill"></i></a></div>
 <div id="div-filters1">
     <div class="input-group">
         <a class="btn btn-secondary btn-sm a-filter" title="Filters for Name"><i class="bi bi-funnel"></i></a>
@@ -100,6 +101,25 @@
                 class="bi bi-dash-square"></i></a>
         <span id="sizeFilterList" class="form-control span-list">Size Filters list</span>
         <a id="clearSizeFilter" class="btn btn-primary btn-sm" type="button" title="Clear Size Filters"><i
+                class="bi bi-x-circle"></i></a>
+    </div>
+</div>
+<div id="div-filters4">
+    <div class="input-group">
+        <a class="btn btn-secondary btn-sm a-filter" title="Filters for Diffs"><i class="bi bi-file-diff"></i></a>
+        <select class="form-select form-select-sm" aria-label="Sort order" title="Filter for Diffs"
+                id="filterDiffsInput">
+            <option value="diffrent">Different</option>
+            <option value="rqual">Equal</option>
+        </select>
+        <a id="setDiffsFilter" class="btn btn-primary btn-sm" type="button" title="Set Diffs Filter"><i
+                class="bi bi-check-square"></i></a>
+        <a id="addDiffsPlusFilter" class="btn btn-primary btn-sm" type="button" title="Add Addictive Diffs Filter"><i
+                class="bi bi-plus-square"></i></a>
+        <a id="addDiffsMinusFilter" class="btn btn-primary btn-sm" type="button" title="Add Subtractive Diffs Filter"><i
+                class="bi bi-dash-square"></i></a>
+        <span id="diffsFilterList" class="form-control span-list">Diffs Filters list</span>
+        <a id="clearDiffsFilter" class="btn btn-primary btn-sm" type="button" title="Clear Diffs Filters"><i
                 class="bi bi-x-circle"></i></a>
     </div>
 </div>

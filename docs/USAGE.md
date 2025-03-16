@@ -71,6 +71,8 @@ A **Substractive Filter** removes from selection every item matches, as a **NOT*
 **Relationship** between Addictive filters of different groups can be an **OR** or **AND** condition, according to options.
 *OR* means that item is selected if **at least one** of the group conditions matches, *AND* means that **all** conditions must match.
 
+Filter panel is collapsable.
+
 #### Name Filters
 Accepts text string as input, as file/folder name substring.
 - By clicking the **Set Name Filter** button, it selects the items that contain the specified string while deselecting the others.

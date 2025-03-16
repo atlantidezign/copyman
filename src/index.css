@@ -74,8 +74,22 @@ body > div {
     flex-grow: 0;
 }
 
+body > div#div-destinations {
+    padding-top: 4px;
+}
+
 body > div#div-footer {
     padding: 0 10px;
+}
+
+body > div#div-filters-collapse {
+    height: 15px !important;
+    padding: 0 0 0 10px;
+    text-align: right;
+    flex-shrink: 1;
+    line-height: 15px;
+    margin-top: -7px;
+    margin-bottom: -25px;
 }
 
 body > div#div-filters2 {
@@ -84,10 +98,11 @@ body > div#div-filters2 {
 
 body > div#div-filters3 {
     padding-top: 0;
+    margin-top: -1px;
 }
-
-body > div#div-controls {
-    padding-top: 0;
+body > div#div-filters4 {
+    padding-top: 0px;
+    margin-top: -5px;
 }
 
 #div-tree {
@@ -97,14 +112,13 @@ body > div#div-controls {
     background-color: rgba(0, 0, 0, 0.65);
     border-radius: 10px;
     flex-grow: 1;
-    margin: 0 10px 10px 10px;
+    margin: 10px 10px 10px 10px;
     padding: 0;
     overflow: auto;
-    max-height: calc(100vh - 295px);
+    max-height: calc(100vh - 346px);
     display: grid;
     grid-template-columns: 1fr 10px 1fr;
 }
-
 #source-tree, #dest-tree {
     padding: 10px;
     height: inherit;
@@ -126,6 +140,14 @@ body > div#div-controls {
 .footer {
     display: flex;
     justify-content: space-between;
+}
+
+#div-tree.expanded {
+    max-height: calc(100vh - 189px);
+}
+
+#div-controls.expanded {
+
 }
 
 /* Footer */
@@ -250,8 +272,11 @@ li {
 }
 
 /* Button group margin */
-#addNamePlusFilter, #addNameMinusFilter, #addDatePlusFilter, #addDateMinusFilter,
-#addSizePlusFilter, #addSizeMinusFilter, #deselectAll, #collapseAll,
+#addNamePlusFilter, #addNameMinusFilter,
+#addDatePlusFilter, #addDateMinusFilter,
+#addSizePlusFilter, #addSizeMinusFilter,
+#addDiffsPlusFilter, #addDiffsMinusFilter,
+#deselectAll, #collapseAll,
 #exportSnapshot, #clearSource {
     margin-left: 1px;
 }
@@ -373,7 +398,11 @@ li {
     flex: 0 1 auto;
     appearance: auto;
 }
-
+#filterDiffsInput {
+    width: 220px;
+    flex: 0 1 auto;
+    padding-left: 10px;
+}
 #filterDateInput {
     width: 220px;
     flex: 0 1 auto;
@@ -416,7 +445,24 @@ li {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
 }
-
+#div-filters-collapse a {
+    color: #9e68ff;
+    border: none;
+    border-radius: 0;
+    padding: 1px 0 1px 5px;
+    margin-top: 0;
+    margin-right: 10px;
+}
+#div-filters-collapse a span {
+    display: inline-block;
+    font-size: 0.65em;
+    padding-top: 0;
+    margin-top: -2px;
+}
+#div-filters-collapse a i {
+    padding-top: 0;
+    margin-top: 0;
+}
 .form-select option {
     color: #dddddd;
 }

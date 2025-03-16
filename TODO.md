@@ -1,9 +1,7 @@
 # TODO
 
 ## NOW
-ui: collapsable folders and filters panels. (css: update also #div-tree calc() height, -335px; aware of vertical padding for #div-filtersX)
-
-select: like filter but on diffs: select different (set, addictive, subtractive), select non different (set, addictive, subtractive) if tree & diff active (otherwise asks: activate tree and diffs?). rearrange ui
+filters: on diffs-> select different (set, addictive, subtractive), select non different (set, addictive, subtractive) if tree & diff active (otherwise asks: activate tree and diffs?). rearrange ui
 
 ext: update screenshot
 
