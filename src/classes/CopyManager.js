@@ -797,11 +797,8 @@ Size: ${App.utils.formatSizeForThree(App.model.sizeTotal)}
                 } else {
                     // Read the file asynchronously and add it to the ZIP archive
                     const fileData = await fsp.readFile(absolutePath);
-                    const archiveExtensions = [
-                        '.zip', '.7z', '.rar', '.tar', '.gz', '.bz2', '.xz', '.iso', '.cab', '.arj', '.lz', '.lzma', '.z'
-                    ];
                     // Check if the file (using relativePath) is an archive
-                    let isArchive = archiveExtensions.some(ext => relativePath.toLowerCase().endsWith(ext));
+                    let isArchive = App.model.archiveExtensions.some(ext => relativePath.toLowerCase().endsWith(ext));
                     if (App.model.zipAlreadyCompressed) isArchive = false;
                     if (isArchive) {
                         zip.file(relativePath, fileData, { compression : "DEFLATE" });
@@ -821,7 +818,7 @@ Size: ${App.utils.formatSizeForThree(App.model.sizeTotal)}
             const outputStream = fs.createWriteStream(archivePath);
             // Generate the ZIP as a Node.js stream
             let useCompression = "DEFLATE";
-            let useCompressionLevel = 6;
+            let useCompressionLevel = App.model.archiveLevelDefault;
             if (App.model.zipLevel == 0) {
                 useCompression = "STORE";
             } else if (App.model.zipLevel > 0) {

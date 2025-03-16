@@ -43,7 +43,10 @@
 </div>
 
 <!-- Filters -->
-<div id="div-filters-collapse"><a id="button-filter-open" class="btn btn-sm hidden"><span>FILTERS</span> <i class="bi bi-caret-down-fill"></i></a><a id="button-filter-close" class="btn btn-sm"><span>FILTERS</span> <i class="bi bi-caret-up-fill"></i></a></div>
+<div id="div-filters-collapse">
+    <a id="button-filter-open" class="btn btn-sm hidden" title="Open Filters Panel"><span>EXPAND FILTERS PANEL</span> <i class="bi bi-caret-down-fill"></i></a>
+    <a id="button-filter-close" class="btn btn-sm" title="Close Filters Panel"><span>COLLAPSE FILTERS PANEL</span> <i class="bi bi-caret-up-fill"></i></a>
+</div>
 <div id="div-filters1">
     <div class="input-group">
         <a class="btn btn-secondary btn-sm a-filter" title="Filters for Name"><i class="bi bi-funnel"></i></a>
@@ -107,10 +110,12 @@
 <div id="div-filters4">
     <div class="input-group">
         <a class="btn btn-secondary btn-sm a-filter" title="Filters for Diffs"><i class="bi bi-file-diff"></i></a>
-        <select class="form-select form-select-sm" aria-label="Sort order" title="Filter for Diffs"
+        <select class="form-select form-select-sm" aria-label="Sort order" title="Choose Filter for Diffs"
                 id="filterDiffsInput">
-            <option value="diffrent">Different</option>
-            <option value="rqual">Equal</option>
+            <option value="diff">Different</option>
+            <option value="nodiff">Not Different</option>
+            <option value="size">Different Size</option>
+            <option value="date">Different Date/Time</option>
         </select>
         <a id="setDiffsFilter" class="btn btn-primary btn-sm" type="button" title="Set Diffs Filter"><i
                 class="bi bi-check-square"></i></a>

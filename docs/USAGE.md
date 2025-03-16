@@ -62,7 +62,7 @@ Also during zipping, you can **Abort** process.
 
 ### Filters
 To assist with **selection**, you can use the **Filters**.
-There are filters for file and folder **Name**, file and folder **Date** and file **Size**.
+There are filters for file and folder **Name**, file and folder **Date**, file **Size**, file and folder **Diffs**.
 
 For each group, we have **Addictive** (+) filters, and **Subtractive** (-) filters.
 **Addictive Filters** of each group are in **OR** condition. Eg: with 2 different strings for Addictives Name Filters, will be selected every item matches string1 or string2.
@@ -74,7 +74,9 @@ A **Substractive Filter** removes from selection every item matches, as a **NOT*
 Filter panel is collapsable.
 
 #### Name Filters
-Accepts text string as input, as file/folder name substring.
+Accepts *text string* as input, as file/folder name substring.
+
+Name Filters actions:
 - By clicking the **Set Name Filter** button, it selects the items that contain the specified string while deselecting the others.
 - By clicking the **Add Addictive Name Filter** button, it adds the items that match, without altering the others.
 - By clicking the **Add Subtractive Name Filter** button, it removes any selected item that matches with the string.
@@ -82,7 +84,9 @@ Accepts text string as input, as file/folder name substring.
 - Using the **Clear Name Filters** button, it removes the Name filters.
 
 #### Date Filters
-Accepts one or two dates as input, as file/folder date container range. If one date is null, it will be threaded as -infinity (start) or  +infinity (end).
+Accepts *one or two dates* as input, as file/folder date container range. If one date is null, it will be threaded as -infinity (start) or  +infinity (end).
+
+Date Filters Actions:
 - By clicking the **Set Date Filter** button, it selects the items with date inside the range while deselecting the others.
 - By clicking the **Add Addictive Date Filter** button, it adds the items that match, without altering the others.
 - By clicking the **Add Subtractive Date Filter** button, it removes any selected item that matches with the date range.
@@ -90,12 +94,29 @@ Accepts one or two dates as input, as file/folder date container range. If one d
 - Using the **Clear Date Filters** button, it removes the Date filters.
 
 #### Size Filters
-Accepts one or two numbers (expressed in Kb) as input, as file/folder size container range. If one number is null, it will be threaded as 0 (start) or  1.000.000.000 (end).
+Accepts *one or two numbers (expressed in Kb)* as input, as file/folder size container range. If one number is null, it will be threaded as 0 (start) or  1.000.000.000 (end).
+
+Size Filters actions:
 - By clicking the **Set Size Filter** button, it selects the items with size inside the range while deselecting the others.
 - By clicking the **Add Addictive Size Filter** button, it adds the items that match, without altering the others.
 - By clicking the **Add Subtractive Size Filter** button, it removes any selected item that matches with the size range.
 - In the **Size Filters List** you can see all Size filters applyed and remove individual filters.
 - Using the **Clear Size Filters** button, it removes the Size filters.
+
+#### Diffs Filters
+Choose filter in the *option* menu. 
+Available Diffs Filters values are: 
+- **Different** selects any different file/folder.
+- **Not Different** selects not-different files/folders.
+- **Different Size** selects items with different size.
+- **Different Date/Time** selects items with different date/time.
+
+Diffs Filters actions:
+- By clicking the **Set Diffs Filter** button, it selects the items that matches while deselecting the others.
+- By clicking the **Add Addictive Diffs Filter** button, it adds the items that match, without altering the others.
+- By clicking the **Add Subtractive Diffs Filter** button, it removes any selected item that matches.
+- In the **Diffs Filters List** you can see all Diffs filters applyed and remove individual filters.
+- Using the **Clear Diffs Filters** button, it removes the Diffs filters.
 
 
 ---

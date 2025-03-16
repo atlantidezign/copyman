@@ -324,14 +324,22 @@ class TreeManager {
                     destItem = { ...destItem };
                 }
                 if (!sourceItem && destItem) {
-                    sourceItem = { ...destItem, exists: false, different: false };
+                    sourceItem = { ...destItem, exists: false, different: false,
+                        different_size: false,
+                        different_date: false };
                 }
                 if (!destItem && sourceItem) {
-                    destItem = { ...sourceItem, exists: false, different: false };
+                    destItem = { ...sourceItem, exists: false, different: false,
+                        different_size: false,
+                        different_date: false };
                 }
                 if (!sourceItem && !destItem) {
-                    sourceItem = { name, exists: false, different: false, type: "directory" };
-                    destItem = { name, exists: false, different: false, type: "directory" };
+                    sourceItem = { name, exists: false, different: false,
+                        different_size: false,
+                        different_date: false, type: "directory" };
+                    destItem = { name, exists: false, different: false,
+                        different_size: false,
+                        different_date: false, type: "directory" };
                 }
 
                 // Check for differences on the data (if both exist)
@@ -344,9 +352,21 @@ class TreeManager {
                     if (sourceItem.sizeRaw !== destItem.sizeRaw || modMs) {
                         sourceItem.different = true;
                         destItem.different = true;
+                        if (modMs) {
+                            sourceItem.different_date = true;
+                            destItem.different_date = true;
+                        }
+                        if (sourceItem.sizeRaw !== destItem.sizeRaw) {
+                            sourceItem.different_size = true;
+                            destItem.different_size = true;
+                        }
                     } else {
                         sourceItem.different = false;
+                        sourceItem.different_size = false;
+                        sourceItem.different_date = false;
                         destItem.different = false;
+                        destItem.different_size = false;
+                        destItem.different_date = false;
                     }
                 }
 
@@ -370,7 +390,9 @@ class TreeManager {
         }
 
         // Recursive function to propagate flags in a nested structure
-        function propagateFlagsNested(nodes, parentFlags = { exists: true, different: false }) {
+        function propagateFlagsNested(nodes, parentFlags = { exists: true, different: false,
+            different_size: false,
+            different_date: false }) {
             nodes.forEach(node => {
                 // If the parent (for a directory) does not exist or is marked as different, propagate these flags to the children.
                 if (parentFlags.exists === false) {
@@ -379,10 +401,19 @@ class TreeManager {
                 if (parentFlags.different === true) {
                     node.different = true;
                 }
+                if (parentFlags.different_size === true) {
+                    node.different_size = true;
+                }
+                if (parentFlags.different_date === true) {
+                    node.different_date = true;
+                }
+
                 // Calculate the flags to be propagated: the node's own flag combined with the inherited ones
                 const currentFlags = {
                     exists: node.exists,
-                    different: node.different
+                    different: node.different,
+                    different_size: node.different_size,
+                    different_date: node.different_date
                 };
                 if (node.type === "directory" && node.children && node.children.length > 0) {
                     propagateFlagsNested(node.children, currentFlags);
@@ -730,7 +761,9 @@ class TreeManager {
                     size: "",
                     sizeRaw: 0,
                     exists: true,
-                    different: false
+                    different: false,
+                    different_size: false,
+                    different_date: false
                 });
             } else {
                 // check size for format: KB  if < 1MB, else MB
@@ -745,7 +778,9 @@ class TreeManager {
                     size: formattedSize,
                     sizeRaw: stats.size,
                     exists: true,
-                    different: false
+                    different: false,
+                    different_size: false,
+                    different_date: false
                 });
             }
         });

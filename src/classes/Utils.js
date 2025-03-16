@@ -119,6 +119,42 @@ class Utils {
         return datePoint;
     }
 
+    // Utils: Diffs filters formatting
+    formatDiffGeneral(value) {
+        let outStr = "";
+        switch (value) {
+            case "diff":
+                outStr = "Different";
+                break;
+            case "nodiff":
+                outStr = "Not Different";
+                break;
+            case "size":
+                outStr = "Different Size";
+                break;
+            case "date":
+                outStr = "Different Date/Time";
+                break;
+        }
+    }
+    formatDiffForFilters(value) {
+        let outStr = "";
+        switch (value) {
+            case "diff":
+                outStr = "any-diff";
+                break;
+            case "nodiff":
+                outStr = "no-diff";
+                break;
+            case "size":
+                outStr = "size-diff";
+                break;
+            case "date":
+                outStr = "date-diff";
+                break;
+        }
+    }
+
     // Utils: overwrite mode to string
     formatOverwriteMode(fileOverwrite) {
         let enumToStr = '';

@@ -258,6 +258,8 @@ class FiltersManager {
         App.model.filtersDateMinus = [];
         App.model.filtersSizePlus = [];
         App.model.filtersSizeMinus = [];
+        App.model.filtersDiffsPlus = [];
+        App.model.filtersDiffsMinus = [];
 
         this.renderNameFiltersList();
         this.renderDateFiltersList();

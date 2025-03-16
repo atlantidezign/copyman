@@ -36,6 +36,8 @@ class Model {
     filtersDateMinus = []; //Array<{ from: Date, to: Date}>
     filtersSizePlus = []; //Array<{ from: number, to: number}>
     filtersSizeMinus = []; //Array<{ from: number, to: number}>
+    filtersDiffsPlus = []; //Array<string>
+    filtersDiffsMinus = []; //Array<string>
 
     // Enums
     fileOverwriteEnum = {
@@ -95,8 +97,8 @@ class Model {
     sortOrder = this.sortOrderDefault;
 
     // Components
-    initialRangeSliderValues = [500000, 1000000];
-    limitRangeSliderValues = [0, 1000000000];
+    initialRangeSliderValues = [500000, 1000000]; //for file size
+    limitRangeSliderValues = [0, 1000000000]; //for file size
     dateFormat = 'mm/dd/yyyy';
     localeLang = 'en';
 
@@ -122,9 +124,14 @@ class Model {
 
     // Diffs
     preDiffsSnapshot = null;
-    afterDiffsTimeout = 100;
-
+    afterDiffsTimeout = 100; //ms (with retries)
     msBaseTolerance = 1000; //ms
+
+    //zip
+    archiveLevelDefault = 6;
+    archiveExtensions = [
+        '.zip', '.7z', '.rar', '.tar', '.gz', '.bz2', '.xz', '.iso', '.cab', '.arj', '.lz', '.lzma', '.z'
+    ];
 
 }
 
