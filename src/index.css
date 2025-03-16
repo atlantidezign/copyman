@@ -5,18 +5,91 @@
 
 :root, [data-bs-theme=dark] {
     color-scheme: dark;
-    --bs-primary: #6610f2 !important;
-    --bs-primary-rgb: 102, 16, 242;
+
+    /* copyman skin */
+    /* main */
+    --copyman-primary: #6610f2;
+    --copyman-primary-rgb: 102, 16, 242;
+    --copyman-secondary: #620fe8;
+    --copyman-tertiary: #9e68ff;
+    --copyman-quaternary: #8510f2;
+    --copyman-quinquinary: #4225ff;
+    --copyman-different: #ee0000;
+
+    /* neutrals */
+    --copyman-white: #ffffff;
+    --copyman-almostwhite: #eeeeee;
+    --copyman-quitewhite: #dddddd;
+    --copyman-gray: #8f8f8f;
+    --copyman-gray-transparent: #99999944;
+    --copyman-gray-mid: #aaaaaa;
+    --copyman-gray-light: #DEE2E6;
+    --copyman-gray-dark: #495057;
+
+    /* common */
+    --copyman-bg-rgb: 102, 16, 242;
+    --copyman-bg-opacity: 1; /*var(--bs-bg-opacity);*/
+    --copyman-bg-alt-rgb: 46, 16, 242;
+    --copyman-bg-black-rgb: 0,0,0;
+    --copyman-bg-opacity-dark: 0.65;
+    --copyman-bg-opacity-mid: 0.5;
+    --copyman-bg-opacity-low: 0.5;
+
+    --copyman-bg-shadow-rgb: 0,0,0;
+    --copyman-bg-focus-shadow-rgb: 49, 132, 253;
+    --copyman-bg-opacity-shadow: 0.125;
+
+    --copyman-border-width: 1px;
+
+    /* dependent */
+    --copyman-border-color: var(--copyman-gray-dark);
+
+    --copyman-bg-filter-minus: var(--copyman-quinquinary);
+    --copyman-bg-filter-plus: var(--copyman-tertiary);
+    --copyman-bg-dest-first: var(--copyman-quaternary);
+
+    --copyman-modal-title-border-color: var(--copyman-gray-light);
+
+    --copyman-text-status: var(--copyman-gray-mid);
+    --copyman-text-label-size: var(--copyman-quinquinary);
+    --copyman-text-folder-name: var(--copyman-white);
+    --copyman-bg-folder-source-name: var(--copyman-secondary);
+    --copyman-bg-folder-dest-name: var(--copyman-quaternary);
+    --copyman-text-label-different: var(--copyman-different);
+    --copyman-text-form: var(--copyman-gray);
+    --copyman-text-option: var(--copyman-quitewhite);
+    --copyman-text-white: var(--copyman-white);
+
+    --copyman-link-text: var(--copyman-tertiary);
+    --copyman-collapse-filters: var(--copyman-tertiary);
+    --copyman-zip-text: var(--copyman-tertiary);
+    --copyman-explain-text: var(--copyman-tertiary);
+    --copyman-queue-text: var(--copyman-tertiary);
+
+    --copyman-checkbox-bg-checked: var(--copyman-primary);
+    --copyman-checkbox-border-checked: var(--copyman-primary);
+
+    --copyman-navpills-active-bg: var(--copyman-primary);
+    --copyman-navpills-active-text: var(--copyman-white);
+    --copyman-navpills-label-text: var(--copyman-tertiary);
+    --copyman-navpills-label-text-hover: var(--copyman-almostwhite);
+
+    --copyman-noui-bg-connect: var(--copyman-primary);
+    --copyman-noui-bg-handle: var(--copyman-almostwhite);
+    --copyman-noui-border-handle: var(--copyman-quitewhite);
+    --copyman-noui-bg-target: var(--copyman-gray-transparent);
+
+    /* bs */
+    --bs-primary: var(--copyman-tertiary);
+    --bs-primary-rgb: var(--copyman-primary-rgb);
 }
 
 .bg-copyman {
-    --bs-bg-opacity: 1;
-    background-color: rgba(102, 16, 242, var(--bs-bg-opacity)) !important;
+    background-color: rgba(var(--copyman-bg-rgb), var(--copyman-bg-opacity)) !important;
 }
 
 .bg-copyman-alt {
-    --bs-bg-opacity: 1;
-    background-color: rgba(46, 16, 242, var(--bs-bg-opacity)) !important;
+    background-color: rgba(var(--copyman-bg-alt-rgb), var(--copyman-bg-opacity)) !important;
 }
 
 body {
@@ -49,20 +122,20 @@ body {
 }
 
 .btn-primary {
-    --bs-btn-color: #fff;
-    --bs-btn-bg: #6610f2;
-    --bs-btn-border-color: #6610f2;
-    --bs-btn-hover-color: #fff;
-    --bs-btn-hover-bg: #620fe8;
-    --bs-btn-hover-border-color: #620fe8;
-    --bs-btn-focus-shadow-rgb: 49, 132, 253;
-    --bs-btn-active-color: #fff;
-    --bs-btn-active-bg: #620fe8;
-    --bs-btn-active-border-color: #620fe8;
-    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-    --bs-btn-disabled-color: #fff;
-    --bs-btn-disabled-bg: #6610f2;
-    --bs-btn-disabled-border-color: #6610f2;
+    --bs-btn-color: var(--copyman-text-white);
+    --bs-btn-bg: var(--copyman-primary);
+    --bs-btn-border-color: var(--copyman-primary);
+    --bs-btn-hover-color:var(--copyman-text-white);
+    --bs-btn-hover-bg: var(--copyman-secondary);
+    --bs-btn-hover-border-color: var(--copyman-secondary);
+    --bs-btn-focus-shadow-rgb: var(--copyman-bg-focus-shadow-rgb);
+    --bs-btn-active-color: var(--copyman-text-white);
+    --bs-btn-active-bg: var(--copyman-secondary);
+    --bs-btn-active-border-color: var(--copyman-secondary);
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(var(--copyman-bg-shadow-rgb), var(--copyman-bg-opacity-shadow));
+    --bs-btn-disabled-color: var(--copyman-text-white);
+    --bs-btn-disabled-bg: var(--copyman-primary);
+    --bs-btn-disabled-border-color: var(--copyman-primary);
 }
 
 /* First level layouting */
@@ -109,7 +182,7 @@ body > div#div-filters4 {
     height: unset;
     min-height: 150px;
     font-size: 0.85em;
-    background-color: rgba(0, 0, 0, 0.65);
+    background-color: rgba(var(--copyman-bg-black-rgb), var(--copyman-bg-opacity-dark));
     border-radius: 10px;
     flex-grow: 1;
     margin: 10px 10px 10px 10px;
@@ -152,7 +225,7 @@ body > div#div-filters4 {
 
 /* Footer */
 #status {
-    color: #aaaaaa;
+    color: var(--copyman-text-status);
     font-size: 0.75em;
     padding-top: 2px;
     max-width: 65%;
@@ -206,23 +279,23 @@ li {
 #dest-tree .label-extras-size {
     margin-left: 5px;
     font-size: 0.8em;
-    color: #2e10f2;
+    color: var(--copyman-text-label-size);
 }
 
 .tree-folder-name {
     display: inline-block;
     border-radius: 5px;
     padding: 1px 8px;
-    color: #fff;
+    color: var(--copyman-text-folder-name);
     font-size: 0.9em;
 }
 
 #source-tree .tree-folder-name {
-    background: #620fe8;
+    background:var(--copyman-bg-folder-source-name);
 }
 
 #dest-tree .tree-folder-name {
-    background: #8510f2;
+    background: var(--copyman-bg-folder-dest-name);
 }
 
 /*
@@ -234,7 +307,7 @@ li {
     opacity: 0.5;
 }
 .label-node.node-different > span:nth-child(n+2) {
-    color: #ee0000 !important;
+    color: var(--copyman-text-label-different) !important;
 }
 
 /* Actions */
@@ -251,15 +324,15 @@ li {
 }
 
 .form-check-input:checked {
-    background-color: #6610f2;
-    border-color: #6610f2;
+    background-color: var(--copyman-checkbox-bg-checked);
+    border-color: var(--copyman-checkbox-border-checked);
 }
 
 .form-control {
     padding: 4px 0.75rem 3px 0.75rem;
-    color: #8f8f8f !important;
+    color: var(--copyman-text-form) !important;
     font-size: 0.80em;
-    background-color: rgba(0, 0, 0, 0.65);
+    background-color: rgba(var(--copyman-bg-black-rgb), var(--copyman-bg-opacity-dark));
 }
 
 .form-check-inline {
@@ -267,7 +340,7 @@ li {
 }
 
 ::placeholder {
-    color: #8f8f8f !important;
+    color: var(--copyman-text-form) !important;
     opacity: 1; /* Firefox */
 }
 
@@ -290,9 +363,9 @@ li {
 }
 .custom-popover {
     --bs-popover-max-width: 400px;
-    --bs-popover-border-color: #6610f2;
-    --bs-popover-header-bg: #6610f2;
-    --bs-popover-header-color: #FFFFFF;
+    --bs-popover-border-color: var(--copyman-primary);
+    --bs-popover-header-bg: var(--copyman-primary);
+    --bs-popover-header-color: var(--copyman-text-white);
     --bs-popover-body-padding-x: 1rem;
     --bs-popover-body-padding-y: .5rem;
     --bs-popover-header-padding-x: 0.5rem;
@@ -302,7 +375,7 @@ li {
     padding: 0;
 }
 .custom-popover b {
-    color: #863efa;
+    color: var(--copyman-link-text);
 }
 .snapshot-explain {
     font-size: 0.85em;
@@ -311,7 +384,7 @@ li {
 
 .snapshot-explain h5 {
     margin-bottom: 10px;
-    color: #8e48ff;
+    color: var(--copyman-explain-text);
     font-size: 1.2em;
 }
 
@@ -325,17 +398,17 @@ li {
 }
 
 #queueList p {
-    color: #8510f2;
+    color: var(--copyman-queue-text);
 }
 
 .queue-item {
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(var(--copyman-bg-black-rgb), var(--copyman-bg-opacity-low));
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 2px !important;
     padding: 0 0 0 10px;
-    border: 1px solid var(--bs-border-color);
+    border: 1px solid var(--copyman-border-color);
     border-radius: 5px;
 }
 
@@ -373,8 +446,8 @@ li {
 
 .form-select-sm {
     font-size: 0.80em;
-    background-color: rgba(0, 0, 0, 0.65);
-    color: #8f8f8f !important;
+    background-color: rgba(var(--copyman-bg-black-rgb), var(--copyman-bg-opacity-dark));
+    color: var(--copyman-text-form) !important;
 }
 
 .a-filter, .span-list {
@@ -386,11 +459,11 @@ li {
 }
 
 .filter-plus {
-    background-color: #8510f2 !important;
+    background-color: var(--copyman-bg-filter-plus) !important;
 }
 
 .filter-minus {
-    background-color: #2e10f2 !important;
+    background-color: var(--copyman-bg-filter-minus) !important;
 }
 
 #filterNameInput {
@@ -446,7 +519,7 @@ li {
     border-bottom-left-radius: 0;
 }
 #div-filters-collapse a {
-    color: #9e68ff;
+    color: var(--copyman-collapse-filters);
     border: none;
     border-radius: 0;
     padding: 1px 0 1px 5px;
@@ -464,7 +537,7 @@ li {
     margin-top: 0;
 }
 .form-select option {
-    color: #dddddd;
+    color: var(--copyman-text-option);
 }
 
 .badge {
@@ -479,7 +552,7 @@ li {
 }
 
 .badge-dest:first-of-type {
-    background: #8510f2 !important;
+    background: var(--copyman-bg-dest-first) !important;
 }
 
 #selectionStats {
@@ -517,7 +590,7 @@ body > div#div-modals {
 
 .modal-title img {
     height: 19px;
-    border-right: 1px solid #DEE2E6;
+    border-right: 1px solid var(--copyman-modal-title-border-color);
     padding-right: 7px;
 }
 
@@ -541,7 +614,7 @@ body > div#div-modals {
 .nav-link {
     display: block;
     padding: 5px 10px;
-    color: #9e68ff;
+    color: var(--copyman-navpills-label-text);
     text-decoration: none;
     background: 0 0;
     border: 0;
@@ -554,12 +627,12 @@ body > div#div-modals {
 }
 
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-    color: #FFFFFF;
-    background-color: #6610f2;
+    color: var(--copyman-navpills-active-text);
+    background-color: var(--copyman-navpills-active-bg);
 }
 
 .nav-link:focus, .nav-link:hover {
-    color: #eeeeee;
+    color: var(--copyman-navpills-label-text-hover);
 }
 
 #v-pills-tab {
@@ -622,7 +695,7 @@ body > div#div-modals {
 #helpContentMD a, #aboutContentMD a, #listContentMD a {
     font-weight: bold;
     text-decoration: none;
-    color: #863efa;
+    color: var(--copyman-link-text);
 }
 
 #listFooterTotal {
@@ -641,7 +714,7 @@ body > div#div-modals {
 
 .verboseIcon {
     font-size: 4.5em;
-    color: #ffffff;
+    color: var(--copyman-text-white);
 }
 
 #copyingReportMD, #verboseProgressMD {
@@ -676,7 +749,7 @@ body > div#div-modals {
     width: 100px;
     overflow: hidden;
     padding-top: 32px;
-    color: #9e68ff;
+    color: var(--copyman-zip-text);
     font-size: 0.90em;
 }
 @media screen and (max-width: 468px){
@@ -697,6 +770,12 @@ body > div#div-modals {
     margin-left: 5px;
     font-size: 0.9em;
 }
+#currentSkinChecked {
+    width: 180px;
+    display: inline-block;
+    margin-left: 5px;
+    font-size: 0.9em;
+}
 
 /* Overlay full screen */
 body > div#spinner-overlay {
@@ -711,7 +790,7 @@ body > div#spinner-overlay {
     left: 0;
     width: 100%;
     height: 100% !important;
-    background: rgba(0, 0, 0, 0.5); /* black transparent bg */
+    background: rgba(var(--copyman-bg-black-rgb), var(--copyman-bg-opacity-mid)); /* black transparent bg */
     display: none; /* hidden by default */
     justify-content: center;
     text-align: center;
@@ -755,7 +834,7 @@ body > div#spinner-overlay {
 }
 
 #slider-range .noUi-connect {
-    background: #6610f2;
+    background: var(--copyman-noui-bg-connect);
 }
 
 #slider-range .noUi-handle::before, #slider-range .noUi-handle::after {
@@ -785,17 +864,17 @@ body > div#spinner-overlay {
     width: 10px;
     height: 29px;
     top: 0;
-    background-color: #eee;
-    border: 1px solid #ddd;
+    background-color: var(--copyman-noui-bg-handle);
+    border: 1px solid var(--copyman-noui-border-handle);
     border-radius: 1px;
     cursor: default;
     box-shadow: unset; /* inset 0 0 1px #FFF, inset 0 1px 7px #EBEBEB, 0 3px 6px -3px #BBB; */
 }
 
 .noUi-target {
-    background: #99999944;
+    background: var(--copyman-noui-bg-target);
     border-radius: 0;
-    border: var(--bs-border-width) solid var(--bs-border-color);
+    border: var(--copyman-border-width) solid var(--copyman-border-color);
     box-shadow: unset; /* inset 0 1px 1px #F0F0F0, 0 3px 6px -5px #BBB; */
 }
 

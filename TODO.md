@@ -3,13 +3,11 @@
 ## NOW
 ext: update screenshot
 
-check: propagation of diff classes/props on tree
+diffs: check propagation of diff classes/props on tree and it's rendering
 
 ---
 
 ## NEXT
-ui: color skins/variants
-
 options: custom suffix for keep existing (unique or (#INCREMENTAL)) - in copy options + handle;
 options: custom filename radix for zip archive - in zip options + handle;
 
@@ -30,6 +28,7 @@ settings: support localization for other languages (in options), for labels and 
 ui: alerts and confirms not using native dialogs but using html modals.
 ui: all separated panels using floating windows?
 ui: better text wrap on trees.
+ui: more skins
 
 sys: remove Live reload for production build
 sys: extensive testing, especially date/size filters and copymodes.

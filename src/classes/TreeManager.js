@@ -509,6 +509,10 @@ class TreeManager {
         checkbox.dataset.nodeModified = node.modifiedRaw;
         checkbox.dataset.nodeMS = node.modifiedMs;
         checkbox.dataset.isDirectory = (node.type === 'directory') ? "1" : "0";
+        checkbox.dataset.nodeExists = (node.exists) ? "1" : "0";
+        checkbox.dataset.nodeDifferent = (node.different) ? "1" : "0";
+        checkbox.dataset.nodeDifferent_size = (node.different_size) ? "1" : "0";
+        checkbox.dataset.nodeDifferent_date = (node.different_date) ? "1" : "0";
         checkbox.classList.add('form-check-input');
         checkbox.classList.add('check-node');
 

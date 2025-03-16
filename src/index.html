@@ -44,8 +44,8 @@
 
 <!-- Filters -->
 <div id="div-filters-collapse">
-    <a id="button-filter-open" class="btn btn-sm hidden" title="Open Filters Panel"><span>EXPAND FILTERS PANEL</span> <i class="bi bi-caret-down-fill"></i></a>
-    <a id="button-filter-close" class="btn btn-sm" title="Close Filters Panel"><span>COLLAPSE FILTERS PANEL</span> <i class="bi bi-caret-up-fill"></i></a>
+    <a id="button-filter-open" class="btn btn-sm hidden" title="Open Filters Panel"><span>OPEN FILTERS PANEL</span> <i class="bi bi-caret-down-fill"></i></a>
+    <a id="button-filter-close" class="btn btn-sm" title="Close Filters Panel"><span>CLOSE FILTERS PANEL</span> <i class="bi bi-caret-up-fill"></i></a>
 </div>
 <div id="div-filters1">
     <div class="input-group">
@@ -238,7 +238,7 @@
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title" id="copyingModalLabel"><img src="images/logotype_indigo_alt.svg"
+                    <h1 class="modal-title" id="copyingModalLabel"><img src="images/logotype_indigo_alt.svg" class="logotipo"
                                                                         alt="Copyman" title="Copyman"/> Copying</h1>
                     <button type="button" class="btn-close copyingClose" data-bs-dismiss="modal"
                             aria-label="Close"></button>
@@ -289,7 +289,7 @@
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title" id="listModalLabel"><img src="images/logotype_indigo_alt.svg" alt="Copyman"
+                    <h1 class="modal-title" id="listModalLabel"><img src="images/logotype_indigo_alt.svg"  class="logotipo" alt="Copyman"
                                                                      title="Copyman"/> Selection List</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -319,7 +319,7 @@
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title" id="aboutModalLabel"><img src="images/logotype_indigo_alt.svg" alt="Copyman"
+                    <h1 class="modal-title" id="aboutModalLabel"><img src="images/logotype_indigo_alt.svg"  class="logotipo" alt="Copyman"
                                                                       title="Copyman"/> About</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -342,7 +342,7 @@
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title" id="helpModalLabel"><img src="images/logotype_indigo_alt.svg" alt="Copyman"
+                    <h1 class="modal-title" id="helpModalLabel"><img src="images/logotype_indigo_alt.svg"  class="logotipo" alt="Copyman"
                                                                      title="Copyman"/> Help</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -365,7 +365,7 @@
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title" id="optionsModalLabel"><img src="images/logotype_indigo_alt.svg"
+                    <h1 class="modal-title" id="optionsModalLabel"><img src="images/logotype_indigo_alt.svg"  class="logotipo"
                                                                         alt="Copyman" title="Copyman"/> Options</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -623,14 +623,19 @@
                                         <hr/>
                                         <div>
                                             <div class="row ms-1">
-                                                <div class="col-sm-6">
+                                                <div class="col-lg-6">
                                                     <label class="form-check-label" for="msCopySpeedChecked" title="The speed in MB/s of drive, for tolerance in comparisons for modified datetime">Drive Speed (MB/s)</label>
                                                     <input class="form-control" type="number"
                                                            id="msCopySpeedChecked"
                                                            title="The speed in MB/s of drive, for tolerance in comparisons for modified datetime"
                                                     />
                                                 </div>
-                                                <div class="col-sm-6">
+                                                <div class="col-lg-6">
+                                                    <label class="form-check-label" for="currentSkinChecked" title="Select Skin">Skin</label>
+                                                    <select class="form-select form-select-sm" aria-label="Select Skin" title="Select Skin"
+                                                            id="currentSkinChecked">
+                                                    </select>
+
                                                 </div>
                                             </div>
                                         </div>
@@ -657,7 +662,7 @@
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title" id="snapshotModalLabel"><img src="images/logotype_indigo_alt.svg"
+                    <h1 class="modal-title" id="snapshotModalLabel"><img src="images/logotype_indigo_alt.svg"  class="logotipo"
                                                                          alt="Copyman" title="Copyman"/> Automation</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>

@@ -65,8 +65,8 @@ To assist with **selection**, you can use the **Filters**.
 There are filters for file and folder **Name**, file and folder **Date**, file **Size**, file and folder **Diffs**.
 
 For each group, we have **Addictive** (+) filters, and **Subtractive** (-) filters.
-**Addictive Filters** of each group are in **OR** condition. Eg: with 2 different strings for Addictives Name Filters, will be selected every item matches string1 or string2.
-A **Substractive Filter** removes from selection every item matches, as a **NOT** condition.
+**Addictive Filters** of each group are in **OR** condition. Eg: with 2 different strings for Addictive Name Filters, will be selected every item matches string1 or string2.
+A **Subtractive Filter** removes from selection every item matches, as a **NOT** condition.
 
 **Relationship** between Addictive filters of different groups can be an **OR** or **AND** condition, according to options.
 *OR* means that item is selected if **at least one** of the group conditions matches, *AND* means that **all** conditions must match.
@@ -80,7 +80,7 @@ Name Filters actions:
 - By clicking the **Set Name Filter** button, it selects the items that contain the specified string while deselecting the others.
 - By clicking the **Add Addictive Name Filter** button, it adds the items that match, without altering the others.
 - By clicking the **Add Subtractive Name Filter** button, it removes any selected item that matches with the string.
-- In the **Name Filters List** you can see all Name filters applyed and remove individual filters.
+- In the **Name Filters List** you can see all Name filters applied and remove individual filters.
 - Using the **Clear Name Filters** button, it removes the Name filters.
 
 #### Date Filters
@@ -90,7 +90,7 @@ Date Filters Actions:
 - By clicking the **Set Date Filter** button, it selects the items with date inside the range while deselecting the others.
 - By clicking the **Add Addictive Date Filter** button, it adds the items that match, without altering the others.
 - By clicking the **Add Subtractive Date Filter** button, it removes any selected item that matches with the date range.
-- In the **Date Filters List** you can see all Date filters applyed and remove individual filters.
+- In the **Date Filters List** you can see all Date filters applied and remove individual filters.
 - Using the **Clear Date Filters** button, it removes the Date filters.
 
 #### Size Filters
@@ -100,7 +100,7 @@ Size Filters actions:
 - By clicking the **Set Size Filter** button, it selects the items with size inside the range while deselecting the others.
 - By clicking the **Add Addictive Size Filter** button, it adds the items that match, without altering the others.
 - By clicking the **Add Subtractive Size Filter** button, it removes any selected item that matches with the size range.
-- In the **Size Filters List** you can see all Size filters applyed and remove individual filters.
+- In the **Size Filters List** you can see all Size filters applied and remove individual filters.
 - Using the **Clear Size Filters** button, it removes the Size filters.
 
 #### Diffs Filters
@@ -115,7 +115,7 @@ Diffs Filters actions:
 - By clicking the **Set Diffs Filter** button, it selects the items that matches while deselecting the others.
 - By clicking the **Add Addictive Diffs Filter** button, it adds the items that match, without altering the others.
 - By clicking the **Add Subtractive Diffs Filter** button, it removes any selected item that matches.
-- In the **Diffs Filters List** you can see all Diffs filters applyed and remove individual filters.
+- In the **Diffs Filters List** you can see all Diffs filters applied and remove individual filters.
 - Using the **Clear Diffs Filters** button, it removes the Diffs filters.
 
 
@@ -175,7 +175,7 @@ The **Options** panel affects copying and selecting behaviours.
 Has an autosave behaviour, and can be **Reset** to defaults. 
 
 #### Copying
-- **Verbose Progress** to choose if to have a window with verborse progress during copying phase. Disable to boost performance. Default true.
+- **Verbose Progress** to choose if to have a window with verbose progress during copying phase. Disable to boost performance. Default true.
 - **Copying Report** to choose if to have a window with report at the end of the copying phase. Default true.
 - **Abort Queue** to choose if the **Abort** command during copying affects full Queue or just current Queue Item. Default true.
 - **Don't Confirm Queue Steps** to choose if to confirm or not every Queue Step start copying. Default false.
@@ -191,7 +191,7 @@ It can be:
   - *Keep Existing* Keep existing file using a new name for copy.
 
 #### Selecting
-- **Propagate Selection** to choose if propagate (checked) or not (unchecked) the selection/deselection click of an item to parent and childen elements. Default true.
+- **Propagate Selection** to choose if propagate (checked) or not (unchecked) the selection/deselection click of an item to parent and children elements. Default true.
 - **Click on Names to Select**  to choose if also clicks on files/folders names can Select/Deselect the item. Default true.
 - **Filters Relationship OR** to choose the kind of relationship between filter groups, OR (checked) or AND (unchecked). Default true (OR).
 
@@ -208,6 +208,7 @@ It can be:
 - **Tree Diffs** to enable the Diffs Display in the tree view (when Split Screen is enabled), for visual friendly comparison of Source and Destination #1 folders. Default true.
 - **Maintain Logs** to choose if to record application logs in memory. Can be exported to file with **Export Logs** button, and cleaned with **Clear Logs** button. Default false.
 - **Drive Speed** the approx speed in MB/s of drive, for tolerance in comparisons for modified datetime. Default 50 MB/s.
+- **Skin** to choose and set color themes. Default Copyman (Indigo).
 
 ---
 

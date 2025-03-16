@@ -3,6 +3,10 @@ class UIManager {
     constructor() {
     }
 
+    defaultSkin = {};
+    availableSkins = [];
+    skinNames = [];
+
     init() {
         //General click
         document.addEventListener('click', (event) => {
@@ -17,11 +21,13 @@ class UIManager {
             }
         }, true);
 
+        //inits
+        this.initializeSkin();
         this.initializeComponents();
         this.initializeModals();
     }
 
-    //Modals
+    // Modals
     initializeHelpModal() {
         const usageFilePath = path.join(__dirname, '../../docs/USAGE.md');
         let markdown = '';
@@ -37,7 +43,7 @@ class UIManager {
     Written by Alessandro Di Michele<br>
 &copy;2025 Atlantide Design <a href="http://www.atlantide-design.it">www.atlantide-design.it</a> All rights reserved.<br>
 <br>
-Binaries downloads are available on <a href="https://www.copyman.it"><img src="images/logotype_indigo_alt.svg" alt="Copyman" title="Copyman" height="14"/></a> website <br>
+Binaries downloads are available on <a href="https://www.copyman.it"><img src="images/logotype_indigo_alt.svg" class="logotipo" alt="Copyman" title="Copyman" height="14" /></a> website <br>
 Source code and binaries are available on <a href="https://github.com/atlantidezign/copyman"><i class="bi bi-github"></i> GitHub</a>`;
         let aboutDocs = `
     <img src="images/logotype_white.svg" alt="Copyman" class="img-fluid" title="Copyman" width="300"/><br>
@@ -49,7 +55,6 @@ Source code and binaries are available on <a href="https://github.com/atlantidez
         document.getElementById('helpContentMD').innerHTML = marked.parse(markdown) + underDocs;
         document.getElementById('aboutContentMD').innerHTML = aboutDocs + underDocs;
     }
-
     initializeSnapshotModal() {
         App.snapshotManager.listSnapshots();
     }
@@ -59,7 +64,7 @@ Source code and binaries are available on <a href="https://github.com/atlantidez
         App.selectionListManager.updateListContent();
     }
 
-    //Components
+    // Components
     rangePicker = null;
     rangeSlider = null;
     popoverInfoSnapshot = null;
@@ -261,6 +266,7 @@ Source code and binaries are available on <a href="https://github.com/atlantidez
         })
     }
 
+    // Split screen
     splitted = false;
     updateSplitScreen() {
         if (App.model.splitScreen === true) {
@@ -287,11 +293,78 @@ Source code and binaries are available on <a href="https://github.com/atlantidez
         }
     }
 
-
+    // Empty dest tree container
     cleanDestinationTree() {
         const container = document.getElementById('dest-tree');
         container.innerHTML = '';
     }
+
+    // Skin - internal
+    initializeSkin() {
+        this.defaultSkin = this.getCopymanSkin();
+        this.availableSkins = [
+            { name: App.model.currentSkinDefault, data: this.defaultSkin },
+            ...App.model.skins
+        ]
+        for (const skin of this.availableSkins) {
+            this.skinNames.push(skin.name);
+        }
+    }
+    getSkinDataByName(name) {
+        for (const skin of this.availableSkins) {
+            if (skin.name === name) {
+                return skin.data;
+            }
+        }
+        return null;
+    }
+    applySkin(skinProperties) {
+        const root = document.documentElement;
+        for (const property in skinProperties) {
+            if (skinProperties.hasOwnProperty(property)) {
+                root.style.setProperty(property, skinProperties[property]);
+            }
+        }
+    }
+    getCopymanSkin() {
+        const computedStyle = getComputedStyle(document.documentElement);
+        const keys = [
+            '--copyman-primary',
+            '--copyman-primary-rgb',
+            '--copyman-secondary',
+            '--copyman-tertiary',
+            '--copyman-quaternary',
+            '--copyman-quinquinary',
+            '--copyman-different'
+        ];
+        const skin = {};
+        keys.forEach(key => {
+            skin[key] = computedStyle.getPropertyValue(key).trim();
+        });
+        return skin;
+    }
+
+    // Skin public
+    getSkinNames() {
+        return this.skinNames;
+    }
+    setSkinByName(name) {
+        const skinData = this.getSkinDataByName(name);
+        if (skinData) {
+            this.applySkin(skinData);
+            const logoImages = document.querySelectorAll('.logotipo');
+            if (name == App.model.currentSkinDefault) {
+                logoImages.forEach(img => {
+                    img.src = 'images/logotype_indigo_alt.svg';
+                });
+            } else {
+                logoImages.forEach(img => {
+                    img.src = 'images/logotype_textcolor.svg';
+                });
+            }
+        }
+    }
+
 }
 
 module.exports = UIManager;

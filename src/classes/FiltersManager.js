@@ -4,7 +4,6 @@ class FiltersManager {
     }
 
     init() {
-
         //Filters Name
         document.getElementById('setNameFilter').addEventListener('click', () => {
             if (!App.model.sourceFolder) {
@@ -78,7 +77,6 @@ class FiltersManager {
         document.getElementById('clearNameFilter').addEventListener('click', () => {
             App.filtersManager.removeNameFilters();
         });
-
 
         //Filters Date
         document.getElementById('setDateFilter').addEventListener('click', () => {
@@ -361,7 +359,6 @@ class FiltersManager {
         App.treeManager.inRendering = false;
         App.utils.writeMessage('All filters removed.');
     }
-
     applyAllFilters() {
         App.treeManager.inRendering = true;
         this.renderNameFiltersList();
@@ -498,7 +495,6 @@ class FiltersManager {
         App.treeManager.inRendering = false;
         App.utils.writeMessage('Filters updated.');
     }
-
     removeAllSelection() {
         const checkboxes = document.querySelectorAll('#source-tree input[type="checkbox"]');
         checkboxes.forEach(checkbox => {
@@ -891,21 +887,20 @@ class FiltersManager {
     matchesDiff(checkbox, filter) {
         let matches = false;
         //check node for filter
-        let path = checkbox.dataset.filePath;
-        let realItem = App.model.sourceTreeData.find(item => item.path === path);
-        if (realItem && realItem.exists) {
+        let realItem = checkbox.dataset;
+        if (realItem && realItem.nodeExists == 1) {
             switch (filter) {
                 case "diff":
-                    if (realItem.different) matches = true;
+                    if (realItem.nodeDifferent == 1) matches = true;
                     break;
                 case "nodiff":
-                    if (!realItem.different) matches = true;
+                    if (realItem.nodeDifferent == 0) matches = true;
                     break;
                 case "size":
-                    if (realItem.different_size) matches = true;
+                    if (realItem.nodeDifferent_size == 1) matches = true;
                     break;
                 case "date":
-                    if (realItem.different_date) matches = true;
+                    if (realItem.nodeDifferent_date == 1) matches = true;
                     break;
             }
         }

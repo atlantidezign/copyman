@@ -222,6 +222,7 @@ class SnapshotManager {
                 App.model.relationshipOR = (typeof settings.relationshipOR === 'boolean') ? settings.relationshipOR : App.model.relationshipORDefault;
                 App.model.maintainLogs = (typeof settings.maintainLogs === 'boolean') ? settings.maintainLogs : App.model.maintainLogsDefault;
                 App.model.msCopySpeed = (typeof settings.maintainLogs === 'number') ? settings.msCopySpeed : App.model.msCopySpeedDefault;
+                App.model.currentSkin = (typeof settings.maintainLogs === 'string') ? settings.currentSkin : App.model.currentSkinDefault;
                 App.model.loadNotCopyRelatedOptions = (typeof settings.loadNotCopyRelatedOptions === 'boolean') ? settings.loadNotCopyRelatedOptions : App.model.loadNotCopyRelatedOptionsDefault;
                 App.model.splitScreen = (typeof settings.splitScreen === 'boolean') ? settings.splitScreen : App.model.splitScreenDefault;
                 App.model.makeTreeDiffs = (typeof settings.makeTreeDiffs === 'boolean') ? settings.makeTreeDiffs : App.model.makeTreeDiffsDefault;
@@ -320,6 +321,7 @@ class SnapshotManager {
             sortOrder: App.model.sortOrder,
             maintainLogs: App.model.maintainLogs,
             msCopySpeed: App.model.msCopySpeed,
+            currentSkin: App.model.currentSkin,
             loadNotCopyRelatedOptions: App.model.loadNotCopyRelatedOptions,
             splitScreen: App.model.splitScreen,
             makeTreeDiffs: App.model.makeTreeDiffs,
@@ -422,6 +424,7 @@ class SnapshotManager {
                 settings.sortOrder!="" && "Sort Order: '" + settings.sortOrder+"'",
                 settings.maintainLogs && "Maintain Logs",
                 settings.msCopySpeed && "Drive Speed: "+settings.msCopySpeed,
+                settings.currentSkin && "Skin: "+settings.currentSkin,
                 settings.loadNotCopyRelatedOptions && "Load Not Copy-related Options",
                 settings.splitScreen && "Split Screen",
                 settings.makeTreeDiffs && "Tree Diffs",

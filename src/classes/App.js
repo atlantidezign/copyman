@@ -24,10 +24,10 @@ class App {
 
     init() {
         // Main inits
-        this.localizationManager.init();
-        this.sysManager.init();
-        this.uiManager.init();
-        this.optionsManager.init();
+        this.localizationManager.init(); //first
+        this.sysManager.init(); //second
+        this.uiManager.init(); //third
+        this.optionsManager.init(); //fourth
 
         // Other inits
         this.copyManager.init();

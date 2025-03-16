@@ -4,6 +4,7 @@ class OptionsManager {
     }
     init() {
         this.initializeOptions();
+        this.initializeSkinOptions();
 
         //Options ui
         const radioButtons = document.getElementsByName("overwriteChecked");
@@ -59,6 +60,12 @@ class OptionsManager {
             App.model.msCopySpeed = this.value;
             App.optionsManager.saveOptions();
             App.utils.writeMessage('Copy Speed setting is now ' + App.model.msCopySpeed);
+        });
+        document.getElementById("currentSkinChecked").addEventListener("change", function () {
+            App.model.currentSkin = this.value;
+            App.optionsManager.saveOptions();
+            App.optionsManager.updateSkin();
+            App.utils.writeMessage('Current Skin setting is now ' + App.model.currentSkin);
         });
         document.getElementById("loadNotCopyRelatedChecked").addEventListener("change", function () {
             App.model.loadNotCopyRelatedOptions = this.checked;
@@ -136,6 +143,7 @@ class OptionsManager {
             model.sortOrder = options.sortOrder;
             model.maintainLogs = options.maintainLogs;
             model.msCopySpeed = options.msCopySpeed;
+            model.currentSkin = options.currentSkin;
             model.loadNotCopyRelatedOptions = options.loadNotCopyRelatedOptions;
             model.splitScreen = options.splitScreen;
             model.makeTreeDiffs = options.makeTreeDiffs;
@@ -149,6 +157,8 @@ class OptionsManager {
         this.updateOptionsUI();
         App.uiManager.updateSplitScreen();
     }
+
+    // Load / Save
     saveOptions() {
         const saveOptions = this.getOptionsItem()
         localStorage.setItem('options', JSON.stringify(saveOptions));
@@ -167,6 +177,7 @@ class OptionsManager {
             sortOrder: model.sortOrder,
             maintainLogs: model.maintainLogs,
             msCopySpeed: model.msCopySpeed,
+            currentSkin: model.currentSkin,
             loadNotCopyRelatedOptions: model.loadNotCopyRelatedOptions,
             splitScreen: model.splitScreen,
             makeTreeDiffs: model.makeTreeDiffs,
@@ -189,6 +200,7 @@ class OptionsManager {
         model.sortOrder = model.sortOrderDefault;
         model.maintainLogs = model.maintainLogsDefault;
         model.msCopySpeed = model.msCopySpeedDefault;
+        model.currentSkin = model.currentSkinDefault;
         model.loadNotCopyRelatedOptions = model.loadNotCopyRelatedOptionsDefault;
         model.splitScreen = model.splitScreenDefault;
         model.makeTreeDiffs = model.makeTreeDiffsDefault;
@@ -200,6 +212,8 @@ class OptionsManager {
         App.uiManager.updateSplitScreen();
         App.filtersManager.applyAllFilters();
     }
+
+    // Update UI
     updateOptionsUI() {
         const radioButtons = document.getElementsByName("overwriteChecked");
         const currentValue = App.model.fileOverwrite;
@@ -217,6 +231,7 @@ class OptionsManager {
         document.getElementById("relationshipORChecked").checked = App.model.relationshipOR;
         document.getElementById("maintainLogsChecked").checked = App.model.maintainLogs;
         document.getElementById("msCopySpeedChecked").value = App.model.msCopySpeed;
+        document.getElementById("currentSkinChecked").value = App.model.currentSkin;
         document.getElementById("loadNotCopyRelatedChecked").checked = App.model.loadNotCopyRelatedOptions;
         document.getElementById("splitScreenChecked").checked = App.model.splitScreen;
         document.getElementById("makeTreeDiffsChecked").checked = App.model.makeTreeDiffs;
@@ -225,8 +240,10 @@ class OptionsManager {
         document.getElementById("zipLevelChecked").value = App.model.zipLevel;
         document.getElementById("zipLevelCheckedValue").innerText =  App.optionsManager.formatZipLevel();
         document.getElementById("zipAlreadyChecked").value = App.model.zipAlreadyCompressed;
+        this.updateSkin();
     }
 
+    // Logs
     async exportLogs() {
         if (App.model.logs.length === 0) {
             App.utils.writeMessage('No Logs to export.');
@@ -245,6 +262,7 @@ class OptionsManager {
         App.utils.toggleSpinner(!App.model.clicksActive);
     }
 
+    // Utils - zip
     formatZipLevel() {
         let outStr = App.model.zipLevel;
         if (App.model.zipLevel < 0) outStr = "Default";
@@ -254,6 +272,31 @@ class OptionsManager {
         if (App.model.zipLevel > 6) outStr = App.model.zipLevel + " (High)";
         if (App.model.zipLevel > 8) outStr = App.model.zipLevel + " (Max)";
         return outStr;
+    }
+
+    // Skins
+    usedSkin = "";
+    initializeSkinOptions() {
+        this.usedSkin = App.model.currentSkin;
+        const skinNames = App.uiManager.getSkinNames();
+        let selectEl = document.getElementById('currentSkinChecked');
+        selectEl.innerHTML = '';
+        skinNames.forEach((element) => {
+            let name = element;
+            let opt = document.createElement("option");
+            opt.value = name;
+            opt.text = name;
+            if (name === this.usedSkin) {
+                opt.selected = true;
+            }
+            selectEl.appendChild(opt);
+        });
+    }
+    updateSkin() {
+        if (this.usedSkin !== App.model.currentSkin) {
+            App.uiManager.setSkinByName(App.model.currentSkin);
+        }
+        this.usedSkin = App.model.currentSkin;
     }
 }
 

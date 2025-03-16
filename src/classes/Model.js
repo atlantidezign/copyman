@@ -8,6 +8,7 @@ class Model {
         }
         Model._instance = this;
     }
+
     appVersion = version;
 
     // Business vars
@@ -50,7 +51,7 @@ class Model {
         sync2: 7,
         brute: 8
     };
-    sortOrderList= ["alphabetical", "reverseAlphabetical", "sizeAsc", "sizeDesc",
+    sortOrderList = ["alphabetical", "reverseAlphabetical", "sizeAsc", "sizeDesc",
         "dateAsc", "dateDesc", "extAsc", "extDesc"];
 
     // User Options Defaults
@@ -71,6 +72,7 @@ class Model {
     zipLevelDefault = -1;
     zipAlreadyCompressedDefault = false;
     msCopySpeedDefault = 50; //50 MB/s
+    currentSkinDefault = "copyman";
 
     // User Options - stored
     //copy-related
@@ -90,6 +92,7 @@ class Model {
     splitScreen = this.splitScreenDefault;
     makeTreeDiffs = this.makeTreeDiffsDefault;
     msCopySpeed = this.msCopySpeedDefault;
+    currentSkin = this.currentSkinDefault;
     //zip, not copy-related
     zipLevel = this.zipLevelDefault;
     zipAlreadyCompressed = this.zipAlreadyCompressedDefault;
@@ -127,11 +130,45 @@ class Model {
     afterDiffsTimeout = 100; //ms (with retries)
     msBaseTolerance = 1000; //ms
 
-    //zip
+    // Zip
     archiveLevelDefault = 6;
     archiveExtensions = [
         '.zip', '.7z', '.rar', '.tar', '.gz', '.bz2', '.xz', '.iso', '.cab', '.arj', '.lz', '.lzma', '.z'
     ];
+
+    // Skins //TODO add more skins
+    skins = [{
+        name: "blue", data: {
+            '--copyman-primary': '#103df2',
+            '--copyman-primary-rgb': '16,61,242',
+            '--copyman-secondary': '#0f2ce8',
+            '--copyman-tertiary': '#6875ff',
+            '--copyman-quaternary': '#102ef2',
+            '--copyman-quinquinary': '#ff7925',
+            '--copyman-different': '#de00ee'
+        }
+    }, {
+        name: "green", data: {
+            '--copyman-primary': '#219700',
+            '--copyman-primary-rgb': '33,151,0',
+            '--copyman-secondary': '#0fe821',
+            '--copyman-tertiary': '#7cff68',
+            '--copyman-quaternary': '#2ef210',
+            '--copyman-quinquinary': '#25fff8',
+            '--copyman-different': '#ee7f00'
+        }
+    },
+        {
+            name: "red", data: {
+                '--copyman-primary': '#be0505',
+                '--copyman-primary-rgb': '190,5,5',
+                '--copyman-secondary': '#e80f0f',
+                '--copyman-tertiary': '#ff6868',
+                '--copyman-quaternary': '#f21010',
+                '--copyman-quinquinary': '#ffed25',
+                '--copyman-different': '#9f00ee'
+            }
+        }]
 
 }
 
