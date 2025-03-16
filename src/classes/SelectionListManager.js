@@ -40,8 +40,8 @@ class SelectionListManager {
 
     // Generate selection list
     getListOfSelectedItems() {
-        // select div #file-tree
-        const fileTree = document.getElementById('file-tree');
+        // select div #source-tree
+        const fileTree = document.getElementById('source-tree');
 
         // select all checked checkboxes inside
         const checkedCheckboxes = fileTree.querySelectorAll('input[type="checkbox"]:checked');
@@ -94,7 +94,7 @@ class SelectionListManager {
 
     // Update selection stats
     updateSelectionStats() {
-        const fileTree = document.getElementById('file-tree');
+        const fileTree = document.getElementById('source-tree');
         const checkedCheckboxes = fileTree.querySelectorAll('input[type="checkbox"]:checked');
         const selectedItems = Array.from(checkedCheckboxes).map(checkbox => ({
             fullSize: Number(checkbox.dataset.nodeSize),

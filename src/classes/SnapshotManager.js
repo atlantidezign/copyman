@@ -259,7 +259,7 @@ class SnapshotManager {
 
         //apply selection
         if (App.model.saveSelection && settings.selectionList && settings.selectionList.length > 0) {
-            const fileTree = document.getElementById('file-tree');
+            const fileTree = document.getElementById('source-tree');
             const allCheckboxes = fileTree.querySelectorAll('input[type="checkbox"]');
             allCheckboxes.forEach(checkbox => {
                 if (settings.selectionList.indexOf(checkbox.dataset.filePath) >= 0) {
@@ -332,7 +332,7 @@ class SnapshotManager {
 
     //Utils: get selection list
     getListOfSelectedItemsForSnapshot() {
-        const fileTree = document.getElementById('file-tree');
+        const fileTree = document.getElementById('source-tree');
         const checkedCheckboxes = fileTree.querySelectorAll('input[type="checkbox"]:checked');
         return Array.from(checkedCheckboxes).map(item => item.dataset.filePath);
     }

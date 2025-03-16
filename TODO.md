@@ -1,8 +1,9 @@
 # TODO
 
 ## NOW
-options: custom suffix for keep existing (unique or (#INCREMENTAL)) - in copy options + handle; 
-options: custom filename radix for zip archive - in zip options + handle;
+ui: collapsable folders and filters panels. (css: update also #div-tree calc() height, -335px; aware of vertical padding for #div-filtersX)
+
+select: like filter but on diffs: select different (set, addictive, subtractive), select non different (set, addictive, subtractive) if tree & diff active (otherwise asks: activate tree and diffs?). rearrange ui
 
 ext: update screenshot
 
@@ -11,7 +12,8 @@ ext: update screenshot
 ## NEXT
 ui: color skins/variants
 
-select: like filter but on diffs: select different (set, addictive, subtractive), select non different (set, addictive, subtractive) if tree & diff active. rearrange ui
+options: custom suffix for keep existing (unique or (#INCREMENTAL)) - in copy options + handle;
+options: custom filename radix for zip archive - in zip options + handle;
 
 ---
 
@@ -28,7 +30,7 @@ settings: support localization for other languages (in options), for labels and 
           check also all menu items (contextual, tray, main).
 
 ui: alerts and confirms not using native dialogs but using html modals.
-ui: collapsable folders and filters panels or all separated panels using floating windows?
+ui: all separated panels using floating windows?
 ui: better text wrap on trees.
 
 sys: remove Live reload for production build

@@ -50,7 +50,7 @@ class CopyManager {
             App.filtersManager.removeAllFilters();
             document.getElementById('sourcePath').textContent = 'Select Source Folder';
             App.model.sourceTreeData = [];
-            const container = document.getElementById('file-tree');
+            const container = document.getElementById('source-tree');
             container.innerHTML = '';
             App.utils.writeMessage('Source folder cleared.');
         });
@@ -720,7 +720,7 @@ Size: ${App.utils.formatSizeForThree(App.model.sizeTotal)}
             return false;
         }
 
-        const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
+        const checkboxes = document.querySelectorAll('#source-tree input[type="checkbox"]');
         App.model.selectedNodes = [];
         App.model.sizeTotal = 0;
         App.model.sizeProcessed = 0;

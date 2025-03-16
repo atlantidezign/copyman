@@ -16,7 +16,7 @@ class TreeManager {
             // expand all tree nodes and update icon to "▼"
             function expandAllFileTree()
             {
-                const treeContainer = document.getElementById('file-tree');
+                const treeContainer = document.getElementById('source-tree');
                 if (!treeContainer) return;
 
                 const nestedLists = treeContainer.querySelectorAll('ul');
@@ -51,7 +51,7 @@ class TreeManager {
 
             // collapse all tree nodes and update icons to "▷"
             function collapseAllFileTree() {
-                const treeContainer = document.getElementById('file-tree');
+                const treeContainer = document.getElementById('source-tree');
                 if (!treeContainer) return;
 
                 // select all UL in tree
@@ -100,7 +100,7 @@ class TreeManager {
     updateSourceTree(direct) {
         App.model.clicksActive = false;
         App.utils.toggleSpinner(!App.model.clicksActive);
-        const container = document.getElementById('file-tree');
+        const container = document.getElementById('source-tree');
         let doOther = false;
         if (direct) {
             let useName = "preDiffsSnapshot";
@@ -140,10 +140,10 @@ class TreeManager {
         }
     }
     alignDestinationTree() {
-        this.alignTreeNodes('file-tree', 'dest-tree', true);
+        this.alignTreeNodes('source-tree', 'dest-tree', true);
     }
     alignSourceTree() {
-        this.alignTreeNodes('dest-tree', 'file-tree', false);
+        this.alignTreeNodes('dest-tree', 'source-tree', false);
     }
 
     //Inner - common. Sync Tree Nodes
@@ -207,7 +207,7 @@ class TreeManager {
                             destToggleIcon.textContent = isOpen ? '▼' : '▷';
                         }
                         // recursively for children
-                        this.syncTreeNodes(sourceChildUl, destChildUl);
+                        App.treeManager.syncTreeNodes(sourceChildUl, destChildUl, alsoChecks);
                     }
                 }
             }
@@ -769,7 +769,7 @@ class TreeManager {
     // Public - common. Tree expand
     expandAncestors(element) {
         let parent = element.parentElement;
-        while (parent && parent.id !== 'file-tree' && parent.id !== 'dest-tree') {
+        while (parent && parent.id !== 'source-tree' && parent.id !== 'dest-tree') {
             if (parent.tagName.toLowerCase() === 'ul') {
                 parent.style.display = 'block';
                 // if UL is son of a LI with toggle, switch toggle to "▼"

@@ -219,7 +219,7 @@ class FiltersManager {
                 return;
             }
             App.filtersManager.removeAllFilters();
-            const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
+            const checkboxes = document.querySelectorAll('#source-tree input[type="checkbox"]');
             checkboxes.forEach(checkbox => {
                 checkbox.checked = true;
             });
@@ -275,7 +275,7 @@ class FiltersManager {
         // apply filters for names
         for (const filterValue of App.model.filtersNamePlus) {
             // iterate all tree checkboxes
-            const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
+            const checkboxes = document.querySelectorAll('#source-tree input[type="checkbox"]');
             checkboxes.forEach(checkbox => {
                 const nodeName = checkbox.dataset.nodeName.toLowerCase();
                 if (filterValue !== '' && nodeName.includes(filterValue.toLowerCase())) {
@@ -286,7 +286,7 @@ class FiltersManager {
             });
         }
         for (const filterValue of App.model.filtersNameMinus) {
-            const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
+            const checkboxes = document.querySelectorAll('#source-tree input[type="checkbox"]');
             checkboxes.forEach(checkbox => {
                 const nodeName = checkbox.dataset.nodeName.toLowerCase();
                 if (filterValue !== '' && nodeName.includes(filterValue.toLowerCase())) {
@@ -298,7 +298,7 @@ class FiltersManager {
         //apply filters for Date and Size, evaluating also App.model.relationshipOR true or false (AND)
         for (const filterValue of App.model.filtersDatePlus) {
             // iterate all tree checkboxes
-            const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
+            const checkboxes = document.querySelectorAll('#source-tree input[type="checkbox"]');
             checkboxes.forEach(checkbox => {
                 const nodeDate = checkbox.dataset.nodeModified;
                 if (App.filtersManager.dateSingleInsideARange(nodeDate, filterValue)) {
@@ -320,7 +320,7 @@ class FiltersManager {
             });
         }
         for (const filterValue of App.model.filtersDateMinus) {
-            const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
+            const checkboxes = document.querySelectorAll('#source-tree input[type="checkbox"]');
             checkboxes.forEach(checkbox => {
                 const nodeDate = checkbox.dataset.nodeModified;
                 if (App.filtersManager.dateSingleInsideARange(nodeDate, filterValue)) {
@@ -331,7 +331,7 @@ class FiltersManager {
 
         for (const filterValue of App.model.filtersSizePlus) {
             // iterate all tree checkboxes
-            const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
+            const checkboxes = document.querySelectorAll('#source-tree input[type="checkbox"]');
             checkboxes.forEach(checkbox => {
                 const nodeSize = checkbox.dataset.nodeSize;
                 if (App.filtersManager.sizeSingleInsideARange(nodeSize, filterValue)) {
@@ -353,7 +353,7 @@ class FiltersManager {
             });
         }
         for (const filterValue of App.model.filtersSizeMinus) {
-            const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
+            const checkboxes = document.querySelectorAll('#source-tree input[type="checkbox"]');
             checkboxes.forEach(checkbox => {
                 const nodeSize = checkbox.dataset.nodeSize;
                 if (App.filtersManager.sizeSingleInsideARange(nodeSize, filterValue)) {
@@ -369,7 +369,7 @@ class FiltersManager {
     }
 
     removeAllSelection() {
-        const checkboxes = document.querySelectorAll('#file-tree input[type="checkbox"]');
+        const checkboxes = document.querySelectorAll('#source-tree input[type="checkbox"]');
         checkboxes.forEach(checkbox => {
             checkbox.checked = false;
         });

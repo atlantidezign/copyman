@@ -105,7 +105,7 @@ body > div#div-controls {
     grid-template-columns: 1fr 10px 1fr;
 }
 
-#file-tree, #dest-tree {
+#source-tree, #dest-tree {
     padding: 10px;
     height: inherit;
 }
@@ -168,19 +168,19 @@ li {
     padding-left: 20px;
 }
 
-#file-tree > ul, #file-tree > ul > li,
+#source-tree > ul, #source-tree > ul > li,
 #dest-tree > ul, #dest-tree > ul > li {
     padding-left: 0;
 }
 
-#file-tree .label-extras-date,
+#source-tree .label-extras-date,
 #dest-tree .label-extras-date {
     margin-left: 10px;
     font-size: 0.8em;
     color: var(--bs-primary);
 }
 
-#file-tree .label-extras-size,
+#source-tree .label-extras-size,
 #dest-tree .label-extras-size {
     margin-left: 5px;
     font-size: 0.8em;
@@ -195,7 +195,7 @@ li {
     font-size: 0.9em;
 }
 
-#file-tree .tree-folder-name {
+#source-tree .tree-folder-name {
     background: #620fe8;
 }
 
