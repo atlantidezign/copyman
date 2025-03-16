@@ -1,8 +1,6 @@
 # TODO
 
 ## NOW
-ui: if diffs active, also clicks on destination tree for open/close aligns open/close on source tree
-
 options: App.model.msCopySpeed (default 50000 = 50 MB/s) , App.model.zipAlreadyCompressed (default false) in sys options
 options: custom suffix for keep existing (unique or (#INCREMENTAL)), custom filename for zip archive in sys options
 

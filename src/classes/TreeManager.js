@@ -142,7 +142,6 @@ class TreeManager {
     alignDestinationTree() {
         if (App.model.splitScreen === true) {
             //if source tree and dest tree are both rendered: align open/close from source branch to same name dest branch, also align selection/deselection checkboxes from source
-
             const sourceTree = document.getElementById('file-tree');
             const destinationTree = document.getElementById('dest-tree');
             if (!sourceTree || !destinationTree) {
@@ -184,6 +183,67 @@ class TreeManager {
                     if (destCheckbox) {
                         destCheckbox.checked = sourceCheckbox.checked;
                     }
+                    // if node is directory, sync also open/close state
+                    if (sourceCheckbox.dataset.isDirectory === "1") {
+                        const sourceChildUl = sourceLi.querySelector('ul');
+                        const destChildUl = destLi.querySelector('ul');
+                        if (sourceChildUl && destChildUl) {
+                            const computedStyle = window.getComputedStyle(sourceChildUl);
+                            const isOpen = computedStyle.display !== 'none';
+                            destChildUl.style.display = isOpen ? 'block' : 'none';
+                            // update toggle icon
+                            const destToggleIcon = destLi.querySelector('span span:first-child');
+                            if (destToggleIcon) {
+                                destToggleIcon.textContent = isOpen ? '▼' : '▷';
+                            }
+                            // recursively for children
+                            syncTreeNodes(sourceChildUl, destChildUl);
+                        }
+                    }
+                }
+            });
+        }
+    }
+    alignSourceTree() {
+        if (App.model.splitScreen === true) {
+            //if source tree and dest tree are both rendered: align open/close from dest branch to same name source branch
+            const sourceTree = document.getElementById('file-tree');
+            const destinationTree = document.getElementById('dest-tree');
+            if (!sourceTree || !destinationTree) {
+                return;
+            }
+            if (sourceTree.innerHTML === "" || destinationTree.innerHTML === "") {
+                return;
+            }
+            const sourceTreeUL = document.getElementById('file-tree').querySelector('ul');
+            const destinationTreeUL = document.getElementById('dest-tree').querySelector('ul');
+            if (!sourceTreeUL || !destinationTreeUL) {
+                return;
+            }
+            // Start recursive sync from the top UL level
+            syncTreeNodes(destinationTreeUL, sourceTreeUL);
+        }
+
+        function syncTreeNodes(sourceParent, destParent) {
+            const sourceLis = Array.from(sourceParent.children).filter(el => el.tagName.toUpperCase() === 'LI');
+            const destLis = Array.from(destParent.children).filter(el => el.tagName.toUpperCase() === 'LI');
+            sourceLis.forEach(sourceLi => {
+                const sourceCheckbox = sourceLi.querySelector('input[type="checkbox"]');
+                if (!sourceCheckbox) return;
+                const filePath = sourceCheckbox.dataset.filePath;
+                // find corresponding node using filePath
+                const destLi = destLis.find(li => {
+                    const checkbox = li.querySelector('input[type="checkbox"]');
+                    if (checkbox) {
+                        const destFilePath = checkbox.dataset.filePath;
+                        if (destFilePath === filePath) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+
+                if (destLi) {
                     // if node is directory, sync also open/close state
                     if (sourceCheckbox.dataset.isDirectory === "1") {
                         const sourceChildUl = sourceLi.querySelector('ul');
@@ -594,6 +654,8 @@ class TreeManager {
                 if (isSource) {
                     //update secondary tree
                     App.treeManager.alignDestinationTree();
+                } else {
+                    App.treeManager.alignSourceTree();
                 }
             });
         } else {
