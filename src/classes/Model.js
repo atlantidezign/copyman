@@ -81,13 +81,13 @@ class Model {
     propagateSelections = this.propagateSelectionsDefault;
     clickOnNamesToSelect = this.clickOnNamesToSelectDefault;
     relationshipOR = this.relationshipORDefault;
+    saveSelection = this.saveSelectionDefault; //not in ui
     //sys, not copy-related
     maintainLogs = this.maintainLogsDefault;
     loadNotCopyRelatedOptions = this.loadNotCopyRelatedOptionsDefault;
     splitScreen = this.splitScreenDefault;
-    saveSelection = this.saveSelectionDefault; //not in ui
     makeTreeDiffs = this.makeTreeDiffsDefault;
-    msCopySpeed = this.msCopySpeedDefault;  //TODO add to options sys
+    msCopySpeed = this.msCopySpeedDefault;
     //zip, not copy-related
     zipLevel = this.zipLevelDefault;
     zipAlreadyCompressed = this.zipAlreadyCompressedDefault;
