@@ -25,6 +25,7 @@ class UIManager {
         this.initializeSkin();
         this.initializeComponents();
         this.initializeModals();
+        this.initializeDebug();
     }
 
     // Modals
@@ -325,6 +326,7 @@ Source code and binaries are available on <a href="https://github.com/atlantidez
                 root.style.setProperty(property, skinProperties[property]);
             }
         }
+        this.updateLilGuiFromTheme();
     }
     getCopymanSkin() {
         const computedStyle = getComputedStyle(document.documentElement);
@@ -356,6 +358,126 @@ Source code and binaries are available on <a href="https://github.com/atlantidez
         }
     }
 
+    // Debug: lil-gui
+    guiActive = true; //TODO set to false
+    gui = null;
+    guiState = {};
+    async initializeDebug() {
+        const debugValue = await ipcRenderer.invoke('get-indebug');
+        if (this.guiActive && debugValue) {
+            this.createLilGui();
+        }
+    }
+    createLilGui() {
+        const root = document.documentElement;
+        this.gui = new GUI();
+        this.gui.title("Copyman Skin Editor - Dev");
+        App.model.skinKeys.forEach(key => {
+            if (key.indexOf('-irgb') >= 0) {
+                this.guiState[key] = 'rgb(' + this.guiFetchVariable(key) + ')';
+                this.gui.addColor( this.guiState, key ).onChange((value) => {
+                    App.uiManager.guiUpdateVariable(key, value.replace('rgb(','').replace(')',''));
+                })
+            } else if (key.indexOf('-rgb') >= 0) {
+                const { rgb, alpha } = this.parseRGBA(this.guiFetchVariable(key));
+                this.guiState[key] = rgb;
+                this.guiState[key+"-alpha"] = alpha;
+                this.gui.addColorWithAlpha( this.guiState, key, key+"-alpha" ).onChange((newColor,newAlpha) => {
+                    App.uiManager.guiUpdateVariable(key, App.uiManager.composeRGBA(newColor,newAlpha));
+                })
+            } else {
+                this.guiState[key] = this.guiFetchVariable(key);
+                this.gui.addColor( this.guiState, key ).onChange((value) => {
+                    App.uiManager.guiUpdateVariable(key, value);
+                })
+            }
+        });
+        this.guiState.LogSkin = () => {
+            let out = '\n/* Copyman Skin Editor - Dev */\n{ name: "loremipsum", data: {\n';
+            Object.keys(App.uiManager.guiState).forEach(key => {
+                if (key.indexOf('-irgb') >= 0) {
+                    out += '"'+key + '": "' + App.uiManager.guiState[key].replace('rgb(','').replace(')','') +'",\n';
+                } else if (key.indexOf('-rgb') >= 0 && key.indexOf('-alpha') < 0) {
+                    out += '"'+key + '": "' + App.uiManager.composeRGBA(App.uiManager.guiState[key],App.uiManager.guiState[key+"-alpha"]) +'",\n';
+                } else if (key.indexOf('Log') < 0) {
+                    out += '"'+key + '": "' + App.uiManager.guiState[key] +'",\n';
+                }
+            })
+            out += '}}';
+            console.log(out);
+        }
+        this.gui.add(this.guiState, 'LogSkin')
+        this.guiState.LogCss = () => {
+            let out = '\n/* Copyman Skin Editor - Dev */\n';
+            Object.keys(App.uiManager.guiState).forEach(key => {
+                if (key.indexOf('-irgb') >= 0) {
+                    out += key + ': ' + App.uiManager.guiState[key].replace('rgb(','').replace(')','') +';\n';
+                } else if (key.indexOf('-rgb') >= 0 && key.indexOf('-alpha') < 0) {
+                    out += key + ': ' + App.uiManager.composeRGBA(App.uiManager.guiState[key],App.uiManager.guiState[key+"-alpha"]) +';\n';
+                } else if (key.indexOf('Log') < 0) {
+                    out += key + ': ' + App.uiManager.guiState[key] +';\n';
+                }
+            });
+            console.log(out);
+        }
+        this.gui.add(this.guiState, 'LogCss')
+    }
+    updateLilGuiFromTheme() {
+        if (this.guiActive && this.gui !== null) {
+            App.model.skinKeys.forEach(key => {
+                if (key.indexOf('-irgb') >= 0) {
+                    this.guiState[key] = 'rgb(' + this.guiFetchVariable(key) + ')';
+                } else if (key.indexOf('-rgb') >= 0) {
+                    const {rgb, alpha} = this.parseRGBA(this.guiFetchVariable(key));
+                    this.guiState[key] = rgb;
+                    this.guiState[key + "-alpha"] = alpha;
+                } else {
+                    this.guiState[key] = this.guiFetchVariable(key);
+                }
+            });
+            for (const controller of this.gui.controllersRecursive()) {
+                controller.updateDisplay();
+            }
+        }
+    }
+
+    // Utils - lil-gui
+    guiFetchVariable(variableName) {
+        return (
+            getComputedStyle(document.documentElement)
+                .getPropertyValue(variableName)
+                .trim()
+                .replace(/['"]+/g, '') || ''
+        )
+    }
+    guiUpdateVariable(variableName, value) {
+        this.guiState.colorText = value;
+        document.documentElement.style.setProperty(variableName, value);
+    }
+    parseRGBA(rgbaString) {
+        // extract rbg+alpha from rgba
+        const regex = /rgba\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*([\d.]+)\s*\)/i;
+        const match = rgbaString.match(regex);
+        if (!match) {
+            throw new Error('rgba format not valid');
+        }
+        const r = match[1];
+        const g = match[2];
+        const b = match[3];
+        const alpha = match[4];
+        const rgb = `rgb(${r}, ${g}, ${b})`;
+        return { rgb, alpha };
+    }
+    composeRGBA(rgbString, alpha) {
+        // recompose rgba from rbg+alpha
+        const regex = /rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/i;
+        const match = rgbString.match(regex);
+        if (!match) {
+            throw new Error('rgb format not valid');
+        }
+        const innerRgb = `${match[1]}, ${match[2]}, ${match[3]}`;
+        return `rgba(${innerRgb}, ${alpha})`;
+    }
 }
 
 module.exports = UIManager;

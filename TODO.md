@@ -5,6 +5,8 @@ ext: update screenshot
 
 diffs: check propagation of diff classes/props on tree and it's rendering
 
+sys: check update on startup, with option
+
 ---
 
 ## NEXT

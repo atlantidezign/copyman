@@ -436,6 +436,11 @@ app.whenReady().then(() => {
         return os.platform();
     })
 
+    // indebug
+    ipcMain.handle('get-indebug', () => {
+        return inDebug;
+    });
+
     //launch
     app.on('activate', function () {
         if (BrowserWindow.getAllWindows().length === 0) { win = createWindow(); }

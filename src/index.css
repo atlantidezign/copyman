@@ -9,7 +9,7 @@
     /* copyman skin */
     /* main */
     --copyman-primary: #6610f2;
-    --copyman-primary-rgb: 102, 16, 242;
+    --copyman-primary-irgb: 102, 16, 242;
     --copyman-secondary: #620fe8;
     --copyman-tertiary: #9e68ff;
     --copyman-quaternary: #8510f2;
@@ -17,10 +17,11 @@
     --copyman-different: #ee0000;
 
     /* bgs */
-    --copyman-bg-rgb: 102, 16, 242;
-    --copyman-bg-opacity: 1; /*var(--bs-bg-opacity);*/
-    --copyman-bg-alt-rgb: 46, 16, 242;
-    --copyman-bg-black-rgb: 0,0,0;
+    --copyman-bg-rgb:rgba(102, 16, 242, 1);
+    --copyman-bg-alt-rgb: rgba(46, 16, 242, 1);
+    --copyman-bg-black-dark-rgb: rgba(0, 0, 0, 0.65);
+    --copyman-bg-black-low-rgb: rgba(0, 0, 0, 0.3);
+    --copyman-bg-black-mid-rgb: rgba(0, 0, 0, 0.5);
 
     /* neutrals */
     --copyman-white: #ffffff;
@@ -33,9 +34,6 @@
     --copyman-gray-dark: #495057;
 
     /* common */
-    --copyman-bg-opacity-dark: 0.65;
-    --copyman-bg-opacity-mid: 0.5;
-    --copyman-bg-opacity-low: 0.5;
     --copyman-bg-shadow-rgb: 0,0,0;
     --copyman-bg-focus-shadow-rgb: 49, 132, 253;
     --copyman-bg-opacity-shadow: 0.125;
@@ -81,15 +79,15 @@
 
     /* bs */
     --bs-primary: var(--copyman-tertiary);
-    --bs-primary-rgb: var(--copyman-primary-rgb);
+    --bs-primary-rgb: var(--copyman-primary-irgb);
 }
 
 .bg-copyman {
-    background-color: rgba(var(--copyman-bg-rgb), var(--copyman-bg-opacity)) !important;
+    background-color: var(--copyman-bg-rgb) !important;
 }
 
 .bg-copyman-alt {
-    background-color: rgba(var(--copyman-bg-alt-rgb), var(--copyman-bg-opacity)) !important;
+    background-color: var(--copyman-bg-alt-rgb) !important;
 }
 
 body {
@@ -182,7 +180,7 @@ body > div#div-filters4 {
     height: unset;
     min-height: 150px;
     font-size: 0.85em;
-    background-color: rgba(var(--copyman-bg-black-rgb), var(--copyman-bg-opacity-dark));
+    background-color: var(--copyman-bg-black-dark-rgb);
     border-radius: 10px;
     flex-grow: 1;
     margin: 10px 10px 10px 10px;
@@ -332,7 +330,7 @@ li {
     padding: 4px 0.75rem 3px 0.75rem;
     color: var(--copyman-text-form) !important;
     font-size: 0.80em;
-    background-color: rgba(var(--copyman-bg-black-rgb), var(--copyman-bg-opacity-dark));
+    background-color: var(--copyman-bg-black-dark-rgb);
 }
 
 .form-check-inline {
@@ -402,7 +400,7 @@ li {
 }
 
 .queue-item {
-    background: rgba(var(--copyman-bg-black-rgb), var(--copyman-bg-opacity-low));
+    background: var(--copyman-bg-black-low-rgb);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -446,7 +444,7 @@ li {
 
 .form-select-sm {
     font-size: 0.80em;
-    background-color: rgba(var(--copyman-bg-black-rgb), var(--copyman-bg-opacity-dark));
+    background-color: var(--copyman-bg-black-dark-rgb);
     color: var(--copyman-text-form) !important;
 }
 
@@ -790,7 +788,7 @@ body > div#spinner-overlay {
     left: 0;
     width: 100%;
     height: 100% !important;
-    background: rgba(var(--copyman-bg-black-rgb), var(--copyman-bg-opacity-mid)); /* black transparent bg */
+    background: var(--copyman-bg-black-mid-rgb); /* black transparent bg */
     display: none; /* hidden by default */
     justify-content: center;
     text-align: center;

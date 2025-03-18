@@ -20,6 +20,7 @@ const LocalizationManager = require('./classes/LocalizationManager');
 
 const App = require('./classes/App');
 const app = App; // App is a singleton, access by import
+const GUI = lil.GUI;
 
 app.init();
 app.start();
