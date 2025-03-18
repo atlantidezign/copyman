@@ -145,6 +145,7 @@ class Model {
         "--copyman-quaternary",
         "--copyman-quinquinary",
         "--copyman-different",
+        "--copyman-focus-shadow-irgb",
 
         "--copyman-bg-rgb",
         "--copyman-bg-alt-rgb",
@@ -170,6 +171,7 @@ class Model {
             "--copyman-quaternary": "#102ef2",
             "--copyman-quinquinary": "#ff7925",
             "--copyman-different": "#de00ee",
+            "--copyman-focus-shadow-irgb": "49, 132, 253",
 
             "--copyman-bg-rgb": "rgba(102, 16, 242, 1)",
             "--copyman-bg-alt-rgb": "rgba(46, 16, 242, 1)",
@@ -194,6 +196,7 @@ class Model {
             "--copyman-quaternary": "#2ef210",
             "--copyman-quinquinary": "#25fff8",
             "--copyman-different": "#ee7f00",
+            "--copyman-focus-shadow-irgb": "49, 132, 253",
 
             "--copyman-bg-rgb": "rgba(102, 16, 242, 1)",
             "--copyman-bg-alt-rgb": "rgba(46, 16, 242,1)",
@@ -219,6 +222,7 @@ class Model {
                 "--copyman-quaternary": "#f21010",
                 "--copyman-quinquinary": "#ffed25",
                 "--copyman-different": "#9f00ee",
+                "--copyman-focus-shadow-irgb": "49, 132, 253",
 
                 "--copyman-bg-rgb": "rgba(102, 16, 242, 1)",
                 "--copyman-bg-alt-rgb": "rgba(46, 16, 242,1)",

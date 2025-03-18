@@ -395,11 +395,12 @@ Source code and binaries are available on <a href="https://github.com/atlantidez
         this.guiState.LogSkin = () => {
             let out = '\n/* Copyman Skin Editor - Dev */\n{ name: "loremipsum", data: {\n';
             Object.keys(App.uiManager.guiState).forEach(key => {
+                if (!(key.startsWith("--"))) return;
                 if (key.indexOf('-irgb') >= 0) {
-                    out += '"'+key + '": "' + App.uiManager.guiState[key].replace('rgb(','').replace(')','') +'",\n';
+                    out += '"'+key + '": "' + App.uiManager.parseToRGB(App.uiManager.guiState[key]).replace('rgb(','').replace(')','') +'",\n';
                 } else if (key.indexOf('-rgb') >= 0 && key.indexOf('-alpha') < 0) {
                     out += '"'+key + '": "' + App.uiManager.composeRGBA(App.uiManager.guiState[key],App.uiManager.guiState[key+"-alpha"]) +'",\n';
-                } else if (key.indexOf('Log') < 0) {
+                } else if (key.indexOf('Log') < 0 && key.indexOf('-alpha') < 0) {
                     out += '"'+key + '": "' + App.uiManager.guiState[key] +'",\n';
                 }
             })
@@ -410,11 +411,12 @@ Source code and binaries are available on <a href="https://github.com/atlantidez
         this.guiState.LogCss = () => {
             let out = '\n/* Copyman Skin Editor - Dev */\n';
             Object.keys(App.uiManager.guiState).forEach(key => {
+                if (!(key.startsWith("--"))) return;
                 if (key.indexOf('-irgb') >= 0) {
-                    out += key + ': ' + App.uiManager.guiState[key].replace('rgb(','').replace(')','') +';\n';
+                    out += key + ': ' + App.uiManager.parseToRGB(App.uiManager.guiState[key]).replace('rgb(','').replace(')','') +';\n';
                 } else if (key.indexOf('-rgb') >= 0 && key.indexOf('-alpha') < 0) {
                     out += key + ': ' + App.uiManager.composeRGBA(App.uiManager.guiState[key],App.uiManager.guiState[key+"-alpha"]) +';\n';
-                } else if (key.indexOf('Log') < 0) {
+                } else if (key.indexOf('Log') < 0 && key.indexOf('-alpha') < 0) {
                     out += key + ': ' + App.uiManager.guiState[key] +';\n';
                 }
             });
@@ -468,15 +470,34 @@ Source code and binaries are available on <a href="https://github.com/atlantidez
         const rgb = `rgb(${r}, ${g}, ${b})`;
         return { rgb, alpha };
     }
-    composeRGBA(rgbString, alpha) {
-        // recompose rgba from rbg+alpha
+    parseToRGB(colorString) {
+        const trimmed = colorString.trim();
+        // Case hex
+        if (trimmed.charAt(0) === '#') {
+            let hex = trimmed.substring(1);
+            if (hex.length === 3) {
+                hex = hex.split('').map(ch => ch + ch).join('');
+            }
+            if (hex.length !== 6) {
+                throw new Error('hex format not valid');
+            }
+            const r = parseInt(hex.substring(0, 2), 16);
+            const g = parseInt(hex.substring(2, 4), 16);
+            const b = parseInt(hex.substring(4, 6), 16);
+            return `rgb(${r}, ${g}, ${b})`;
+        }
+        // Case rgb
         const regex = /rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/i;
-        const match = rgbString.match(regex);
+        const match = trimmed.match(regex);
         if (!match) {
             throw new Error('rgb format not valid');
         }
-        const innerRgb = `${match[1]}, ${match[2]}, ${match[3]}`;
-        return `rgba(${innerRgb}, ${alpha})`;
+        return `rgb(${match[1]}, ${match[2]}, ${match[3]})`;
+    }
+    composeRGBA(rgbString, alpha) {
+        // recompose rgba from rbg+alpha
+        const innerRgb = App.uiManager.parseToRGB(rgbString);
+        return `rgba(${innerRgb.replace('rgb(','').replace(')','')}, ${alpha})`;
     }
 }
 

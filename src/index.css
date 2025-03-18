@@ -15,6 +15,7 @@
     --copyman-quaternary: #8510f2;
     --copyman-quinquinary: #4225ff;
     --copyman-different: #ee0000;
+    --copyman-focus-shadow-irgb: 161, 48, 253;
 
     /* bgs */
     --copyman-bg-rgb:rgba(102, 16, 242, 1);
@@ -33,9 +34,9 @@
     --copyman-gray-light: #DEE2E6;
     --copyman-gray-dark: #495057;
 
+    /* copyman not in skin */
     /* common */
     --copyman-bg-shadow-rgb: 0,0,0;
-    --copyman-bg-focus-shadow-rgb: 49, 132, 253;
     --copyman-bg-opacity-shadow: 0.125;
     --copyman-border-width: 1px;
 
@@ -126,7 +127,7 @@ body {
     --bs-btn-hover-color:var(--copyman-text-white);
     --bs-btn-hover-bg: var(--copyman-secondary);
     --bs-btn-hover-border-color: var(--copyman-secondary);
-    --bs-btn-focus-shadow-rgb: var(--copyman-bg-focus-shadow-rgb);
+    --bs-btn-focus-shadow-rgb: var(--copyman-focus-shadow-irgb);
     --bs-btn-active-color: var(--copyman-text-white);
     --bs-btn-active-bg: var(--copyman-secondary);
     --bs-btn-active-border-color: var(--copyman-secondary);
