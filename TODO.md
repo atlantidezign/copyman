@@ -5,7 +5,7 @@ ext: update screenshot
 
 diffs: check propagation of diff classes/props on tree and it's rendering
 
-sys: check update on startup, with option
+sys: check update on startup, with option if do or not
 
 ---
 
@@ -13,7 +13,7 @@ sys: check update on startup, with option
 options: custom suffix for keep existing (unique or (#INCREMENTAL)) - in copy options + handle;
 options: custom filename radix for zip archive - in zip options + handle;
 
-sys: extensive testing, especially date/size/diffs filters and copymodes.
+sys: extensive testing, especially date/size/diffs filters and copy modes.
 
 ---
 
@@ -33,6 +33,7 @@ ui: alerts and confirms not using native dialogs but using html modals.
 ui: better text wrap on trees.
 ui: add more skins (todo)
 
+sys: set guiActive false for production build (todo)
 sys: remove Live reload for production build (todo)
 
 

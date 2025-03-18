@@ -359,7 +359,7 @@ Source code and binaries are available on <a href="https://github.com/atlantidez
     }
 
     // Debug: lil-gui
-    guiActive = true; //TODO set to false
+    guiActive = true; //TODO set to false for production build
     gui = null;
     guiState = {};
     async initializeDebug() {
